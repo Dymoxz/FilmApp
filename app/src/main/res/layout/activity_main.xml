@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,13 +7,46 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<LinearLayout
+    android:id="@+id/buttonLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/toolbar">
+    <Button
+        android:id="@+id/filmsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:layout_margin="5dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/listsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:layout_margin="5dp"
+        android:layout_weight="1"/>
+</LinearLayout>
+
+    <SearchView
+        android:layout_below="@id/buttonLayout"
+        android:id="@+id/searchbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/searchbar"
+        android:id="@+id/recyclerView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</RelativeLayout>
