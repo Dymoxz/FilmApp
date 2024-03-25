@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
-import com.example.filmapp.api.response.GenreRespone;
+import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.model.Genre;
 
 import retrofit2.Call;
@@ -57,15 +57,15 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         // Make the API call
-        Call<GenreRespone> call = apiInterface.getGenres(API_KEY, "en-US");
-        call.enqueue(new Callback<GenreRespone>() {
+        Call<GenreResponse> call = apiInterface.getGenres(API_KEY, "en-US");
+        call.enqueue(new Callback<GenreResponse>() {
             @Override
-            public void onResponse(Call<GenreRespone> call, Response<GenreRespone> response) {
+            public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
                 if (response.isSuccessful()) {
                     // Handle successful response here
-                    GenreRespone genreRespone = response.body();
-                    if (genreRespone != null && genreRespone.getGenres() != null) {
-                        for (Genre genre : genreRespone.getGenres()) {
+                    GenreResponse genreResponse = response.body();
+                    if (genreResponse != null && genreResponse.getGenres() != null) {
+                        for (Genre genre : genreResponse.getGenres()) {
                             // Process each movie here
                             Log.d("Genre", genre.getName());
                         }
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<GenreRespone> call, Throwable t) {
+            public void onFailure(Call<GenreResponse> call, Throwable t) {
                 // Handle failure
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }

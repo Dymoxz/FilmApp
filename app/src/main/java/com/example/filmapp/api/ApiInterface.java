@@ -1,6 +1,6 @@
 package com.example.filmapp.api;
 
-import com.example.filmapp.api.response.GenreRespone;
+import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MovieResponse;
 
 import retrofit2.Call;
@@ -16,7 +16,7 @@ public interface ApiInterface {
     );
 
     @GET("genre/movie/list")
-    Call<GenreRespone> getGenres(
+    Call<GenreResponse> getGenres(
             @Query("api_key") String apiKey,
             @Query("language") String language
     );
