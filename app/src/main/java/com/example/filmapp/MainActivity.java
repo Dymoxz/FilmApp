@@ -2,6 +2,7 @@ package com.example.filmapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,7 @@ import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MovieResponse;
 import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
                             // Process each movie here
                             Log.d("Movie", String.valueOf(movie.getRating()));
                         }
+//                        ImageView imageView = findViewById(R.id.imageView);
+//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
                 } else {
                     // Handle error response

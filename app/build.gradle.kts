@@ -36,6 +36,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.retrofitGsonConverter)
+    implementation(libs.picasso)
+
     implementation(libs.recyclerview)
     implementation(libs.recyclerview.selection)
     implementation(libs.appcompat)
