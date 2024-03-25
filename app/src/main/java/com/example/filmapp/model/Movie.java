@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 public class Movie implements Serializable {
     private int id;
     private String title;
+    @SerializedName("poster_path")
+    private String imagePath;
     private float popularity;
     @SerializedName("vote_average")
     private float rating;
@@ -32,5 +34,9 @@ public class Movie implements Serializable {
 
     public List<Integer> getGenreIdList() {
         return genreIdList;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }
