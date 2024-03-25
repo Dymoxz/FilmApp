@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
                             // Process each movie here
                             Log.d("Movie", String.valueOf(movie.getRating()));
                         }
-                        ImageView imageView = findViewById(R.id.imageView);
-                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
+//                        ImageView imageView = findViewById(R.id.imageView);
+//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
                 } else {
                     // Handle error response
