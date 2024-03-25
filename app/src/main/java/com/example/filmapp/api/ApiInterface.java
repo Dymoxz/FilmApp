@@ -2,9 +2,11 @@ package com.example.filmapp.api;
 
 import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MovieResponse;
+import com.example.filmapp.api.response.VideoResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
@@ -17,6 +19,13 @@ public interface ApiInterface {
 
     @GET("genre/movie/list")
     Call<GenreResponse> getGenres(
+            @Query("api_key") String apiKey,
+            @Query("language") String language
+    );
+
+    @GET("movie/{movieId}/videos")
+    Call<VideoResponse> getVideos(
+            @Path("movieId") int movieId,
             @Query("api_key") String apiKey,
             @Query("language") String language
     );
