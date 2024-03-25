@@ -27,7 +27,7 @@ public class Movie implements Serializable {
     }
 
     public float getRating() {
-        return rating;
+        return 10*rating;
     }
 
     public List<Integer> getGenreIdList() {

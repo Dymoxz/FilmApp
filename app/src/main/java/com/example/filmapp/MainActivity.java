@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.GenreResponse;
+import com.example.filmapp.api.response.MovieResponse;
 import com.example.filmapp.model.Genre;
+import com.example.filmapp.model.Movie;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,45 +31,18 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = RetrofitClient.getClient();
         ApiInterface apiInterface = retrofit.create(ApiInterface.class);
 
-//        // Make the API call
-//        Call<MovieResponse> call = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
-//        call.enqueue(new Callback<MovieResponse>() {
-//            @Override
-//            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-//                if (response.isSuccessful()) {
-//                    // Handle successful response here
-//                    MovieResponse movieResponse = response.body();
-//                    if (movieResponse != null && movieResponse.getMovies() != null) {
-//                        for (Movie movie : movieResponse.getMovies()) {
-//                            // Process each movie here
-//                            Log.d("Movie", movie.getTitle());
-//                        }
-//                    }
-//                } else {
-//                    // Handle error response
-//                    Log.e("API Error", "Failed to fetch movies: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                // Handle failure
-//                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
-//            }
-//        });
-
         // Make the API call
-        Call<GenreResponse> call = apiInterface.getGenres(API_KEY, "en-US");
-        call.enqueue(new Callback<GenreResponse>() {
+        Call<MovieResponse> call = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
+        call.enqueue(new Callback<MovieResponse>() {
             @Override
-            public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful()) {
                     // Handle successful response here
-                    GenreResponse genreResponse = response.body();
-                    if (genreResponse != null && genreResponse.getGenres() != null) {
-                        for (Genre genre : genreResponse.getGenres()) {
+                    MovieResponse movieResponse = response.body();
+                    if (movieResponse != null && movieResponse.getMovies() != null) {
+                        for (Movie movie : movieResponse.getMovies()) {
                             // Process each movie here
-                            Log.d("Genre", genre.getName());
+                            Log.d("Movie", String.valueOf(movie.getRating()));
                         }
                     }
                 } else {
@@ -77,11 +52,38 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<GenreResponse> call, Throwable t) {
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
                 // Handle failure
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
+//
+//        // Make the API call
+//        Call<GenreResponse> call = apiInterface.getGenres(API_KEY, "en-US");
+//        call.enqueue(new Callback<GenreResponse>() {
+//            @Override
+//            public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+//                if (response.isSuccessful()) {
+//                    // Handle successful response here
+//                    GenreResponse genreResponse = response.body();
+//                    if (genreResponse != null && genreResponse.getGenres() != null) {
+//                        for (Genre genre : genreResponse.getGenres()) {
+//                            // Process each movie here
+//                            Log.d("Genre", genre.getName());
+//                        }
+//                    }
+//                } else {
+//                    // Handle error response
+//                    Log.e("API Error", "Failed to fetch movies: " + response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<GenreResponse> call, Throwable t) {
+//                // Handle failure
+//                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
+//            }
+//        });
 
     }
 }
