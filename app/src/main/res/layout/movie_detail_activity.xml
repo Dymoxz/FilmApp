@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp">
+
+    <Toolbar
+        android:title="@string/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:id="@+id/movieDetailImage"
+        android:layout_below="@id/toolbar"/>
+    <TextView
+        android:textSize="32sp"
+        android:text="TITLE"
+        android:id="@+id/movieDetailTitle"
+        android:layout_below="@id/movieDetailImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:textSize="18sp"
+        android:text="GENRE"
+        android:id="@+id/movieDetailGenre"
+        android:layout_below="@id/movieDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:id="@+id/movieDetailInfoLayout"
+        android:layout_below="@id/movieDetailGenre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:text="RELEASE YEAR"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="DURATION"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movieDetailInfoLayout"
+            android:id="@+id/movieDetailRatingLayout"
+            android:background="@drawable/rating_layout_background">
+
+            <TextView
+                android:id="@+id/movieDetailRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/rating_layout_background"
+                android:padding="3dp"
+                android:text="30%"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/rate_this_movie"
+                app:layout_constraintStart_toEndOf="@id/movieDetailRating"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="6dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:max="10"
+                android:progress="7"
+                app:layout_constraintStart_toEndOf="@+id/movieDetailRating"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <Button
+                android:layout_width="61dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="6dp"
+                android:padding="0dp"
+                android:background="@drawable/movie_lists_button"
+                android:text="Submit"
+                android:textSize="10dp"
+                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<TextView
+    android:layout_marginTop="5dp"
+    android:text="TAGLINE"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/movieDetailRatingLayout"
+    android:textStyle="italic"
+    android:id="@+id/movieDetailtagline"/>
+    <TextView
+
+        android:text="DESCRIPTION\n..\n.."
+        android:layout_below="@id/movieDetailtagline"
+        android:id="@+id/movieDetailDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_marginTop="5dp"
+        android:id="@+id/movieDetailCastText"
+        android:layout_below="@id/movieDetailDescription"
+        android:text="@string/cast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+<ListView
+    android:layout_below="@id/movieDetailCastText"
+    android:id="@+id/movieDetailCastList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/movieDetailCastList">
+    <TextView
+        android:id="@+id/movieDetailReviewText"
+        android:text="@string/reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    <ImageButton
+        android:background="@drawable/baseline_arrow_forward_ios_24"
+        android:layout_toEndOf="@id/movieDetailReviewText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</RelativeLayout>
+</ScrollView>
