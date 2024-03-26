@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:title="Movie name" />
+
+    <TextView
+        android:text="Reviews"
+        android:id="@+id/reviewOverviewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:layout_below="@id/toolbar"
+        android:layout_margin="20dp"/>
+
+    <TextView
+        android:id="@+id/reviewOverviewCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12345"
+        android:textSize="16sp"
+        android:layout_toEndOf="@id/reviewOverviewTitle"
+        android:layout_alignBaseline="@id/reviewOverviewTitle"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewOverviewRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/reviewOverviewTitle"
+        android:layout_marginTop="20dp" />
+
+<!--Floating action button to write new review-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp" />
+
+</RelativeLayout>
