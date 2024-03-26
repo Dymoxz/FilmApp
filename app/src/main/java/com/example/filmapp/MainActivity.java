@@ -7,6 +7,8 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
 
         // Create API interface instance
         Retrofit retrofit = RetrofitClient.getClient();
@@ -77,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
                                             movie.setGenreList(movieGenres);
                                             Log.d("geerere", movie.getGenreList().get(0).getName());
                                         }
+
+                                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies));
+
+
+
+
 //                        ImageView imageView = findViewById(R.id.imageView);
 //                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                                     }
