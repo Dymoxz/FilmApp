@@ -10,9 +10,6 @@ public class Movie implements Serializable {
     private String title;
     @SerializedName("poster_path")
     private String imagePath;
-    private float popularity;
-    @SerializedName("vote_average")
-    private float rating;
     @SerializedName("genre_ids")
     private List<Integer> genreIdList;
 
@@ -22,14 +19,6 @@ public class Movie implements Serializable {
 
     public String getTitle() {
         return title;
-    }
-
-    public float getPopularity() {
-        return popularity;
-    }
-
-    public float getRating() {
-        return 10*rating;
     }
 
     public List<Integer> getGenreIdList() {

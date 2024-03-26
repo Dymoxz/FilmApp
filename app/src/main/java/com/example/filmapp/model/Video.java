@@ -9,7 +9,7 @@ public class Video implements Serializable {
     private String title;
     private String key;
     @SerializedName("official")
-    private Boolean isOfficial;
+    private boolean isOfficial;
     private String type;
 
     public Video(String title, String key, Boolean isOfficial, String type) {
