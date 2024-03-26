@@ -20,7 +20,7 @@ public class Video implements Serializable {
     }
 
     public String getUrl() {
-        return "https://www.youtube.com/watch?v=" + key;
+        return "https://www.youtube.com/embed/" + key;
     }
 
     public Boolean getOfficial() {
