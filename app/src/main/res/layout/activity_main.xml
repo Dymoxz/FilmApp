@@ -19,6 +19,7 @@
     android:layout_height="wrap_content"
     android:layout_below="@id/toolbar">
     <Button
+        android:text="@string/movies"
         android:layout_marginEnd="1dp"
         android:id="@+id/filmsButton"
         android:layout_width="0dp"
@@ -27,6 +28,7 @@
         android:layout_weight="1"/>
 
     <Button
+        android:text="@string/lists"
         android:layout_marginStart="1dp"
         android:id="@+id/listsButton"
         android:layout_width="0dp"

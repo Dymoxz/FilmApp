@@ -3,4 +3,6 @@
     <string name="cast">Cast</string>
     <string name="reviews">Reviews</string>
     <string name="rate_this_movie">Rate this movie:</string>
+    <string name="movies">Movies</string>
+    <string name="lists">Lists</string>
 </resources>
