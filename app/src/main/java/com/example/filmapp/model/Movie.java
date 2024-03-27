@@ -24,6 +24,19 @@ public class Movie implements Serializable {
     private List<Integer> genreIdList;
     private List<Genre> genreList;
 
+    @SerializedName("overview")
+    private String description;
+    @SerializedName("runtime")
+    private int duration;
+    @SerializedName("vote_average")
+    private float rating;
+    @SerializedName("tagline")
+    private String tagline;
+
+
+    private Video trailer;
+
+
     public int getId() {
         return id;
     }
@@ -57,5 +70,25 @@ public class Movie implements Serializable {
 
     public List<Genre> getGenreList() {
         return genreList;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public Video getTrailer() {
+        return trailer;
     }
 }
