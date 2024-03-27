@@ -1,5 +1,9 @@
 package com.example.filmapp.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,9 +15,10 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.gson.annotations.SerializedName;
-
-
+@TypeConverters({IntegerListConverter.class, GenreListConverter.class,VideoConverter.class})
+@Entity(tableName = "Movie")
 public class Movie implements Serializable {
+    @PrimaryKey()
     private int id;
     private String title;
     @SerializedName("release_date")
@@ -90,5 +95,45 @@ public class Movie implements Serializable {
 
     public Video getTrailer() {
         return trailer;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public void setGenreIdList(List<Integer> genreIdList) {
+        this.genreIdList = genreIdList;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
+    }
+
+    public void setTrailer(Video trailer) {
+        this.trailer = trailer;
     }
 }

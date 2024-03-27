@@ -2,10 +2,15 @@ package com.example.filmapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.Application.MovieViewModel;
+import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Data.Database;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.MoviesResponse;
@@ -27,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Movie> movies;
     private List<Genre> genres;
     private Call<MoviesResponse> call1;
+    private MovieViewModel movieViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
+        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
+        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
+        movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
 
         // Create API interface instance
         Retrofit retrofit = RetrofitClient.getClient();
