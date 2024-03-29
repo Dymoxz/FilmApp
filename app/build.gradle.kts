@@ -36,11 +36,15 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.retrofitGsonConverter)
+
     implementation(libs.picasso)
+
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
+
     implementation(libs.recyclerview)
     implementation(libs.recyclerview.selection)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
