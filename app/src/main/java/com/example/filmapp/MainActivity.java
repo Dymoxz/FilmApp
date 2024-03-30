@@ -1,9 +1,11 @@
 package com.example.filmapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Genre> genres;
     private Call<MoviesResponse> call1;
     private MovieViewModel movieViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
+
 
         // Create API interface instance
         Retrofit retrofit = RetrofitClient.getClient();
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
 
         }
+
+
 //
 //
 //        Call<GenreResponse> call = apiInterface.getGenres(API_KEY, "en-US");
@@ -218,6 +224,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public void changeActivityToLists(View view){
+        Intent intent = new Intent(this, ListsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

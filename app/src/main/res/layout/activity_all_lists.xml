@@ -5,16 +5,15 @@
     android:id="@+id/listActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ListsActivity">
 
 
 
-    <Toolbar
-        android:title="@string/app_name"
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:background="#773302BC" />
 
     <LinearLayout
         android:id="@+id/buttonLayout"
@@ -23,6 +22,8 @@
         android:layout_below="@id/toolbar">
 
         <Button
+            android:onClick="changeActivityToMovies"
+            android:text="@string/movies"
             android:layout_marginEnd="1dp"
             android:id="@+id/filmsButton"
             android:layout_width="0dp"
@@ -31,6 +32,9 @@
             android:layout_weight="1"/>
 
         <Button
+
+            android:text="@string/lists"
+            android:textStyle="bold"
             android:layout_marginStart="1dp"
             android:id="@+id/listsButton"
             android:layout_width="0dp"
