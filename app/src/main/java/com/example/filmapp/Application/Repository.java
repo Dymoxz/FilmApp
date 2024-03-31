@@ -34,7 +34,5 @@ public class Repository {
         database.databaseWriteExecutor.execute(() -> movieDao.insertMovie(movie));
     }
 
-
-
 }
 

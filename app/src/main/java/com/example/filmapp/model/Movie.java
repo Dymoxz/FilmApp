@@ -63,7 +63,6 @@ public class Movie implements Serializable {
             // Format the LocalDate to the desired output format
             return date.format(outputFormatter);
         }
-
     }
 
     public List<Integer> getGenreIdList() {
