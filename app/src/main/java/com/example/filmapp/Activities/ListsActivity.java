@@ -41,7 +41,6 @@ public class ListsActivity extends AppCompatActivity {
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -51,11 +50,10 @@ public class ListsActivity extends AppCompatActivity {
 
         }
 
-        // INSERT A MOVIELIST INTO THE ROOM DATABASE:
+//        INSERT A MOVIELIST INTO THE ROOM DATABASE:
 //        MovieList favorites = new MovieList(1, "Favorites");
 //        movieListViewModel.insertMovieList(favorites);
 //        Log.v("ListsActivity", "inserted movie " + favorites.getName());
-
 
     }
     public void changeActivityToMovies(View view){
@@ -80,6 +78,7 @@ public class ListsActivity extends AppCompatActivity {
                 changeActivityToListDetail();
             }
         });
+
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -89,7 +88,6 @@ public class ListsActivity extends AppCompatActivity {
         });
 
         builder.show();
-
     }
 
     public void changeActivityToListDetail(){

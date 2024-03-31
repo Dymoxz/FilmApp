@@ -12,13 +12,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.filmapp.R;
 
-
 public class ListDetailActivity extends AppCompatActivity {
     String listName;
     String dateCreated;
 
     TextView listTextView;
     TextView dateTextView;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_activity);
@@ -49,7 +49,6 @@ public class ListDetailActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list_detail, menu);
         return true;
     }

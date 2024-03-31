@@ -37,7 +37,6 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-
     private static final String API_KEY = "02ddd233c99c814bad1a7d4af98e681b";
     private List<Movie> movies;
     private List<Genre> genres;
@@ -69,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         }
 
-
-
         movieViewModel.moviesIsEmpty().observe(this, isEmpty -> {
             if (isEmpty) {
                 allMoviesApiCall();
@@ -85,17 +82,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
                     }
                 });
-
-
-
             }
 
-
         });
-
-
-
-
 
         //--------------------------------------------------------------------------------------------
 
@@ -183,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
 
-
     }
+
     public void changeActivityToLists(View view){
         Intent intent = new Intent(this, ListsActivity.class);
         startActivity(intent);
@@ -211,18 +200,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         for (Movie movie : moviesResponse.getMovies()) {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
-//                                            Log.d("Genres", String.valueOf(movie.getGenreIdList().get(0)));
-
 
                             movieViewModel.insertMovie(movie);
-
 
                         }
 
                         recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
-
-
-
 
 //                        ImageView imageView = findViewById(R.id.imageView);
 //                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
