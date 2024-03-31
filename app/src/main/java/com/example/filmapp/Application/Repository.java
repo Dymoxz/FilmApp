@@ -26,14 +26,9 @@ public class Repository {
         return listMovies;
     }
 
-    public void insertMovie(Movie movie) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                database.movieDao().insertMovie(movie);
-                return null;
-            }
-        }.execute();
+    void insertMovie(Movie movie) {
+        database.databaseWriteExecutor.execute(() -> movieDao.insertMovie(movie));
     }
+
 }
 

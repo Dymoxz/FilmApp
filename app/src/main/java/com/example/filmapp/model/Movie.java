@@ -37,7 +37,6 @@ public class Movie implements Serializable {
     @SerializedName("tagline")
     private String tagline;
 
-
     private Video trailer;
 
 

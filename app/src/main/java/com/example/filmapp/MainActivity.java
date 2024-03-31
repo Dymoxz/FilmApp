@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
 //                                            Log.d("Genres", String.valueOf(movie.getGenreIdList().get(0)));
+
+                            movieViewModel.insertMovie(movie);
+
+
                         }
 
                         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
