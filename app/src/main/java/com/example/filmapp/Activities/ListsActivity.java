@@ -12,15 +12,24 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.filmapp.Application.MovieListRepository;
+import com.example.filmapp.Application.MovieListViewModel;
+import com.example.filmapp.Application.MovieViewModel;
+import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Data.Database;
 import com.example.filmapp.R;
+import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieList;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ListsActivity extends AppCompatActivity {
 
-
-
+    private MovieListViewModel movieListViewModel;
+    private List<MovieList> movieLists;
     private String createListName = "";
     String createListDate;
 
@@ -28,6 +37,9 @@ public class ListsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_lists);
 
+        MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
+        movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
+        movieListViewModel.init(repository);
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -38,6 +50,13 @@ public class ListsActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
 
         }
+
+        // INSERT A MOVIELIST INTO THE ROOM DATABASE:
+//        MovieList favorites = new MovieList(1, "Favorites");
+//        movieListViewModel.insertMovieList(favorites);
+//        Log.v("ListsActivity", "inserted movie " + favorites.getName());
+
+
     }
     public void changeActivityToMovies(View view){
         Intent intent = new Intent(this, MainActivity.class);
