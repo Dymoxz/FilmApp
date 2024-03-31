@@ -8,4 +8,6 @@
     <string name="filter_1">Filter 1</string>
     <string name="filter_2">filter 2</string>
     <string name="createList">createList</string>
+    <string name="share">Share</string>
+    <string name="submit">Submit</string>
 </resources>
