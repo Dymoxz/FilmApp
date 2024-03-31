@@ -42,11 +42,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/movieDetailReleaseYear"
             android:text="RELEASE YEAR"
             android:layout_marginEnd="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
+            android:id="@+id/movieDetailDuration"
             android:text="DURATION"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -104,8 +106,8 @@
                 android:layout_marginTop="6dp"
                 android:padding="0dp"
                 android:background="@drawable/movie_lists_button"
-                android:text="Submit"
-                android:textSize="10dp"
+                android:text="@string/submit"
+                android:textSize="10sp"
                 app:layout_constraintStart_toEndOf="@+id/textView"
                 app:layout_constraintTop_toTopOf="parent" />
 

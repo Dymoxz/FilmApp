@@ -25,7 +25,10 @@
         <activity android:name=".ListsActivity">
 
         </activity>
-        <activity android:name=".ListDetailActivity">
+        <activity android:name=".ListDetailActivity" android:parentActivityName=".ListsActivity">
+
+        </activity>
+        <activity android:name=".MovieDetailActivity" android:parentActivityName=".MainActivity">
 
         </activity>
     </application>

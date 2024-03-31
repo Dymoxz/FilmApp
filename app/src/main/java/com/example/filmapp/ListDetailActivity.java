@@ -3,9 +3,12 @@ package com.example.filmapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 
 public class ListDetailActivity extends AppCompatActivity {
@@ -27,7 +30,12 @@ public class ListDetailActivity extends AppCompatActivity {
         Log.v("ListDetailActivity", "List Name: " + listName);
         Log.v("ListDetailActivity", "Date Created: " + dateCreated);
 
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         // Set text to TextViews
         if (listName != null) {
@@ -36,5 +44,11 @@ public class ListDetailActivity extends AppCompatActivity {
         if (dateCreated != null) {
             dateTextView.setText(dateCreated);
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_list_detail, menu);
+        return true;
     }
 }
