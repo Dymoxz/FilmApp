@@ -16,11 +16,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.time.LocalDate;
+
 public class ListsActivity extends AppCompatActivity {
 
 
 
     private String createListName = "";
+    String createListDate;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +57,9 @@ public class ListsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 createListName = input.getText().toString();
-                Log.v("listActivity", "list name = " + createListName);
-
+                createListDate = LocalDate.now().toString();
+                Log.v("listActivity", "Created list with name '" + createListName + "'");
+                changeActivityToListDetail();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -68,5 +72,12 @@ public class ListsActivity extends AppCompatActivity {
 
         builder.show();
 
+    }
+
+    public void changeActivityToListDetail(){
+        Intent intent = new Intent(this, ListDetailActivity.class);
+        intent.putExtra("listName", createListName);
+        intent.putExtra("listDate", createListDate);
+        startActivity(intent);
     }
 }
