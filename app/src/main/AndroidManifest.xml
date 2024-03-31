@@ -25,6 +25,9 @@
         <activity android:name=".ListsActivity">
 
         </activity>
+        <activity android:name=".ListDetailActivity">
+
+        </activity>
     </application>
 
 </manifest>

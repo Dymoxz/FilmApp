@@ -7,4 +7,5 @@
     <string name="lists">Lists</string>
     <string name="filter_1">Filter 1</string>
     <string name="filter_2">filter 2</string>
+    <string name="createList">createList</string>
 </resources>
