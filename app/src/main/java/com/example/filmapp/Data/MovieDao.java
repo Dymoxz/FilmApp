@@ -15,6 +15,9 @@ public interface MovieDao {
     @Insert
     void insertMovie(Movie... movies);
 
-    @Query("SELECT * FROM Movie")
+    @Query("SELECT * FROM Movie ORDER BY rating DESC")
     LiveData<List<Movie>> getAllMovies();
+
+    @Query("SELECT (SELECT COUNT(*) FROM Movie) == 0")
+    LiveData<Boolean> moviesIsEmpty();
 }
