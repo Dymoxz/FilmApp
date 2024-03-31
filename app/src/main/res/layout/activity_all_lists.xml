@@ -32,7 +32,6 @@
             android:layout_weight="1"/>
 
         <Button
-
             android:text="@string/lists"
             android:textStyle="bold"
             android:layout_marginStart="1dp"
@@ -55,11 +54,21 @@
         android:id="@+id/createButton"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
-
+        android:onClick="createList"
         android:background="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         app:srcCompat="@drawable/baseline_add_circle_outline_24" />
+
+    <TextView
+        android:id="@+id/dialogBox"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </RelativeLayout>
