@@ -245,7 +245,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     @Override
     public void onItemClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra("movie", (Serializable) movie);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("value", movie);
+        intent.putExtras(bundle);
+        Log.d("MainActivity", "clicked on movie: " + movie.getTitle());
         startActivity(intent);
     }
 }

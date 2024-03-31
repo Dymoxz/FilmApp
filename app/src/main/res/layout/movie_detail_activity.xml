@@ -8,20 +8,23 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp">
 
-    <Toolbar
-        android:title="@string/app_name"
+    >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/toolbar"/>
+        android:background="#773302BC" />
+
     <ImageView
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:id="@+id/movieDetailImage"
-        android:layout_below="@id/toolbar"/>
+        />
     <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:textSize="32sp"
         android:text="TITLE"
         android:id="@+id/movieDetailTitle"
@@ -29,6 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:textSize="18sp"
         android:text="GENRE"
         android:id="@+id/movieDetailGenre"
@@ -36,6 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <LinearLayout
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:id="@+id/movieDetailInfoLayout"
         android:layout_below="@id/movieDetailGenre"
         android:layout_width="match_parent"
@@ -56,6 +63,8 @@
     </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,6 +122,8 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 <TextView
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     android:layout_marginTop="5dp"
     android:text="TAGLINE"
     android:layout_width="wrap_content"
@@ -121,13 +132,16 @@
     android:textStyle="italic"
     android:id="@+id/movieDetailtagline"/>
     <TextView
-
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="DESCRIPTION\n..\n.."
         android:layout_below="@id/movieDetailtagline"
         android:id="@+id/movieDetailDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
         android:id="@+id/movieDetailCastText"
         android:layout_below="@id/movieDetailDescription"
@@ -135,11 +149,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 <ListView
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     android:layout_below="@id/movieDetailCastText"
     android:id="@+id/movieDetailCastList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
     <LinearLayout
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
