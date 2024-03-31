@@ -27,7 +27,6 @@ public class Movie implements Serializable {
     private String imagePath;
     @SerializedName("genre_ids")
     private List<Integer> genreIdList;
-    private List<Genre> genreList;
 
     @SerializedName("overview")
     private String description;
@@ -67,14 +66,6 @@ public class Movie implements Serializable {
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    public void setGenreList(List<Genre> genreList) {
-        this.genreList = genreList;
-    }
-
-    public List<Genre> getGenreList() {
-        return genreList;
     }
 
     public String getDescription() {

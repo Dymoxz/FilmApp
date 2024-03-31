@@ -32,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         Movie movie = movies.get(position);
         holder.titleView.setText(movie.getTitle());
         holder.releaseYearView.setText(movie.getReleaseDate());
-        holder.genreView.setText(movie.getGenreList().get(0).getName());
+        holder.genreView.setText(String.valueOf(movie.getGenreIdList().get(0)));
         Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(holder.imageView);
     }
 
