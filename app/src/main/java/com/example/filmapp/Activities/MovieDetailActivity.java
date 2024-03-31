@@ -52,6 +52,11 @@ public class MovieDetailActivity extends AppCompatActivity{
 
         }
         if (movie != null) {
+            StringBuilder genreIdStringBuilder = new StringBuilder();
+            for (int genreId : movie.getGenreIdList()) {
+                genreIdStringBuilder.append(genreId).append(", ");
+            }
+            genreTextView.setText(genreIdStringBuilder);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
             durationTextView.setText(String.valueOf(movie.getDuration()));
