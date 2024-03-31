@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -68,6 +69,10 @@ public class MovieDetailActivity extends AppCompatActivity{
             Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(imageView);
         }
 
+
+        // Start review overview activity
+        findViewById(R.id.openReviewOverviewButton).setOnClickListener(v ->
+                startActivity(new Intent(MovieDetailActivity.this, ReviewOverviewActivity.class)));
 
     }
 

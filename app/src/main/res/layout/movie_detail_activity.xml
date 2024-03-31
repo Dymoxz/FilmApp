@@ -176,7 +176,8 @@
         android:background="@drawable/baseline_arrow_forward_ios_24"
         android:layout_toEndOf="@id/movieDetailReviewText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/openReviewOverviewButton"/>
     </LinearLayout>
 
 </RelativeLayout>
