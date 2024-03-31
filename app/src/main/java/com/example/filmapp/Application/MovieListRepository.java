@@ -22,7 +22,6 @@ public class MovieListRepository {
         this.listMoviesList = movieListDao.getAllMovieLists();
     }
 
-
     public LiveData<List<MovieList>> getAllMovieLists() { return listMoviesList; }
 
     void insertMovieList(MovieList movieList) {
