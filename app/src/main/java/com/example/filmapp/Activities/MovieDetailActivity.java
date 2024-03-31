@@ -1,4 +1,4 @@
-package com.example.filmapp;
+package com.example.filmapp.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.filmapp.Application.RecyclerViewInterface;
+import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity{
 
     private Movie movie;
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,4 +34,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
     }
+
+
 }

@@ -28,16 +28,16 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         releaseYearView = itemView.findViewById(R.id.filmListReleaseYear);
     }
 
-    @Override
-    public void onClick(View view) {
-        int position = getAdapterPosition();
-        Log.d("Adapter", "List item onClick: position " + position);
-
-        Movie movie = movies.get(position);
-        Log.d("Adapter", "Cocktail ID: " + movie.getId());
-
-        Intent intent = new Intent(view.getContext(), ListDetailActivity.class);
-        intent.putExtra("EXTRA_ADDED_MOVIE", movie);
-        view.getContext().startActivity(intent);
-    }
+//    @Override
+//    public void onClick(View view) {
+//        int position = getAdapterPosition();
+//        Log.d("Adapter", "List item onClick: position " + position);
+//
+//        Movie movie = movies.get(position);
+//        Log.d("Adapter", "Cocktail ID: " + movie.getId());
+//
+//        Intent intent = new Intent(view.getContext(), ListDetailActivity.class);
+//        intent.putExtra("EXTRA_ADDED_MOVIE", movie);
+//        view.getContext().startActivity(intent);
+//    }
 }
