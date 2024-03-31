@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,20 +42,22 @@ public class MainActivity extends AppCompatActivity {
     private List<Genre> genres;
     private Call<MoviesResponse> call1;
     private MovieViewModel movieViewModel;
+    // Create API interface instance
+    private Retrofit retrofit = RetrofitClient.getClient();
+    private ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
-        // Create API interface instance
-        Retrofit retrofit = RetrofitClient.getClient();
-        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,49 +70,32 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        movieViewModel.moviesIsEmpty().observe(this, isEmpty -> {
+            if (isEmpty) {
+                allMoviesApiCall();
+            } else {
+                Log.d("MainActivity", "Database not empty");
 
-        call1 = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
-        // Make the API call
-        call1.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.isSuccessful()) {
-                    // Handle successful response here
-                    MoviesResponse moviesResponse = response.body();
-                    movies = moviesResponse.getMovies();
-                    if (moviesResponse != null && moviesResponse.getMovies() != null) {
-                        for (Movie movie : moviesResponse.getMovies()) {
-                            // Process each movie here
-                            Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
-//                                            Log.d("Genres", String.valueOf(movie.getGenreIdList().get(0)));
-
-                            movieViewModel.insertMovie(movie);
-
-
-                        }
-
-                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                // Observe the LiveData object
+                movieViewModel.getListMovies().observe(this, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(List<Movie> movieList) {
+                        List<Movie> movies = movieList;
                         recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies));
-
-
-
-
-//                        ImageView imageView = findViewById(R.id.imageView);
-//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
+                });
 
-                } else {
-                    // Handle error response
-                    Log.e("API Error", "Failed to fetch movies: " + response.message());
-                }
+
+
             }
 
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                // Handle failure
-                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
-            }
+
         });
+
+
+
+
+
         //--------------------------------------------------------------------------------------------
 
 
@@ -209,4 +195,50 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    public void allMoviesApiCall() {
+        call1 = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
+        // Make the API call
+        call1.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                if (response.isSuccessful()) {
+                    // Handle successful response here
+                    MoviesResponse moviesResponse = response.body();
+                    movies = moviesResponse.getMovies();
+                    if (moviesResponse != null && moviesResponse.getMovies() != null) {
+                        for (Movie movie : moviesResponse.getMovies()) {
+                            // Process each movie here
+                            Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
+//                                            Log.d("Genres", String.valueOf(movie.getGenreIdList().get(0)));
+
+
+                            movieViewModel.insertMovie(movie);
+
+
+                        }
+
+                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies));
+
+
+
+
+//                        ImageView imageView = findViewById(R.id.imageView);
+//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
+                    }
+
+                } else {
+                    // Handle error response
+                    Log.e("API Error", "Failed to fetch movies: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                // Handle failure
+                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
+            }
+        });
+    }
 }
+

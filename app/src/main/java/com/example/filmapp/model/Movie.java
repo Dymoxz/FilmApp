@@ -49,14 +49,21 @@ public class Movie implements Serializable {
     }
 
     public String getReleaseDate() {
-        // Define the formatter for the input string format
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        // Check if the releaseDate is already in the desired format
+        if (releaseDate.matches("\\d{2}-\\d{2}-\\d{4}")) {
+            return releaseDate;
+        } else {
+            // Define the formatter for the input string format
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+            // Parse the string to LocalDate
+            LocalDate date = LocalDate.parse(releaseDate, inputFormatter);
 
-        // Parse the string to LocalDate
-        LocalDate date = LocalDate.parse(releaseDate, inputFormatter);
-        return date.format(outputFormatter);
+            // Format the LocalDate to the desired output format
+            return date.format(outputFormatter);
+        }
+
     }
 
     public List<Integer> getGenreIdList() {

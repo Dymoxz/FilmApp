@@ -28,4 +28,8 @@ public class MovieViewModel extends ViewModel {
     public void insertMovie(Movie movie) {
         repository.insertMovie(movie);
     }
+
+    public LiveData<Boolean> moviesIsEmpty() {
+        return repository.moviesIsEmpty();
+    }
 }
