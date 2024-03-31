@@ -14,13 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.filmapp.Application.MovieListRepository;
-import com.example.filmapp.Application.MovieListViewModel;
-import com.example.filmapp.Application.MovieViewModel;
-import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Application.repository.MovieListRepository;
+import com.example.filmapp.Application.viewmodel.MovieListViewModel;
 import com.example.filmapp.Data.Database;
 import com.example.filmapp.R;
-import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieList;
 
 import java.time.LocalDate;

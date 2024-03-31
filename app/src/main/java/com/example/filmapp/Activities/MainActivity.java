@@ -14,11 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.GenreRepository;
-import com.example.filmapp.Application.GenreViewModel;
-import com.example.filmapp.Application.MovieViewModel;
+import com.example.filmapp.Application.repository.GenreRepository;
+import com.example.filmapp.Application.viewmodel.GenreViewModel;
+import com.example.filmapp.Application.viewmodel.MovieViewModel;
 import com.example.filmapp.Application.RecyclerViewInterface;
-import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Application.repository.Repository;
 import com.example.filmapp.Data.Database;
 import com.example.filmapp.MyAdapter;
 import com.example.filmapp.R;
@@ -30,7 +30,6 @@ import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         // Initialize the GenreViewModel
         GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
         genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
@@ -87,7 +87,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     @Override
                     public void onChanged(List<Movie> movieList) {
                         List<Movie> movies = movieList;
-                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+
+                        recyclerView.setAdapter(adapter);
+
                     }
                 });
             }
@@ -217,7 +220,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                         }
 
-                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+                        recyclerView.setAdapter(adapter);
 
 //                        ImageView imageView = findViewById(R.id.imageView);
 //                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
@@ -239,13 +243,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     public void allGenresApiCall() {
         allGenresCall = apiInterface.getGenres(API_KEY, "en-US");
+
         // Make the API call
         allGenresCall.enqueue(new Callback<GenreResponse>() {
             @Override
             public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+
                 if (response.isSuccessful()) {
                     // Handle successful response here
                     GenreResponse genreResponse = response.body();
+
                     genres = genreResponse.getGenres();
                     if (genreResponse != null && genreResponse.getGenres() != null) {
                         for (Genre genre : genreResponse.getGenres()) {

@@ -1,4 +1,4 @@
-package com.example.filmapp.Application;
+package com.example.filmapp.Application.repository;
 
 import androidx.lifecycle.LiveData;
 
@@ -24,7 +24,7 @@ public class MovieListRepository {
 
     public LiveData<List<MovieList>> getAllMovieLists() { return listMoviesList; }
 
-    void insertMovieList(MovieList movieList) {
+    public void insertMovieList(MovieList movieList) {
         database.databaseWriteExecutor.execute(() -> movieListDao.insertMovieList(movieList));
     }
 }

@@ -1,4 +1,4 @@
-package com.example.filmapp.Application;
+package com.example.filmapp.Application.repository;
 
 import android.os.AsyncTask;
 
@@ -34,7 +34,7 @@ public class Repository {
 
     public LiveData<Boolean> moviesIsEmpty() { return moviesIsEmpty; }
 
-    void insertMovie(Movie movie) {
+    public void insertMovie(Movie movie) {
         database.databaseWriteExecutor.execute(() -> movieDao.insertMovie(movie));
     }
 

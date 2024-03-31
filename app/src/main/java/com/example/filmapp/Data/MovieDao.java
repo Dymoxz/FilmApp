@@ -22,5 +22,4 @@ public interface MovieDao {
     @Query("SELECT (SELECT COUNT(*) FROM Movie) == 0")
     LiveData<Boolean> moviesIsEmpty();
 
-
 }

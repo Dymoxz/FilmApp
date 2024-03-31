@@ -1,4 +1,4 @@
-package com.example.filmapp.Application;
+package com.example.filmapp.Application.repository;
 
 import android.os.AsyncTask;
 
@@ -18,21 +18,25 @@ public class GenreRepository {
     private GenreDao genreDao;
     private LiveData<List<Genre>> listGenres;
 
+
     public GenreRepository(Database database, GenreDao genreDao) {
         this.database = database;
         this.genreDao = genreDao;
         this.listGenres = genreDao.getAllGenres();
+
     }
 
 
-    void insertGenre(Genre genre) {
+    public void insertGenre(Genre genre) {
         database.databaseWriteExecutor.execute(() -> genreDao.insertGenre(genre));
     }
 
     public LiveData<List<Genre>> getAllGenres() {
         return listGenres;
     }
-
+    public LiveData<String> getGenreName(int genreId) {
+        return genreDao.getGenreName(genreId);
+    }
 
 }
 

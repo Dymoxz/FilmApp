@@ -14,8 +14,11 @@ import java.util.List;
 public interface GenreDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertGenre(Genre genre);
+    void insertGenre(Genre... genre);
 
     @Query("SELECT * FROM Genre")
     LiveData<List<Genre>> getAllGenres();
+
+    @Query("SELECT Name FROM Genre WHERE id = :genreId")
+    LiveData<String> getGenreName(int genreId);
 }
