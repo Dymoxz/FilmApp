@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -39,6 +40,7 @@ import java.util.List;
 
 public class ListDetailActivity extends AppCompatActivity implements RecyclerViewInterface {
     String listName;
+    TextView amountView;
 
     TextView listTextView;
 
@@ -53,6 +55,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_activity);
 
+        amountView = findViewById(R.id.amount);
         listTextView = findViewById(R.id.listTitle);
         recyclerView = findViewById(R.id.recyclerView);
         linearLayout = findViewById(R.id.main);
@@ -80,6 +83,18 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         if (listName != null) {
             listTextView.setText(listName);
         }
+
+        getAmountOfMovies().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String amount) {
+                if (amount != null) {
+                    amountView.setText(amount);
+                } else {
+                    amountView.setText("0");
+                }
+            }
+        });
+
         initViewModel();
         LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
         movieIdListLiveData.observe(this, movieIdList -> {
@@ -218,10 +233,37 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             }
         });
     }
+    public LiveData<String> getAmountOfMovies(){
+        if (movieListViewModel == null) {
+            // Initialize movieListViewModel if not initialized
+            MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
+            movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
+            movieListViewModel.init(repository);
+        }
 
+        MutableLiveData<String> amountLiveData = new MutableLiveData<>();
+        LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
+        movieIdListLiveData.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String movieIdList) {
+                if (movieIdList != null) {
+                    List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
+                    if (movieIdListInt == null) {
+                        movieIdListInt = new ArrayList<>(); // Initialize the list if null
+                    }
+                    amountLiveData.setValue(String.valueOf(movieIdListInt.size()));
+                }
+            }
+        });
 
+        return amountLiveData;
+    }
 
 
 }
+
+
+
+
 
 
