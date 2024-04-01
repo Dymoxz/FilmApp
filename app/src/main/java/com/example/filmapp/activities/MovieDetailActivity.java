@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
@@ -24,21 +26,28 @@ import com.example.filmapp.application.repository.VideoRepository;
 import com.example.filmapp.application.viewmodel.MovieViewModel;
 import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.Video;
+import com.example.filmapp.presentation.CarouselAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailActivity extends AppCompatActivity{
+public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String API_KEY = "02ddd233c99c814bad1a7d4af98e681b";
     private Movie movie;
     private ApiInterface apiInterface;
     private VideoViewModel videoViewModel;
+    private RecyclerView carouselRecyclerView;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
@@ -46,9 +55,7 @@ public class MovieDetailActivity extends AppCompatActivity{
 
         VideoRepository videoRepository = new VideoRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).videoDao());
         videoViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(VideoViewModel.class);
-        videoViewModel.init(videoRepository); // Corrected parameter name
-
-        // Initialize the GenreViewModel
+        videoViewModel.init(videoRepository);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,8 +64,13 @@ public class MovieDetailActivity extends AppCompatActivity{
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
-
         }
+
+        carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        carouselRecyclerView.setLayoutManager(layoutManager);
+
+        // Initialize posterImageView
 
         TextView titleTextView = findViewById(R.id.movieDetailTitle);
         TextView genreTextView = findViewById(R.id.movieDetailGenre);
@@ -68,15 +80,12 @@ public class MovieDetailActivity extends AppCompatActivity{
         TextView taglineTextView = findViewById(R.id.movieDetailtagline);
         TextView descriptionTextView = findViewById(R.id.movieDetailDescription);
         ListView castListView = findViewById(R.id.movieDetailCastList);
-        ImageView imageView = findViewById(R.id.movieDetailImage);
 
-        Intent intent = this.getIntent();
-
+        Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if (bundle !=null) {
+        if (bundle != null) {
             movie = (Movie) bundle.getSerializable("value");
             Log.d("DetailActivity", "got movie " + movie.getTitle());
-
         }
         if (movie != null) {
             Log.d("DetailActivity", "Setting movie details to views: " + movie.getTitle());
@@ -92,72 +101,75 @@ public class MovieDetailActivity extends AppCompatActivity{
             ratingTextView.setText(String.valueOf(movie.getRating()));
             taglineTextView.setText(movie.getTagline());
             descriptionTextView.setText(movie.getDescription());
-            Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(imageView);
         } else {
             Log.e("DetailActivity", "Movie object is null");
         }
 
-        // Start review overview activity
         findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
             int movieId = (movie.getId());
-            // Putting movieId in intent in order to fetch the right reviews
             Log.d("MovieDetailActivity", "Movie ID: " + movieId);
             Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
             intentReview.putExtra("MOVIE_ID", movieId);
             startActivity(intentReview);
         });
 
-        WebView webView = findViewById(R.id.trailerWebView);
-
-
         videoViewModel.getVideo(movie.getId()).observe(this, new Observer<Video>() {
             @Override
-            public void onChanged(Video video) {
-                // Update your Video object here
+            public void onChanged(com.example.filmapp.model.Video video) {
                 if (video != null) {
                     Log.d("MovieDetailActivity", video.getUrl());
-
                     String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + video.getUrl() + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
+                    WebView webView = new WebView(getApplicationContext());
                     webView.loadData(embedLink, "text/html", "utf-8");
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.setWebChromeClient(new WebChromeClient());
-                    // Now you can use the video object as needed
+                    // Add video WebView to carousel
+                    addMediaToCarousel(webView);
                 } else {
                     Log.d("MovieDetailActivity", "Video is null, getting video");
                     getMovieTrailer(movie.getId(), videoViewModel);
                 }
             }
         });
+    }
 
-
+    private void addMediaToCarousel(WebView webView) {
+        List<MediaItem> mediaItems = new ArrayList<>();
+        // Add movie poster to the carousel
+        ImageView posterImageView = new ImageView(this);
+        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(posterImageView);
+        mediaItems.add(new MediaItem(null, null)); // Placeholder for poster image
+        // Extract URL from WebView and add it to MediaItem
+        String webViewUrl = webView.getUrl();
+        if (webViewUrl != null) {
+            mediaItems.add(new MediaItem(null, webViewUrl));
+        }
+        // Add other media items (images) as needed
+        // ...
+        CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
+        carouselRecyclerView.setAdapter(carouselAdapter);
     }
 
     private void getMovieTrailer(int movieId, VideoViewModel videoViewModel) {
-        // Make the API call
         Call<VideoResponse> call = apiInterface.getVideos(movieId, API_KEY, "en-US");
         call.enqueue(new Callback<VideoResponse>() {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
                 if (response.isSuccessful()) {
-                    // Handle successful response here
                     VideoResponse videoResponse = response.body();
                     Video trailer = videoResponse.getTrailer();
                     if (trailer != null) {
                         String trailerUrl = trailer.getUrl();
                         if (trailerUrl != null) {
                             trailer.setMovieId(movieId);
-                            Log.d("Trailer link", trailerUrl);
-                            Log.d("MovieDetailActivity", "MovieId:" + trailer.getMovieId());
-
                             videoViewModel.insertVideo(trailer);
-
-                            // Code for embedding video
-                            WebView webView = findViewById(R.id.trailerWebView);
+                            WebView webView = new WebView(getApplicationContext());
                             String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + trailerUrl + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
                             webView.loadData(embedLink, "text/html", "utf-8");
                             webView.getSettings().setJavaScriptEnabled(true);
                             webView.setWebChromeClient(new WebChromeClient());
-
+                            // Add video WebView to carousel
+                            addMediaToCarousel(webView);
                         } else {
                             Log.e("Trailer link", "Trailer URL is null");
                         }
@@ -165,19 +177,14 @@ public class MovieDetailActivity extends AppCompatActivity{
                         Log.e("Trailer link", "Trailer object is null");
                     }
                 } else {
-                    // Handle error response
                     Log.e("API Error", "Failed to fetch movies: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<VideoResponse> call, Throwable t) {
-                // Handle failure
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
     }
-
-
-
 }

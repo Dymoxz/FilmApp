@@ -16,11 +16,15 @@
         android:layout_height="wrap_content"
         android:background="#773302BC" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/carouselRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/toolbar"
+        android:padding="10dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:orientation="horizontal"/>
 
     <TextView
         android:layout_marginStart="10dp"
@@ -28,7 +32,7 @@
         android:textSize="32sp"
         android:text="TITLE"
         android:id="@+id/movieDetailTitle"
-        android:layout_below="@id/viewPager"
+        android:layout_below="@id/carouselRecyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
