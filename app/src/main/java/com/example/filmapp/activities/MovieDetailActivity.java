@@ -71,7 +71,7 @@ public class MovieDetailActivity extends AppCompatActivity{
         }
 
         // Start review overview activity
-        findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
+        findViewById(R.id.reviewContainer).setOnClickListener(v -> {
             int movieId = (movie.getId());
             // Putting movieId in intent in order to fetch the right reviews
             Log.d("MovieDetailActivity", "Movie ID: " + movieId);
