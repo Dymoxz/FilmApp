@@ -22,6 +22,7 @@ import com.example.filmapp.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     Context context;
@@ -53,13 +54,28 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         holder.titleView.setText(movie.getTitle());
         holder.releaseYearView.setText(movie.getReleaseDate());
+
         StringBuilder stringBuilder = new StringBuilder();
-        for (int genreId : movie.getGenreIdList()) {
+        List<Integer> genreIdList = movie.getGenreIdList();
+        int totalCallbacksExpected = genreIdList.size();
+        AtomicInteger callbacksCompleted = new AtomicInteger(0);
+
+        for (int genreId : genreIdList) {
             genreViewModel.getGenreName(genreId).observe(lifecycleOwner, genreName -> {
                 Log.v("Adapter", " " + genreId);
                 stringBuilder.append(genreName).append(", ");
-                holder.genreView.setText(stringBuilder.toString());
-                // Update your UI here if needed
+
+                int callbacksCompletedSoFar = callbacksCompleted.incrementAndGet();
+                if (callbacksCompletedSoFar == totalCallbacksExpected) {
+                    // All callbacks completed, update UI with concatenated genre names
+                    String genreNamesString = stringBuilder.toString();
+                    // Remove trailing comma
+                    if (genreNamesString.endsWith(", ")) {
+                        genreNamesString = genreNamesString.substring(0, genreNamesString.length() - 2);
+                    }
+                    holder.genreView.setText(genreNamesString);
+                    // Update your UI here if needed
+                }
             });
         }
 
