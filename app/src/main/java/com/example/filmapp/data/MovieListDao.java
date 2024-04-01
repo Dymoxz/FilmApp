@@ -31,4 +31,6 @@ public interface MovieListDao {
 
     @Query("UPDATE MovieList SET movieIdList = :movieIdList WHERE name = :listName")
     void insertMovieIdList(String movieIdList, String listName);
+
+
 }

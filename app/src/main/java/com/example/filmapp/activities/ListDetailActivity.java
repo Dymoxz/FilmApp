@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +32,7 @@ import com.example.filmapp.R;
 import com.example.filmapp.model.IntegerListConverter;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.presentation.MyAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
     private List<Movie> movieList = new ArrayList<>();
     private RecyclerView recyclerView;
     private GenreViewModel genreViewModel;
+    private LinearLayout linearLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +55,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
 
         listTextView = findViewById(R.id.listTitle);
         recyclerView = findViewById(R.id.recyclerView);
-
+        linearLayout = findViewById(R.id.main);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
         genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
@@ -60,7 +65,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         try {
             listName = intent.getStringExtra("listName");
             Log.v("ListDetailActivity", "List Name: " + listName);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.v("ERROR", "no list found" + e);
         }
 
@@ -85,7 +90,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
                     movieIdListInt = new ArrayList<>(); // Initialize the list if null
                 }
                 MediatorLiveData<List<Movie>> mediatorLiveData = new MediatorLiveData<>();
-                for (int id : movieIdListInt){
+                for (int id : movieIdListInt) {
                     LiveData<Movie> movieLiveData = movieViewModel.getMovie(id);
                     mediatorLiveData.addSource(movieLiveData, movie -> {
                         List<Movie> newList = mediatorLiveData.getValue();
@@ -105,8 +110,10 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
                 });
             }
         });
-
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_list_detail, menu);
@@ -147,7 +154,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         startActivity(intent);
     }
 
-    public void initViewModel(){
+    public void initViewModel() {
         MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
@@ -155,5 +162,66 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(movieRepository);
     }
+
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Log.v("AddToListActivity", "Trying to remove a movie from the list");
+            int position = viewHolder.getAdapterPosition();
+            Movie movie = movieList.get(position);
+            int movieName = movie.getId(); // Assuming getTitle() retrieves the movie name
+            Log.v("AddToListActivity", "Trying to remove movie " + movieName + " from the list");
+            removeMovieIdFromList(listName, movieName);
+            Snackbar snackbar = Snackbar.make(linearLayout, "Item removed from the list!", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+    };
+
+    public void removeMovieIdFromList(String listName, int movieId) {
+        // Retrieve the current movieIdList string from the database
+        LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
+        movieIdListLiveData.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String movieIdList) {
+                if (movieIdList != null) {
+                    Log.v("AddToListActivity", "movieIdList = " + movieIdList);
+                    Log.v("AddToListActivity", "movieId = " + movieId);
+                    // Convert the retrieved string into a list of integers
+                    List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
+
+                    if (movieIdListInt == null) {
+                        movieIdListInt = new ArrayList<>(); // Initialize the list if null
+                    }
+
+                    boolean removed = movieIdListInt.remove(Integer.valueOf(movieId)); // Remove the movieId from the list
+
+                    if (removed) {
+                        Log.v("AddToListActivity", "Removed " + movieId + " from the list");
+
+                        // Convert the updated list of integers back to a string
+                        String updatedMovieIdList = IntegerListConverter.fromList(movieIdListInt);
+
+                        // Update the movieIdList in the database with the updated string
+                        movieListViewModel.updateMovieIdList(updatedMovieIdList, listName);
+
+                        // Remove observer to prevent infinite removal
+                        movieIdListLiveData.removeObserver(this);
+                    } else {
+                        Log.v("AddToListActivity", movieId + " is not in the list");
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
 }
+
 
