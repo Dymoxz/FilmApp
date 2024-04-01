@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,38 +75,34 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         if (listName != null) {
             listTextView.setText(listName);
         }
-
-        MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
-        movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
-        movieListViewModel.init(repository);
-
-        Repository movieRepository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
-        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
-        movieViewModel.init(movieRepository);
+        initViewModel();
         LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
         movieIdListLiveData.observe(this, movieIdList -> {
             if (movieIdList != null) {
                 // Convert the retrieved string into a list of integers
                 List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
-
                 if (movieIdListInt == null) {
                     movieIdListInt = new ArrayList<>(); // Initialize the list if null
                 }
+                MediatorLiveData<List<Movie>> mediatorLiveData = new MediatorLiveData<>();
                 for (int id : movieIdListInt){
                     LiveData<Movie> movieLiveData = movieViewModel.getMovie(id);
-
-                    movieLiveData.observe(this, movie -> {
-
-                        if (movie != null) {
-                            Log.v("ListDetailActivity", listName + " contains: " + movie.getTitle());
-                            movieList.add(movie);
-
+                    mediatorLiveData.addSource(movieLiveData, movie -> {
+                        List<Movie> newList = mediatorLiveData.getValue();
+                        if (newList == null) {
+                            newList = new ArrayList<>();
                         }
+                        newList.add(movie);
+                        mediatorLiveData.setValue(newList);
                     });
                 }
-                MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this);
 
-                recyclerView.setAdapter(adapter);
+                mediatorLiveData.observe(this, movies -> {
+                    movieList.clear();
+                    movieList.addAll(movies);
+                    MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this);
+                    recyclerView.setAdapter(adapter);
+                });
             }
         });
 
@@ -142,6 +139,21 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
 
     @Override
     public void onItemClick(Movie movie) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("value", movie);
+        intent.putExtras(bundle);
+        Log.d("ListDetailActivity", "clicked on movie: " + movie.getTitle());
+        startActivity(intent);
+    }
 
+    public void initViewModel(){
+        MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
+        movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
+        movieListViewModel.init(repository);
+        Repository movieRepository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
+        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
+        movieViewModel.init(movieRepository);
     }
 }
+
