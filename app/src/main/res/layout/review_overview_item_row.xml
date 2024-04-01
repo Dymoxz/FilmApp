@@ -1,27 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:padding="7dp"
+    android:layout_margin="3dp"
+    android:orientation="vertical"
+    android:background="@drawable/rating_layout_background">
+
 
     <TextView
         android:id="@+id/reviewListAuthor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="23sp"
         android:text="Author"/>
 
     <TextView
         android:id="@+id/reviewListDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:text="Date" />
+
 
     <TextView
         android:id="@+id/reviewListReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:text="Write review here" />
 
 </LinearLayout>
