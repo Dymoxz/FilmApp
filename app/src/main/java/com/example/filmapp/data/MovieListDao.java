@@ -24,4 +24,13 @@ public interface MovieListDao {
 
     @Query("DELETE FROM MovieList WHERE name = :listName")
     void deleteMovieList(String listName);
+
+
+    @Query("SELECT movieIdList FROM MovieList WHERE name = :listName")
+    LiveData<String> getMovieIdList(String listName);
+
+    @Query("UPDATE MovieList SET movieIdList = :movieIdList WHERE name = :listName")
+    void insertMovieIdList(String movieIdList, String listName);
+
+
 }

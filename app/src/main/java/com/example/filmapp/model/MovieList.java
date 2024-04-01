@@ -1,9 +1,11 @@
 package com.example.filmapp.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.example.filmapp.presentation.AddToListViewHolder;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -16,6 +18,9 @@ public class MovieList implements Serializable {
 
     private String name;
 
+
+    @Ignore
+    private boolean selected;
     public List<Integer> getMovieIdList() {
         return movieIdList;
     }
@@ -45,5 +50,12 @@ public class MovieList implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

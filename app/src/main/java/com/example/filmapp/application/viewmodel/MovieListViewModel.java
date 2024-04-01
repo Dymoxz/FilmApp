@@ -36,4 +36,12 @@ public class MovieListViewModel extends ViewModel {
         repository.deleteMovieList(movieListName);
     }
 
+    public LiveData<String> getMovieIdList(String movieListName) {
+        return repository.getMovieIdList(movieListName);
+    }
+
+    public void updateMovieIdList(String movieIdList, String listName) {
+        repository.updateMovieIdList(movieIdList, listName);
+    }
+
 }
