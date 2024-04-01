@@ -1,8 +1,10 @@
 package com.example.filmapp.presentation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -48,10 +50,11 @@ public class CarouselAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         MediaItem item = mediaItems.get(position);
         if (holder.getItemViewType() == VIEW_TYPE_VIDEO) {
             VideoViewHolder videoHolder = (VideoViewHolder) holder;
-            videoHolder.webView.loadUrl(item.getVideoUrl());
+            videoHolder.webView.loadData(item.getVideoUrl(), "text/html", "utf-8");
         } else {
             ImageViewHolder imageHolder = (ImageViewHolder) holder;
-            Picasso.get().load(item.getImageUrl()).into(imageHolder.imageView);
+            Log.d("CarouselAdapter", "ImagePath:" + item.getImagePath());
+            Picasso.get().load("https://image.tmdb.org/t/p/w500" + item.getImagePath()).into(imageHolder.imageView);
         }
     }
 
@@ -68,6 +71,7 @@ public class CarouselAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             webView = itemView.findViewById(R.id.videoWebView);
             webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebChromeClient(new WebChromeClient());
         }
     }
 

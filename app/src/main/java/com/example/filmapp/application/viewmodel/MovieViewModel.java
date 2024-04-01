@@ -33,4 +33,6 @@ public class MovieViewModel extends ViewModel {
     public LiveData<Boolean> moviesIsEmpty() {
         return repository.moviesIsEmpty();
     }
+
+    public LiveData<String> getImagePath(int movieId) { return repository.getImagePath(movieId); }
 }

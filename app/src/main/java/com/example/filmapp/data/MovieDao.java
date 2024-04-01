@@ -21,4 +21,7 @@ public interface MovieDao {
     @Query("SELECT (SELECT COUNT(*) FROM Movie) == 0")
     LiveData<Boolean> moviesIsEmpty();
 
+    @Query("SELECT imagePath FROM Movie WHERE id = :movieId")
+    LiveData<String> getImagePath(int movieId);
+
 }

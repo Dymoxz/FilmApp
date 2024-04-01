@@ -6,7 +6,6 @@ import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -46,6 +45,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ApiInterface apiInterface;
     private VideoViewModel videoViewModel;
     private RecyclerView carouselRecyclerView;
+    private MovieViewModel movieViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         VideoRepository videoRepository = new VideoRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).videoDao());
         videoViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(VideoViewModel.class);
         videoViewModel.init(videoRepository);
+
+        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
+        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
+        movieViewModel.init(repository);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,8 +74,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         carouselRecyclerView.setLayoutManager(layoutManager);
 
-        // Initialize posterImageView
-
+        // Initialize views
         TextView titleTextView = findViewById(R.id.movieDetailTitle);
         TextView genreTextView = findViewById(R.id.movieDetailGenre);
         TextView releaseYearTextView = findViewById(R.id.movieDetailReleaseYear);
@@ -79,7 +82,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView ratingTextView = findViewById(R.id.movieDetailRating);
         TextView taglineTextView = findViewById(R.id.movieDetailtagline);
         TextView descriptionTextView = findViewById(R.id.movieDetailDescription);
-        ListView castListView = findViewById(R.id.movieDetailCastList);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -106,51 +108,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
-            int movieId = (movie.getId());
+            int movieId = movie.getId();
             Log.d("MovieDetailActivity", "Movie ID: " + movieId);
             Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
             intentReview.putExtra("MOVIE_ID", movieId);
             startActivity(intentReview);
         });
 
-        videoViewModel.getVideo(movie.getId()).observe(this, new Observer<Video>() {
+        movieViewModel.getImagePath(movie.getId()).observe(this, new Observer<String>() {
             @Override
-            public void onChanged(com.example.filmapp.model.Video video) {
-                if (video != null) {
-                    Log.d("MovieDetailActivity", video.getUrl());
-                    String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + video.getUrl() + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
-                    WebView webView = new WebView(getApplicationContext());
-                    webView.loadData(embedLink, "text/html", "utf-8");
-                    webView.getSettings().setJavaScriptEnabled(true);
-                    webView.setWebChromeClient(new WebChromeClient());
-                    // Add video WebView to carousel
-                    addMediaToCarousel(webView);
-                } else {
-                    Log.d("MovieDetailActivity", "Video is null, getting video");
-                    getMovieTrailer(movie.getId(), videoViewModel);
-                }
+            public void onChanged(String imagePath) {
+                Log.d("MovieDetailActivity", "Image path: " + imagePath);
+                // Retrieve the imagePath and pass it to the getMovieTrailer method
+                getMovieTrailer(movie.getId(), imagePath);
             }
         });
     }
 
-    private void addMediaToCarousel(WebView webView) {
-        List<MediaItem> mediaItems = new ArrayList<>();
-        // Add movie poster to the carousel
-        ImageView posterImageView = new ImageView(this);
-        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(posterImageView);
-        mediaItems.add(new MediaItem(null, null)); // Placeholder for poster image
-        // Extract URL from WebView and add it to MediaItem
-        String webViewUrl = webView.getUrl();
-        if (webViewUrl != null) {
-            mediaItems.add(new MediaItem(null, webViewUrl));
-        }
-        // Add other media items (images) as needed
-        // ...
-        CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
-        carouselRecyclerView.setAdapter(carouselAdapter);
-    }
-
-    private void getMovieTrailer(int movieId, VideoViewModel videoViewModel) {
+    private void getMovieTrailer(int movieId, String imagePath) {
         Call<VideoResponse> call = apiInterface.getVideos(movieId, API_KEY, "en-US");
         call.enqueue(new Callback<VideoResponse>() {
             @Override
@@ -169,7 +144,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             webView.getSettings().setJavaScriptEnabled(true);
                             webView.setWebChromeClient(new WebChromeClient());
                             // Add video WebView to carousel
-                            addMediaToCarousel(webView);
+                            addMediaToCarousel(webView, imagePath);
                         } else {
                             Log.e("Trailer link", "Trailer URL is null");
                         }
@@ -186,5 +161,22 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
+    }
+
+    private void addMediaToCarousel(WebView webView, String imagePath) {
+        List<MediaItem> mediaItems = new ArrayList<>();
+        // Add movie poster to the carousel
+        ImageView posterImageView = new ImageView(this);
+        Picasso.get().load("https://image.tmdb.org/t/p/w500" + imagePath).into(posterImageView);
+        mediaItems.add(new MediaItem(imagePath, null)); // Pass imagePath here
+        // Extract URL from WebView and add it to MediaItem
+        String webViewUrl = webView.getUrl();
+        if (webViewUrl != null) {
+            mediaItems.add(new MediaItem(null, webViewUrl));
+        }
+        // Add other media items (images) as needed
+        // ...
+        CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
+        carouselRecyclerView.setAdapter(carouselAdapter);
     }
 }

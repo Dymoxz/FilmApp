@@ -36,6 +36,9 @@ public class Repository {
         database.databaseWriteExecutor.execute(() -> movieDao.insertMovie(movie));
     }
 
+    public LiveData<String> getImagePath(int movieId) { return movieDao.getImagePath(movieId);}
+
+
 
 
 }
