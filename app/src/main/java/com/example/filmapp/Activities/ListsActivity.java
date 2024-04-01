@@ -13,17 +13,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.Application.ListRecyclerViewInterface;
 import com.example.filmapp.Application.repository.MovieListRepository;
 import com.example.filmapp.Application.viewmodel.MovieListViewModel;
 import com.example.filmapp.Data.Database;
+import com.example.filmapp.ListAdapter;
 import com.example.filmapp.R;
+import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieList;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ListsActivity extends AppCompatActivity {
+public class ListsActivity extends AppCompatActivity implements ListRecyclerViewInterface {
 
     private MovieListViewModel movieListViewModel;
     private List<MovieList> movieLists;
@@ -47,10 +53,16 @@ public class ListsActivity extends AppCompatActivity {
 
         }
 
-//        INSERT A MOVIELIST INTO THE ROOM DATABASE:
-//        MovieList favorites = new MovieList(1, "Favorites");
-//        movieListViewModel.insertMovieList(favorites);
-//        Log.v("ListsActivity", "inserted movie " + favorites.getName());
+        movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
+            if (movieListsLiveData != null) {
+                movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
+                RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists));
+            }
+        });
+
+
 
     }
     public void changeActivityToMovies(View view){
@@ -71,7 +83,9 @@ public class ListsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 createListName = input.getText().toString();
                 createListDate = LocalDate.now().toString();
+                MovieList movieList = new MovieList(createListName);
                 Log.v("listActivity", "Created list with name '" + createListName + "'");
+                movieListViewModel.insertMovieList(movieList);
                 changeActivityToListDetail();
             }
         });
@@ -90,6 +104,14 @@ public class ListsActivity extends AppCompatActivity {
     public void changeActivityToListDetail(){
         Intent intent = new Intent(this, ListDetailActivity.class);
         intent.putExtra("listName", createListName);
+        intent.putExtra("listDate", createListDate);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(MovieList movieList) {
+        Intent intent = new Intent(this, ListDetailActivity.class);
+        intent.putExtra("listName", movieList.getName());
         intent.putExtra("listDate", createListDate);
         startActivity(intent);
     }

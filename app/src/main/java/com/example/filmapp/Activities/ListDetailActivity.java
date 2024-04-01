@@ -27,10 +27,16 @@ public class ListDetailActivity extends AppCompatActivity {
         dateTextView = findViewById(R.id.listDate);
 
         Intent intent = getIntent();
-        listName = intent.getStringExtra("listName");
-        dateCreated = intent.getStringExtra("listDate");
-        Log.v("ListDetailActivity", "List Name: " + listName);
-        Log.v("ListDetailActivity", "Date Created: " + dateCreated);
+        try {
+            listName = intent.getStringExtra("listName");
+            dateCreated = intent.getStringExtra("listDate");
+            Log.v("ListDetailActivity", "List Name: " + listName);
+            Log.v("ListDetailActivity", "Date Created: " + dateCreated);
+        } catch (Exception e){
+            Log.v("ERROR", "no list found" + e);
+        }
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

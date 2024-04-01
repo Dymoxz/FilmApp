@@ -12,7 +12,7 @@ import com.example.filmapp.model.Movie;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@androidx.room.Database(entities = {Movie.class, MovieList.class, Genre.class}, version = 3,exportSchema = false )
+@androidx.room.Database(entities = {Movie.class, MovieList.class, Genre.class}, version = 4,exportSchema = false )
 public abstract class Database extends RoomDatabase {
     public abstract MovieDao movieDao();
     public abstract MovieListDao movieListDao();
