@@ -3,10 +3,13 @@ package com.example.filmapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +54,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
+    private SeekBar seekbar;
+    private TextView ratingView;
+    private int rating;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +86,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView ratingTextView = findViewById(R.id.movieDetailRating);
         TextView taglineTextView = findViewById(R.id.movieDetailtagline);
         TextView descriptionTextView = findViewById(R.id.movieDetailDescription);
+        ratingView = findViewById(R.id.curRating);
+        seekbar = findViewById(R.id.seekBar);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -117,6 +125,24 @@ public class MovieDetailActivity extends AppCompatActivity {
             Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
             intentReview.putExtra("MOVIE_ID", movieId);
             startActivity(intentReview);
+        });
+
+        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                rating = progress;
+                ratingView.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
     }
 
@@ -210,6 +236,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void onSubmitButton(View view){
+        Toast.makeText(getApplicationContext(), "You gave this movie a " + rating + "!", Toast.LENGTH_SHORT).show();
+
     }
 
 }
