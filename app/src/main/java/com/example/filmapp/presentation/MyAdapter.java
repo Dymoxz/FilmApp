@@ -36,6 +36,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         this.lifecycleOwner = lifecycleOwner;
     }
 
+    public void setFilteredList(List<Movie> filteredList) {
+        this.movies = filteredList;
+        notifyDataSetChanged();
+        Log.d("bbbb", "it set");
+
+
+    }
+
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
