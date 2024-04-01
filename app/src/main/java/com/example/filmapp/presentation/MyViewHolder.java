@@ -3,6 +3,7 @@ package com.example.filmapp.presentation;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView imageView;
     TextView titleView,releaseYearView, genreView;
+    ImageButton imageButton;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -25,5 +27,6 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         titleView = itemView.findViewById(R.id.filmListTitle);
         genreView = itemView.findViewById(R.id.filmListGenre);
         releaseYearView = itemView.findViewById(R.id.filmListReleaseYear);
+        imageButton = itemView.findViewById(R.id.movieItemButton);
     }
 }

@@ -1,21 +1,28 @@
 package com.example.filmapp.presentation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.activities.AddToListActivity;
+import com.example.filmapp.activities.MainActivity;
 import com.example.filmapp.application.RecyclerViewInterface;
 import com.example.filmapp.application.viewmodel.GenreViewModel;
 import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -84,11 +91,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         }
 
         Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(holder.imageView);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerViewInterface.onItemClick(movie);
-            }
+        holder.itemView.setOnClickListener(v -> recyclerViewInterface.onItemClick(movie));
+
+        holder.imageButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, holder.imageButton);
+
+            popupMenu.getMenuInflater().inflate(R.menu.menu_movie_item, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                Intent intent = new Intent(context, AddToListActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("MOVIE", movie);
+                context.startActivity(intent);
+//                Toast.makeText(context, "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+            popupMenu.show();
         });
     }
 

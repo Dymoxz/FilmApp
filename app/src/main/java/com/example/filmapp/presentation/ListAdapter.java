@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.activities.AddToListActivity;
 import com.example.filmapp.application.ListRecyclerViewInterface;
 import com.example.filmapp.R;
 import com.example.filmapp.model.MovieList;
@@ -32,7 +33,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     @NonNull
     @Override
     public ListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ListViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_row, parent, false));
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View itemView;
+
+        // Check if the parent activity is AddToListActivity or ListActivity
+        if (parent.getContext() instanceof AddToListActivity) {
+            // Inflate the layout for AddToListActivity
+            itemView = inflater.inflate(R.layout.add_to_list_item_row, parent, false);
+        } else {
+            // Inflate the layout for ListActivity
+            itemView = inflater.inflate(R.layout.list_item_row, parent, false);
+        }
+
+        return new ListViewHolder(itemView);
     }
 
     @Override

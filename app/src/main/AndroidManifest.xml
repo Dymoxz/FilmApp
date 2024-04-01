@@ -34,7 +34,7 @@
         <activity android:name=".activities.ReviewOverviewActivity" android:parentActivityName=".activities.MovieDetailActivity"/>
 
         <activity android:name=".activities.WriteReviewActivity" android:parentActivityName=".activities.ReviewOverviewActivity"/>
-
+        <activity android:name=".activities.AddToListActivity" android:parentActivityName=".activities.MainActivity"/>
     </application>
 
 </manifest>
