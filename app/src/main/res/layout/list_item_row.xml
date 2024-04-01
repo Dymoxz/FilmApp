@@ -31,7 +31,6 @@
             />
         <TextView
             android:textSize="18sp"
-
             android:text="amount of movies"
             android:id="@+id/listSize"
             android:layout_width="wrap_content"

@@ -16,11 +16,13 @@ public class MovieListRepository {
     private LiveData<List<MovieList>> listMoviesList;
 
     private LiveData<List<String>> listMovieNamesList;
+
     public MovieListRepository(Database database, MovieListDao movieListDao) {
         this.database = database;
         this.movieListDao = movieListDao;
         this.listMoviesList = movieListDao.getAllMovieLists();
         this.listMovieNamesList = movieListDao.getAllMovieListNames();
+
     }
 
     public LiveData<List<MovieList>> getAllMovieLists() { return listMoviesList; }
@@ -32,5 +34,12 @@ public class MovieListRepository {
 
     public void deleteMovieList(String movieListName) {
         database.databaseWriteExecutor.execute(() -> movieListDao.deleteMovieList(movieListName));
+    }
+    public LiveData<String> getMovieIdList(String movieListName) {
+        return movieListDao.getMovieIdList(movieListName);
+    }
+
+    public void updateMovieIdList(String movieIdList, String listName) {
+        database.databaseWriteExecutor.execute(() -> movieListDao.insertMovieIdList(movieIdList, listName));
     }
 }
