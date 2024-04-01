@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.picasso)
 
     implementation(libs.room.runtime)
+    implementation(libs.room.common)
     annotationProcessor(libs.room.compiler)
 
     implementation(libs.recyclerview)

@@ -5,17 +5,12 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import com.google.gson.annotations.SerializedName;
-@TypeConverters({IntegerListConverter.class, GenreListConverter.class,VideoConverter.class})
+@TypeConverters({IntegerListConverter.class, GenreListConverter.class,VideoConverter.class, MovieReviewListConverter.class})
 @Entity(tableName = "Movie")
 public class Movie implements Serializable {
     @PrimaryKey()
@@ -68,6 +63,7 @@ public class Movie implements Serializable {
     public List<Integer> getGenreIdList() {
         return genreIdList;
     }
+    private List<MovieReview> reviews;
 
     public String getImagePath() {
         return imagePath;
@@ -92,6 +88,8 @@ public class Movie implements Serializable {
     public Video getTrailer() {
         return trailer;
     }
+
+    public List<MovieReview> getReviews() {return reviews; }
 
     public void setId(int id) {
         this.id = id;
@@ -132,4 +130,6 @@ public class Movie implements Serializable {
     public void setTrailer(Video trailer) {
         this.trailer = trailer;
     }
+
+    public void setReviews(List<MovieReview> reviews) {this.reviews = reviews; }
 }

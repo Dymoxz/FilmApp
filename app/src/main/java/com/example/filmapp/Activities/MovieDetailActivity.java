@@ -46,6 +46,7 @@ public class MovieDetailActivity extends AppCompatActivity{
         ImageView imageView = findViewById(R.id.movieDetailImage);
 
         Intent intent = this.getIntent();
+
         Bundle bundle = intent.getExtras();
         if (bundle !=null) {
             movie = (Movie) bundle.getSerializable("value");
@@ -53,6 +54,8 @@ public class MovieDetailActivity extends AppCompatActivity{
 
         }
         if (movie != null) {
+            Log.d("DetailActivity", "Setting movie details to views: " + movie.getTitle());
+
             StringBuilder genreIdStringBuilder = new StringBuilder();
             for (int genreId : movie.getGenreIdList()) {
                 genreIdStringBuilder.append(genreId).append(", ");
@@ -65,12 +68,19 @@ public class MovieDetailActivity extends AppCompatActivity{
             taglineTextView.setText(movie.getTagline());
             descriptionTextView.setText(movie.getDescription());
             Picasso.get().load("https://image.tmdb.org/t/p/w500" + movie.getImagePath()).into(imageView);
+        } else {
+            Log.e("DetailActivity", "Movie object is null");
         }
 
-
         // Start review overview activity
-        findViewById(R.id.openReviewOverviewButton).setOnClickListener(v ->
-                startActivity(new Intent(MovieDetailActivity.this, ReviewOverviewActivity.class)));
+        findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
+            String movieId = String.valueOf(movie.getId());
+            // Putting movieId in intent in order to fetch the right reviews
+            Log.d("MovieDetailActivity", "Movie ID: " + movie.getId());
+            Intent intent1 = new Intent(MovieDetailActivity.this, ReviewOverviewActivity.class);
+            intent1.putExtra("MOVIE_ID", movie.getId());
+            startActivity(intent1);
+        });
 
     }
 

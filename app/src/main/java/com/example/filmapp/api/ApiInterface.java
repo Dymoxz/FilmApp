@@ -1,9 +1,13 @@
 package com.example.filmapp.api;
 
 import com.example.filmapp.api.response.GenreResponse;
+import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieReview;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -36,6 +40,12 @@ public interface ApiInterface {
             @Path("movieId") int movieId,
             @Query("api_key") String apiKey,
             @Query("language") String language
+    );
+
+    @GET("movie/{movie_id}/reviews")
+    Call<MovieReviewResponse> getReviews(
+            @Path("movie_id") int movieId,
+            @Query("api_key") String apiKey
     );
 
 }

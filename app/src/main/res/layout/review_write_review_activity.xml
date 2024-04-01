@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_margin="20dp"
         android:ems="8"
         android:inputType="text"
-        android:text="First Name"
+        android:hint="First Name"
         android:autofillHints="name"/>
 
     <EditText
@@ -31,7 +31,7 @@
         android:layout_margin="20dp"
         android:ems="8"
         android:inputType="text"
-        android:text="Last Name"
+        android:hint="Last Name"
         android:autofillHints="name"/>
 
     <EditText
