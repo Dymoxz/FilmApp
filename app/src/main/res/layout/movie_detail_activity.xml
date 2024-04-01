@@ -16,12 +16,23 @@
         android:layout_height="wrap_content"
         android:background="#773302BC" />
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar" />
+
     <ImageView
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:id="@+id/movieDetailImage"
         />
+
+    <WebView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trailerWebView"/>
     <TextView
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"

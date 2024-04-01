@@ -1,33 +1,69 @@
 package com.example.filmapp.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+@Entity(tableName = "Video")
 public class Video implements Serializable {
+    @PrimaryKey
+    private int movieId;
     @SerializedName("name")
     private String title;
-    private String key;
+    @SerializedName("key")
+    private String videoKey;
     @SerializedName("official")
     private boolean isOfficial;
     private String type;
 
-    public Video(String title, String key, Boolean isOfficial, String type) {
+    public Video(int movieId, String title, String videoKey, Boolean isOfficial, String type) {
+        this.movieId = movieId;
         this.title = title;
-        this.key = key;
+        this.videoKey = videoKey;
         this.isOfficial = isOfficial;
         this.type = type;
     }
 
     public String getUrl() {
-        return "https://www.youtube.com/embed/" + key;
+        return "https://www.youtube.com/embed/" + videoKey;
     }
 
-    public Boolean getOfficial() {
-        return isOfficial;
-    }
 
     public String getType() {
         return type;
+    }
+
+    public void setMovieId(int movieId) { this.movieId = movieId; }
+    public int getMovieId() { return movieId; }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getVideoKey() {
+        return videoKey;
+    }
+
+    public void setVideoKey(String videoKey) {
+        this.videoKey = videoKey;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

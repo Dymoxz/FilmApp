@@ -14,7 +14,7 @@ public class VideoResponse {
     public Video getTrailer() {
         if (videos != null) {
             for (Video video : videos) {
-                if (video.getOfficial() && video.getType().equalsIgnoreCase("Trailer")) {
+                if (video.isOfficial() && video.getType().equalsIgnoreCase("Trailer")) {
                     return video;
                 }
             }
