@@ -107,13 +107,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             Log.e("DetailActivity", "Movie object is null");
         }
 
-        findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
-            int movieId = movie.getId();
-            Log.d("MovieDetailActivity", "Movie ID: " + movieId);
-            Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
-            intentReview.putExtra("MOVIE_ID", movieId);
-            startActivity(intentReview);
-        });
+
 
         movieViewModel.getImagePath(movie.getId()).observe(this, new Observer<String>() {
             @Override
@@ -122,6 +116,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                 // Retrieve the imagePath and pass it to the getMovieTrailer method
                 getMovieTrailer(movie.getId(), imagePath);
             }
+        });
+        findViewById(R.id.reviewContainer).setOnClickListener(v -> {
+            int movieId = (movie.getId());
+            // Putting movieId in intent in order to fetch the right reviews
+            Log.d("MovieDetailActivity", "Movie ID: " + movieId);
+            Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
+            intentReview.putExtra("MOVIE_ID", movieId);
+            startActivity(intentReview);
         });
     }
 
@@ -179,4 +181,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
         carouselRecyclerView.setAdapter(carouselAdapter);
     }
+
 }

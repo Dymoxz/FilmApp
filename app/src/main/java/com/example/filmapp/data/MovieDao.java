@@ -24,4 +24,7 @@ public interface MovieDao {
     @Query("SELECT imagePath FROM Movie WHERE id = :movieId")
     LiveData<String> getImagePath(int movieId);
 
+    @Query("SELECT * FROM Movie WHERE Id == :movieId")
+    LiveData<Movie> getMovie(int movieId);
+
 }
