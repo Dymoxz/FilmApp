@@ -32,8 +32,8 @@ public class VideoRepository {
     public LiveData<List<Video>> getAllVideos() {
         return listVideos;
     }
-    public LiveData<String> getVideoKey(int movieId) {
-        return videoDao.getVideoKey(movieId);
+    public LiveData<Video> getVideo(int movieId) {
+        return videoDao.getVideo(movieId);
     }
 
 }

@@ -19,6 +19,6 @@ public interface VideoDao {
     @Query("SELECT * FROM Video")
     LiveData<List<Video>> getAllVideos();
 
-    @Query("SELECT videoKey FROM Video WHERE movieId = :movieId")
-    LiveData<String> getVideoKey(int movieId);
+    @Query("SELECT * FROM Video WHERE movieId = :movieId")
+    LiveData<Video> getVideo(int movieId);
 }

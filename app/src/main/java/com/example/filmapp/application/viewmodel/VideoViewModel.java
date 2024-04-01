@@ -28,8 +28,8 @@ public class VideoViewModel extends ViewModel {
     public LiveData<List<Video>> getListVideos() {
         return listVideos;
     }
-    public LiveData<String> getVideoKey(int movieId) {
-        return repository.getVideoKey(movieId);
+    public LiveData<Video> getVideo(int movieId) {
+        return repository.getVideo(movieId);
     }
     public void insertVideo(Video video) {
         repository.insertVideo(video);

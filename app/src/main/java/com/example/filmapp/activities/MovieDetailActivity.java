@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.filmapp.R;
@@ -106,7 +107,28 @@ public class MovieDetailActivity extends AppCompatActivity{
             startActivity(intentReview);
         });
 
-        getMovieTrailer(movie.getId(), videoViewModel);
+        WebView webView = findViewById(R.id.trailerWebView);
+
+
+        videoViewModel.getVideo(movie.getId()).observe(this, new Observer<Video>() {
+            @Override
+            public void onChanged(Video video) {
+                // Update your Video object here
+                if (video != null) {
+                    Log.d("MovieDetailActivity", video.getUrl());
+
+                    String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + video.getUrl() + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
+                    webView.loadData(embedLink, "text/html", "utf-8");
+                    webView.getSettings().setJavaScriptEnabled(true);
+                    webView.setWebChromeClient(new WebChromeClient());
+                    // Now you can use the video object as needed
+                } else {
+                    Log.d("MovieDetailActivity", "Video is null, getting video");
+                    getMovieTrailer(movie.getId(), videoViewModel);
+                }
+            }
+        });
+
 
     }
 
@@ -130,11 +152,11 @@ public class MovieDetailActivity extends AppCompatActivity{
                             videoViewModel.insertVideo(trailer);
 
                             // Code for embedding video
-                             WebView webView = findViewById(R.id.trailerWebView);
-                             String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + trailerUrl + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
-                             webView.loadData(embedLink, "text/html", "utf-8");
-                             webView.getSettings().setJavaScriptEnabled(true);
-                             webView.setWebChromeClient(new WebChromeClient());
+                            WebView webView = findViewById(R.id.trailerWebView);
+                            String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + trailerUrl + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
+                            webView.loadData(embedLink, "text/html", "utf-8");
+                            webView.getSettings().setJavaScriptEnabled(true);
+                            webView.setWebChromeClient(new WebChromeClient());
 
                         } else {
                             Log.e("Trailer link", "Trailer URL is null");
