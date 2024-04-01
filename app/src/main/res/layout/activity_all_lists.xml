@@ -44,7 +44,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/buttonLayout"
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewList"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
     </androidx.recyclerview.widget.RecyclerView>

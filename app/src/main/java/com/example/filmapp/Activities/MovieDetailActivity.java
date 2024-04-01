@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 public class MovieDetailActivity extends AppCompatActivity{
 
     private Movie movie;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
@@ -29,6 +30,7 @@ public class MovieDetailActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);

@@ -17,7 +17,6 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView imageView;
     TextView titleView,releaseYearView, genreView;
-    List<Movie> movies;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);

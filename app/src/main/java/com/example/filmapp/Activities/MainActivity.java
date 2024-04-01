@@ -14,20 +14,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.MovieViewModel;
+import com.example.filmapp.Application.repository.GenreRepository;
+import com.example.filmapp.Application.viewmodel.GenreViewModel;
+import com.example.filmapp.Application.viewmodel.MovieViewModel;
 import com.example.filmapp.Application.RecyclerViewInterface;
-import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Application.repository.Repository;
 import com.example.filmapp.Data.Database;
 import com.example.filmapp.MyAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
+import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,16 +39,17 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-
     private static final String API_KEY = "02ddd233c99c814bad1a7d4af98e681b";
     private List<Movie> movies;
     private List<Genre> genres;
-    private Call<MoviesResponse> call1;
+    private Call<MoviesResponse> allMoviesCall;
+    private Call<GenreResponse> allGenresCall;
     private MovieViewModel movieViewModel;
     // Create API interface instance
     private Retrofit retrofit = RetrofitClient.getClient();
     private ApiInterface apiInterface = retrofit.create(ApiInterface.class);
     private RecyclerView recyclerView;
+    private GenreViewModel genreViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
+        // Initialize the GenreViewModel
+        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
+        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
@@ -69,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         }
 
-
-
         movieViewModel.moviesIsEmpty().observe(this, isEmpty -> {
             if (isEmpty) {
                 allMoviesApiCall();
@@ -82,18 +87,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     @Override
                     public void onChanged(List<Movie> movieList) {
                         List<Movie> movies = movieList;
-                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+
+                        recyclerView.setAdapter(adapter);
+
                     }
                 });
-
-
-
             }
-
 
         });
 
-
+        allGenresApiCall();
 
 
 
@@ -183,8 +187,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
 
-
     }
+
     public void changeActivityToLists(View view){
         Intent intent = new Intent(this, ListsActivity.class);
         startActivity(intent);
@@ -198,9 +202,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     public void allMoviesApiCall() {
-        call1 = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
+        allMoviesCall = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
         // Make the API call
-        call1.enqueue(new Callback<MoviesResponse>() {
+        allMoviesCall.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 if (response.isSuccessful()) {
@@ -211,18 +215,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         for (Movie movie : moviesResponse.getMovies()) {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
-//                                            Log.d("Genres", String.valueOf(movie.getGenreIdList().get(0)));
-
 
                             movieViewModel.insertMovie(movie);
 
-
                         }
 
-                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
-
-
-
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+                        recyclerView.setAdapter(adapter);
 
 //                        ImageView imageView = findViewById(R.id.imageView);
 //                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
@@ -242,6 +241,47 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         });
     }
 
+    public void allGenresApiCall() {
+        allGenresCall = apiInterface.getGenres(API_KEY, "en-US");
+
+        // Make the API call
+        allGenresCall.enqueue(new Callback<GenreResponse>() {
+            @Override
+            public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+
+                if (response.isSuccessful()) {
+                    // Handle successful response here
+                    GenreResponse genreResponse = response.body();
+
+                    genres = genreResponse.getGenres();
+                    if (genreResponse != null && genreResponse.getGenres() != null) {
+                        for (Genre genre : genreResponse.getGenres()) {
+                            // Process each movie here
+                            Log.d("Genre", "Id: " + genre.getId() + "\nName: " +  genre.getName());
+
+                            genreViewModel.insertGenre(genre);
+
+                        }
+
+//                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
+
+//                        ImageView imageView = findViewById(R.id.imageView);
+//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
+                    }
+
+                } else {
+                    // Handle error response
+                    Log.e("API Error", "Failed to fetch movies: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenreResponse> call, Throwable t) {
+                // Handle failure
+                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
+            }
+        });
+    }
     @Override
     public void onItemClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);

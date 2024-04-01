@@ -12,26 +12,34 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.MovieListRepository;
-import com.example.filmapp.Application.MovieListViewModel;
-import com.example.filmapp.Application.MovieViewModel;
-import com.example.filmapp.Application.Repository;
+import com.example.filmapp.Application.ListRecyclerViewInterface;
+import com.example.filmapp.Application.repository.MovieListRepository;
+import com.example.filmapp.Application.viewmodel.MovieListViewModel;
 import com.example.filmapp.Data.Database;
+import com.example.filmapp.ListAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieList;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ListsActivity extends AppCompatActivity {
+public class ListsActivity extends AppCompatActivity implements ListRecyclerViewInterface {
 
     private MovieListViewModel movieListViewModel;
     private List<MovieList> movieLists;
     private String createListName = "";
-    String createListDate;
+    private List<String> movieNames;
+    ListRecyclerViewInterface listRecyclerViewInterface;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,6 @@ public class ListsActivity extends AppCompatActivity {
         MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,19 +58,24 @@ public class ListsActivity extends AppCompatActivity {
 
         }
 
-        // INSERT A MOVIELIST INTO THE ROOM DATABASE:
-//        MovieList favorites = new MovieList(1, "Favorites");
-//        movieListViewModel.insertMovieList(favorites);
-//        Log.v("ListsActivity", "inserted movie " + favorites.getName());
+        movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
+            if (movieListsLiveData != null) {
+                movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
+                RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this));
+            }
+        });
 
 
     }
-    public void changeActivityToMovies(View view){
+
+    public void changeActivityToMovies(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void createList(View view){
+    public void createList(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Please submit a list name: ");
 
@@ -75,27 +87,71 @@ public class ListsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 createListName = input.getText().toString();
-                createListDate = LocalDate.now().toString();
-                Log.v("listActivity", "Created list with name '" + createListName + "'");
-                changeActivityToListDetail();
+                doesNameExist(createListName).observe(ListsActivity.this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean nameExists) {
+                        if (nameExists != null) {
+                            if (!nameExists) {
+                                MovieList movieList = new MovieList(createListName);
+                                Log.v("ListActivity", "Created list with name '" + createListName + "'");
+                                movieListViewModel.insertMovieList(movieList);
+                                changeActivityToListDetail();
+                            } else {
+                                Log.v("ListActivity", createListName + " already exists");
+                                // Show a message to the user indicating that the name already exists
+                            }
+                        }
+                    }
+                });
             }
         });
+
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                Log.v("listActivity", "canceled list creation");
+                Log.v("ListActivity", "Cancelled list creation");
             }
         });
 
         builder.show();
-
     }
 
-    public void changeActivityToListDetail(){
+    public void changeActivityToListDetail() {
         Intent intent = new Intent(this, ListDetailActivity.class);
         intent.putExtra("listName", createListName);
-        intent.putExtra("listDate", createListDate);
         startActivity(intent);
     }
+
+    @Override
+    public void onItemClick(MovieList movieList) {
+        Intent intent = new Intent(this, ListDetailActivity.class);
+        intent.putExtra("listName", movieList.getName());
+        startActivity(intent);
+    }
+
+    public LiveData<Boolean> doesNameExist(String inputMovieName) {
+        MutableLiveData<Boolean> nameExistsLiveData = new MutableLiveData<>();
+
+        movieListViewModel.getMovieNames().observe(this, movieNamesLiveData -> {
+            if (movieNamesLiveData != null) {
+                boolean nameExists = false;
+
+                for (String movieName : movieNamesLiveData) {
+                    if (inputMovieName.equals(movieName)) {
+                        nameExists = true;
+                        break;
+                    }
+                }
+
+                nameExistsLiveData.setValue(nameExists);
+            }
+        });
+
+        return nameExistsLiveData;
+    }
+
+
+
+
 }

@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface MovieDao {
 
     @Query("SELECT (SELECT COUNT(*) FROM Movie) == 0")
     LiveData<Boolean> moviesIsEmpty();
+
 }

@@ -4,10 +4,16 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 @Entity(tableName = "MovieList")
 public class MovieList {
-    @PrimaryKey()
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String name;
+
+
+
+    public MovieList(String name) {
+        this.name = name;
+    }
 
     public int getId() {
         return id;
