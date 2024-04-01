@@ -32,6 +32,8 @@ public class MovieListViewModel extends ViewModel {
     public void insertMovieList(MovieList movieList) {
         repository.insertMovieList(movieList);
     }
-
+    public void deleteMovieList(String movieListName) {
+        repository.deleteMovieList(movieListName);
+    }
 
 }

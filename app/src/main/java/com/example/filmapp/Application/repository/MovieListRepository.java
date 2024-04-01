@@ -31,4 +31,8 @@ public class MovieListRepository {
     public void insertMovieList(MovieList movieList) {
         database.databaseWriteExecutor.execute(() -> movieListDao.insertMovieList(movieList));
     }
+
+    public void deleteMovieList(String movieListName) {
+        database.databaseWriteExecutor.execute(() -> movieListDao.deleteMovieList(movieListName));
+    }
 }

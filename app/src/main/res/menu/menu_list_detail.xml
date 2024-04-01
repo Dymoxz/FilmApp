@@ -17,7 +17,7 @@
         </menu>
     </item>
 
-    <item android:title="Share"
+    <item android:title="options"
         android:icon="@drawable/baseline_more_vert_24"
         android:id="@+id/options"
         app:showAsAction="ifRoom"
@@ -26,6 +26,10 @@
             <item android:id="@+id/share"
                 android:icon="@drawable/baseline_share_24"
                 android:title="@string/share"
+                app:showAsAction="always"/>
+            <item android:id="@+id/delete"
+                android:icon="@drawable/baseline_delete_24"
+                android:title="@string/Delete"
                 app:showAsAction="always"/>
         </menu>
     </item>
