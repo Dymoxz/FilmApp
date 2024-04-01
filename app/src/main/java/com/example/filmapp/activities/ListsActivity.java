@@ -60,7 +60,7 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                 movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this));
+                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this, movieListViewModel, this));
             }
         });
 
@@ -80,35 +80,26 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                createListName = input.getText().toString();
-                doesNameExist(createListName).observe(ListsActivity.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean nameExists) {
-                        if (nameExists != null) {
-                            if (!nameExists) {
-                                MovieList movieList = new MovieList(createListName);
-                                Log.v("ListActivity", "Created list with name '" + createListName + "'");
-                                movieListViewModel.insertMovieList(movieList);
-                                changeActivityToListDetail();
-                            } else {
-                                Log.v("ListActivity", createListName + " already exists");
-                                // Show a message to the user indicating that the name already exists
-                            }
-                        }
+        builder.setPositiveButton("Submit", (dialog, which) -> {
+            createListName = input.getText().toString();
+            doesNameExist(createListName).observe(ListsActivity.this, nameExists -> {
+                if (nameExists != null) {
+                    if (!nameExists) {
+                        MovieList movieList = new MovieList(createListName);
+                        Log.v("ListActivity", "Created list with name '" + createListName + "'");
+                        movieListViewModel.insertMovieList(movieList);
+                        changeActivityToListDetail();
+                    } else {
+                        Log.v("ListActivity", createListName + " already exists");
+                        // Show a message to the user indicating that the name already exists
                     }
-                });
-            }
+                }
+            });
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                Log.v("ListActivity", "Cancelled list creation");
-            }
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            dialog.cancel();
+            Log.v("ListActivity", "Cancelled list creation");
         });
 
         builder.show();
