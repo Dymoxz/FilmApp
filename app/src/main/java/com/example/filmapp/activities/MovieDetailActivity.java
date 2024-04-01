@@ -20,11 +20,14 @@ import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.VideoResponse;
+import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.Repository;
 import com.example.filmapp.application.repository.VideoRepository;
+import com.example.filmapp.application.viewmodel.GenreViewModel;
 import com.example.filmapp.application.viewmodel.MovieViewModel;
 import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.Video;
@@ -33,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,20 +50,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     private VideoViewModel videoViewModel;
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
-
+    private GenreViewModel genreViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
 
-        VideoRepository videoRepository = new VideoRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).videoDao());
-        videoViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(VideoViewModel.class);
-        videoViewModel.init(videoRepository);
-
-        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
-        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
-        movieViewModel.init(repository);
+        initViewModels();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,13 +88,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             Log.d("DetailActivity", "got movie " + movie.getTitle());
         }
         if (movie != null) {
-            Log.d("DetailActivity", "Setting movie details to views: " + movie.getTitle());
-
-            StringBuilder genreIdStringBuilder = new StringBuilder();
-            for (int genreId : movie.getGenreIdList()) {
-                genreIdStringBuilder.append(genreId).append(", ");
-            }
-            genreTextView.setText(genreIdStringBuilder);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
             durationTextView.setText(String.valueOf(movie.getDuration()));
@@ -106,8 +97,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             Log.e("DetailActivity", "Movie object is null");
         }
-
-
+        getGenreNames(genreNames -> {
+            Log.v("MovieDetail", "genres are: " + genreNames);
+            genreTextView.setText(genreNames);
+        });
 
         movieViewModel.getImagePath(movie.getId()).observe(this, new Observer<String>() {
             @Override
@@ -180,6 +173,43 @@ public class MovieDetailActivity extends AppCompatActivity {
         // ...
         CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
         carouselRecyclerView.setAdapter(carouselAdapter);
+    }
+
+
+    public void initViewModels(){
+        VideoRepository videoRepository = new VideoRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).videoDao());
+        videoViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(VideoViewModel.class);
+        videoViewModel.init(videoRepository);
+
+        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
+        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
+        movieViewModel.init(repository);
+
+        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
+        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
+    }
+    public interface GenreNamesCallback {
+        void onGenreNamesObtained(String genreNames);
+    }
+    public void getGenreNames(GenreNamesCallback callback) {
+        StringBuilder stringBuilder = new StringBuilder();
+        AtomicInteger callbacksCompleted = new AtomicInteger(0);
+        List<Integer> genreIdList = movie.getGenreIdList();
+        int totalCallbacksExpected = genreIdList.size();
+
+        for (int genreId : genreIdList) {
+            genreViewModel.getGenreName(genreId).observe(this, genreName -> {
+                if (genreName != null) {
+                    stringBuilder.append(genreName).append(" ");
+                    callbacksCompleted.incrementAndGet();
+                    if (callbacksCompleted.get() == totalCallbacksExpected) {
+                        // All observations completed, invoke the callback with genre names
+                        callback.onGenreNamesObtained(stringBuilder.toString());
+                    }
+                }
+            });
+        }
     }
 
 }
