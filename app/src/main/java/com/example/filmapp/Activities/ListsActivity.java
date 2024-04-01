@@ -12,6 +12,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +37,9 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
     private MovieListViewModel movieListViewModel;
     private List<MovieList> movieLists;
     private String createListName = "";
-    String createListDate;
+    private List<String> movieNames;
+    ListRecyclerViewInterface listRecyclerViewInterface;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,19 +63,19 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                 movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists));
+                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this));
             }
         });
 
 
-
     }
-    public void changeActivityToMovies(View view){
+
+    public void changeActivityToMovies(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void createList(View view){
+    public void createList(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Please submit a list name: ");
 
@@ -82,11 +87,22 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 createListName = input.getText().toString();
-                createListDate = LocalDate.now().toString();
-                MovieList movieList = new MovieList(createListName);
-                Log.v("listActivity", "Created list with name '" + createListName + "'");
-                movieListViewModel.insertMovieList(movieList);
-                changeActivityToListDetail();
+                doesNameExist(createListName).observe(ListsActivity.this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean nameExists) {
+                        if (nameExists != null) {
+                            if (!nameExists) {
+                                MovieList movieList = new MovieList(createListName);
+                                Log.v("ListActivity", "Created list with name '" + createListName + "'");
+                                movieListViewModel.insertMovieList(movieList);
+                                changeActivityToListDetail();
+                            } else {
+                                Log.v("ListActivity", createListName + " already exists");
+                                // Show a message to the user indicating that the name already exists
+                            }
+                        }
+                    }
+                });
             }
         });
 
@@ -94,17 +110,16 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                Log.v("listActivity", "canceled list creation");
+                Log.v("ListActivity", "Cancelled list creation");
             }
         });
 
         builder.show();
     }
 
-    public void changeActivityToListDetail(){
+    public void changeActivityToListDetail() {
         Intent intent = new Intent(this, ListDetailActivity.class);
         intent.putExtra("listName", createListName);
-        intent.putExtra("listDate", createListDate);
         startActivity(intent);
     }
 
@@ -112,7 +127,31 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
     public void onItemClick(MovieList movieList) {
         Intent intent = new Intent(this, ListDetailActivity.class);
         intent.putExtra("listName", movieList.getName());
-        intent.putExtra("listDate", createListDate);
         startActivity(intent);
     }
+
+    public LiveData<Boolean> doesNameExist(String inputMovieName) {
+        MutableLiveData<Boolean> nameExistsLiveData = new MutableLiveData<>();
+
+        movieListViewModel.getMovieNames().observe(this, movieNamesLiveData -> {
+            if (movieNamesLiveData != null) {
+                boolean nameExists = false;
+
+                for (String movieName : movieNamesLiveData) {
+                    if (inputMovieName.equals(movieName)) {
+                        nameExists = true;
+                        break;
+                    }
+                }
+
+                nameExistsLiveData.setValue(nameExists);
+            }
+        });
+
+        return nameExistsLiveData;
+    }
+
+
+
+
 }

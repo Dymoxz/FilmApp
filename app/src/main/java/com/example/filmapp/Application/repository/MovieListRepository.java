@@ -16,13 +16,17 @@ public class MovieListRepository {
     private MovieListDao movieListDao;
 
     private LiveData<List<MovieList>> listMoviesList;
+
+    private LiveData<List<String>> listMovieNamesList;
     public MovieListRepository(Database database, MovieListDao movieListDao) {
         this.database = database;
         this.movieListDao = movieListDao;
         this.listMoviesList = movieListDao.getAllMovieLists();
+        this.listMovieNamesList = movieListDao.getAllMovieListNames();
     }
 
     public LiveData<List<MovieList>> getAllMovieLists() { return listMoviesList; }
+    public LiveData<List<String>> getAllMovieNames() { return listMovieNamesList; }
 
     public void insertMovieList(MovieList movieList) {
         database.databaseWriteExecutor.execute(() -> movieListDao.insertMovieList(movieList));

@@ -18,4 +18,7 @@ public interface MovieListDao {
 
     @Query("SELECT * FROM MovieList")
     LiveData<List<MovieList>> getAllMovieLists();
+
+    @Query("SELECT Name FROM MovieList")
+    LiveData<List<String>> getAllMovieListNames();
 }
