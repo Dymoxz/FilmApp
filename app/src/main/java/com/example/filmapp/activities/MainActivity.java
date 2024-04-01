@@ -161,11 +161,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     private void filterList(String text) {
         List<Movie> filteredList = new ArrayList<>();
-        for (Movie movie : movies) {
-            if (movie.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(movie);
+        if (movies != null) {
+            for (Movie movie : movies) {
+                if (movie.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(movie);
+                }
             }
         }
+
 
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();

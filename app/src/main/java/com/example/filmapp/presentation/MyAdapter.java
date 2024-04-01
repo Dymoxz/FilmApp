@@ -66,7 +66,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         for (int genreId : genreIdList) {
             genreViewModel.getGenreName(genreId).observe(lifecycleOwner, genreName -> {
-                Log.v("Adapter", " " + genreId);
+//                Log.v("Adapter", " " + genreId);
                 stringBuilder.append(genreName).append(", ");
 
                 int callbacksCompletedSoFar = callbacksCompleted.incrementAndGet();

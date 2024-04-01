@@ -92,7 +92,8 @@ public class ReviewOverviewActivity extends AppCompatActivity {
 
     // Method to fetch movie reviews
     private void fetchMovieReviews(int movieId) {
-        Call<MovieReviewResponse> call = apiInterface.getReviews(278, API_KEY);
+        Call<MovieReviewResponse> call = apiInterface.getReviews(movieId, API_KEY);
+        Log.d("aaaa", "help");
         call.enqueue(new Callback<MovieReviewResponse>() {
             @Override
             public void onResponse(Call<MovieReviewResponse> call, Response<MovieReviewResponse> response) {

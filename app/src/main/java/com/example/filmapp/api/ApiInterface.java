@@ -42,9 +42,9 @@ public interface ApiInterface {
             @Query("language") String language
     );
 
-    @GET("movie/{movie_id}/reviews")
+    @GET("movie/{movieId}/reviews")
     Call<MovieReviewResponse> getReviews(
-            @Path("movie_id") int movieId,
+            @Path("movieId") int movieId,
             @Query("api_key") String apiKey
 
     );

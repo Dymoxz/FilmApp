@@ -1,5 +1,6 @@
 package com.example.filmapp.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -13,8 +14,9 @@ import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "MovieReview")
 public class MovieReview {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey()
+    @NonNull
+    private String id;
 
     @SerializedName("author")
     private String author;
@@ -25,11 +27,11 @@ public class MovieReview {
     @SerializedName("content")
     private String reviewContent;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
