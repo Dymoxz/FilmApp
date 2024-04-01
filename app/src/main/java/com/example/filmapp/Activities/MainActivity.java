@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private Retrofit retrofit = RetrofitClient.getClient();
     private ApiInterface apiInterface = retrofit.create(ApiInterface.class);
     private RecyclerView recyclerView;
+    private SearchView searchView;
     private GenreViewModel genreViewModel;
 
     @Override
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView);
+        searchView = findViewById(R.id.searchbar);
+        searchView.clearFocus();
+
         Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
@@ -66,6 +73,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 movieViewModel.getListMovies().observe(this, new Observer<List<Movie>>() {
                     @Override
                     public void onChanged(List<Movie> movieList) {
-                        List<Movie> movies = movieList;
+                        movies = movieList;
                         MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
 
                         recyclerView.setAdapter(adapter);
@@ -100,57 +119,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         allGenresApiCall();
 
 
-
-        //--------------------------------------------------------------------------------------------
-
-
-
-
-
-//
-//                    // Make the API call
-//                    Call<VideoResponse> call2 = apiInterface.getVideos(movies.get(1).getId(),API_KEY, "en-US");
-//                    call2.enqueue(new Callback<VideoResponse>() {
-//                        @Override
-//                        public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-//                            if (response.isSuccessful()) {
-//                                // Handle successful response here
-//                                VideoResponse videoResponse = response.body();
-//                                Video trailer = videoResponse.getTrailer();
-//                                if (trailer != null) {
-//                                    String trailerUrl = trailer.getUrl();
-//                                    if (trailerUrl != null) {
-//                                        Log.d("Trailer link", trailerUrl);
-//
-//
-////                                        Code for embedding video
-////                                        WebView webView = findViewById(R.id.webView);
-////                                        String embedLink = "<iframe width=\"560\" height=\"315\" src=\"" + trailerUrl + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
-////                                        webView.loadData(embedLink, "text/html", "utf-8");
-////                                        webView.getSettings().setJavaScriptEnabled(true);
-////                                        webView.setWebChromeClient(new WebChromeClient());
-//
-//
-//                                    } else {
-//                                        Log.e("Trailer link", "Trailer URL is null");
-//                                    }
-//                                } else {
-//                                    Log.e("Trailer link", "Trailer object is null");
-//                                }
-//
-//
-//                            } else {
-//                                // Handle error response
-//                                Log.e("API Error", "Failed to fetch movies: " + response.message());
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<VideoResponse> call, Throwable t) {
-//                            // Handle failure
-//                            Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
-//                        }
-//                    });
         // Make the API call
         Call<Movie> call2 = apiInterface.getMovieDetails(240, API_KEY, "en-US");
         call2.enqueue(new Callback<Movie>() {
@@ -189,6 +157,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     }
 
+    private void filterList(String text) {
+        List<Movie> filteredList = new ArrayList<>();
+        for (Movie movie : movies) {
+            if (movie.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(movie);
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d("aaa", "no yet set");
+            ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
+        }
+    }
+
     public void changeActivityToLists(View view){
         Intent intent = new Intent(this, ListsActivity.class);
         startActivity(intent);
@@ -219,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             movieViewModel.insertMovie(movie);
 
                         }
+
 
                         MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
                         recyclerView.setAdapter(adapter);
