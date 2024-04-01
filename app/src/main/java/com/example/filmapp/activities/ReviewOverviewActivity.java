@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
 
     private static final String API_KEY = "02ddd233c99c814bad1a7d4af98e681b";
     private RecyclerView recyclerView;
+    private TextView reviewCountView;
     private MovieReviewAdapter adapter;
     private List<MovieReview> reviewList = new ArrayList<>();
     private ApiInterface apiInterface;
@@ -43,7 +45,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         int movieId = intent.getIntExtra("MOVIE_ID", -1);
         Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
 
-
+        reviewCountView = findViewById(R.id.reviewOverviewCount);
         recyclerView = findViewById(R.id.reviewOverviewRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MovieReviewAdapter(reviewList);
@@ -103,6 +105,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                         // Clear the list before adding reviews
                         reviewList.clear();
                         reviewList.addAll(movieReviewResponse.getReviews());
+                        reviewCountView.setText(String.valueOf(reviewList.size()));
                         adapter.notifyDataSetChanged();
                     } else {
                         Log.e("API error", "Failed to fetch the movie reviews because response is null: " + response.message());
