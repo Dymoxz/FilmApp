@@ -29,7 +29,9 @@ public class Repository {
     public LiveData<List<Movie>> getAllMovies() {
         return listMovies;
     }
-
+    public LiveData<Movie> getMovie(int movieId) {
+        return movieDao.getMovie(movieId);
+    }
     public LiveData<Boolean> moviesIsEmpty() { return moviesIsEmpty; }
 
     public void insertMovie(Movie movie) {

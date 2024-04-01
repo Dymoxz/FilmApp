@@ -112,6 +112,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public int getItemCount() {
+    if (movies != null){
         return movies.size();
+    } else {
+        return 0;
+    }
+
     }
 }
