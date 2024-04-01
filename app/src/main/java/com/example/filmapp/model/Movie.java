@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-@TypeConverters({IntegerListConverter.class, GenreListConverter.class,VideoConverter.class, MovieReviewListConverter.class})
+@TypeConverters({IntegerListConverter.class,VideoConverter.class, MovieReviewListConverter.class})
 @Entity(tableName = "Movie")
 public class Movie implements Serializable {
     @PrimaryKey()
