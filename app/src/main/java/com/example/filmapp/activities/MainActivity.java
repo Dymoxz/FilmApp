@@ -1,4 +1,4 @@
-package com.example.filmapp.Activities;
+package com.example.filmapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,13 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.repository.GenreRepository;
-import com.example.filmapp.Application.viewmodel.GenreViewModel;
-import com.example.filmapp.Application.viewmodel.MovieViewModel;
-import com.example.filmapp.Application.RecyclerViewInterface;
-import com.example.filmapp.Application.repository.Repository;
-import com.example.filmapp.Data.Database;
-import com.example.filmapp.MyAdapter;
+import com.example.filmapp.application.repository.GenreRepository;
+import com.example.filmapp.application.viewmodel.GenreViewModel;
+import com.example.filmapp.application.viewmodel.MovieViewModel;
+import com.example.filmapp.application.RecyclerViewInterface;
+import com.example.filmapp.application.repository.Repository;
+import com.example.filmapp.data.Database;
+import com.example.filmapp.presentation.MyAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
@@ -29,7 +29,6 @@ import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -152,40 +151,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 //                        }
 //                    });
         // Make the API call
-        Call<Movie> call2 = apiInterface.getMovieDetails(240, API_KEY, "en-US");
-        call2.enqueue(new Callback<Movie>() {
-            @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if (response.isSuccessful()) {
-                    // Handle successful response here
-                    Movie movie = response.body();
-                    if (movie != null) {
-                        // Movie data is available
-                        Log.d("Movie", "Title: " + movie.getDuration());
-                        Log.d("Movie", "Tagline: " + movie.getTagline());
-                        Log.d("Movie", "Rating: " + movie.getRating());
 
-                    } else {
-                        // MovieDetailResponse is null
-                        Log.e("API Error", "Movie object is null");
-                    }
-                } else {
-                    // Handle error response
-                    Log.e("API Error", "Failed to fetch movies. Error code: " + response.code());
-                    try {
-                        Log.e("API Error", "Error body: " + response.errorBody().string());
-                    } catch (IOException e) {
-                        Log.e("API Error", "Failed to read error body: " + e.getMessage());
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
-                // Handle failure
-                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
-            }
-        });
 
     }
 
@@ -222,9 +189,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                         MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
                         recyclerView.setAdapter(adapter);
-
-//                        ImageView imageView = findViewById(R.id.imageView);
-//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
 
                 } else {

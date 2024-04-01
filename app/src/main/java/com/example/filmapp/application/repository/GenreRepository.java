@@ -1,14 +1,10 @@
-package com.example.filmapp.Application.repository;
-
-import android.os.AsyncTask;
+package com.example.filmapp.application.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.filmapp.Data.Database;
-import com.example.filmapp.Data.GenreDao;
-import com.example.filmapp.Data.MovieDao;
+import com.example.filmapp.data.Database;
+import com.example.filmapp.data.GenreDao;
 import com.example.filmapp.model.Genre;
-import com.example.filmapp.model.Movie;
 
 import java.util.List;
 

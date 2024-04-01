@@ -1,4 +1,4 @@
-package com.example.filmapp.Data;
+package com.example.filmapp.data;
 
 import android.content.Context;
 
@@ -8,11 +8,12 @@ import androidx.room.RoomDatabase;
 import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.MovieList;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieReview;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@androidx.room.Database(entities = {Movie.class, MovieList.class, Genre.class}, version = 4,exportSchema = false )
+@androidx.room.Database(entities = {Movie.class, MovieList.class, Genre.class, MovieReview.class}, version = 5,exportSchema = false )
 public abstract class Database extends RoomDatabase {
     public abstract MovieDao movieDao();
     public abstract MovieListDao movieListDao();

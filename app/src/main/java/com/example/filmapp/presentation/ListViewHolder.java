@@ -1,4 +1,4 @@
-package com.example.filmapp;
+package com.example.filmapp.presentation;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.filmapp.R;
 
 public class ListViewHolder extends RecyclerView.ViewHolder{
     ImageView imageView;

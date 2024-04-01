@@ -1,4 +1,4 @@
-package com.example.filmapp;
+package com.example.filmapp.presentation;
 
 import android.content.Intent;
 import android.util.Log;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 
 import java.util.List;

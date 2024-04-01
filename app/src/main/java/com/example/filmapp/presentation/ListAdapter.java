@@ -1,4 +1,4 @@
-package com.example.filmapp;
+package com.example.filmapp.presentation;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.ListRecyclerViewInterface;
-import com.example.filmapp.Application.RecyclerViewInterface;
+import com.example.filmapp.application.ListRecyclerViewInterface;
+import com.example.filmapp.R;
 import com.example.filmapp.model.MovieList;
 
 import java.util.List;

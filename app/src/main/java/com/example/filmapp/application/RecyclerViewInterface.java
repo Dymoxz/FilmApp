@@ -1,4 +1,4 @@
-package com.example.filmapp.Application;
+package com.example.filmapp.application;
 
 import com.example.filmapp.model.Movie;
 

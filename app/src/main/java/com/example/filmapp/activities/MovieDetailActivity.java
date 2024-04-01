@@ -1,11 +1,8 @@
-package com.example.filmapp.Activities;
+package com.example.filmapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,7 +11,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.filmapp.Application.RecyclerViewInterface;
 import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -76,12 +72,12 @@ public class MovieDetailActivity extends AppCompatActivity{
 
         // Start review overview activity
         findViewById(R.id.openReviewOverviewButton).setOnClickListener(v -> {
-            String movieId = String.valueOf(movie.getId());
+            int movieId = (movie.getId());
             // Putting movieId in intent in order to fetch the right reviews
-            Log.d("MovieDetailActivity", "Movie ID: " + movie.getId());
-            Intent intent1 = new Intent(MovieDetailActivity.this, ReviewOverviewActivity.class);
-            intent1.putExtra("MOVIE_ID", movie.getId());
-            startActivity(intent1);
+            Log.d("MovieDetailActivity", "Movie ID: " + movieId);
+            Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
+            intentReview.putExtra("MOVIE_ID", movieId);
+            startActivity(intentReview);
         });
 
     }

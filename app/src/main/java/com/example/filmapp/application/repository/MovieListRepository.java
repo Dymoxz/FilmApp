@@ -1,11 +1,9 @@
-package com.example.filmapp.Application.repository;
+package com.example.filmapp.application.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.filmapp.Data.Database;
-import com.example.filmapp.Data.MovieDao;
-import com.example.filmapp.Data.MovieListDao;
-import com.example.filmapp.model.Movie;
+import com.example.filmapp.data.Database;
+import com.example.filmapp.data.MovieListDao;
 import com.example.filmapp.model.MovieList;
 
 import java.util.List;

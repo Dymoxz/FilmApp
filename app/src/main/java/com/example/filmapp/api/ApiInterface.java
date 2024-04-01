@@ -46,6 +46,7 @@ public interface ApiInterface {
     Call<MovieReviewResponse> getReviews(
             @Path("movie_id") int movieId,
             @Query("api_key") String apiKey
+
     );
 
 }

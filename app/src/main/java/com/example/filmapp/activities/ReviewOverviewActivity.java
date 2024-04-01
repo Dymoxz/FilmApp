@@ -1,11 +1,9 @@
-package com.example.filmapp.Activities;
+package com.example.filmapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.MovieReviewAdapter;
+import com.example.filmapp.presentation.MovieReviewAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
@@ -40,9 +38,9 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_overview_activity);
-
+        Intent intent = getIntent();
         // Retrieving movieId from intent
-        int movieId = getIntent().getIntExtra("MOVIE_ID", -1);
+        int movieId = intent.getIntExtra("MOVIE_ID", -1);
         Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
 
 
@@ -64,23 +62,18 @@ public class ReviewOverviewActivity extends AppCompatActivity {
 
         // Start WriteReviewActivity through floating action button
         findViewById(R.id.fab).setOnClickListener(view ->
-                startActivity(new Intent(ReviewOverviewActivity.this, WriteReviewActivity.class))
+                startActivity(new Intent(this, WriteReviewActivity.class))
         );
 
         // Retrieve movie ID from intent MovieDetailActivity
-        Intent intent1 = getIntent();
+
         Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
-        if (intent1 != null) {
-            movieId = intent1.getIntExtra("MOVIE_ID", -1);
-            if (movieId != -1) {
-                Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
-                // Fetch reviews for this movie ID and display them
-                fetchMovieReviews(movieId);
-            } else {
-                Log.e("ReviewOverviewActivity", "Movie ID not received");
-            }
+        if (movieId != -1) {
+            Log.d("ReviewOverviewActivity", "Call api with received movie ID: " + movieId);
+            // Fetch reviews for this movie ID and display them
+            fetchMovieReviews(movieId);
         } else {
-            Log.e("ReviewOverviewActivity", "Intent is null");
+            Log.e("ReviewOverviewActivity", "Movie ID not received");
         }
     }
 
@@ -99,7 +92,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
 
     // Method to fetch movie reviews
     private void fetchMovieReviews(int movieId) {
-        Call<MovieReviewResponse> call = apiInterface.getReviews(movieId, API_KEY);
+        Call<MovieReviewResponse> call = apiInterface.getReviews(278, API_KEY);
         call.enqueue(new Callback<MovieReviewResponse>() {
             @Override
             public void onResponse(Call<MovieReviewResponse> call, Response<MovieReviewResponse> response) {
@@ -111,7 +104,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                         reviewList.addAll(movieReviewResponse.getReviews());
                         adapter.notifyDataSetChanged();
                     } else {
-                        Log.e("API error", "Failed to fetch the movie reviews: " + response.message());
+                        Log.e("API error", "Failed to fetch the movie reviews because response is null: " + response.message());
                     }
                 }
             }
@@ -120,6 +113,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<MovieReviewResponse> call, Throwable t) {
                 Log.e("API error", "Failed to fetch the movie reviews: " + t.getMessage());
+                t.printStackTrace(); // Print the stack trace
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.example.filmapp;
+package com.example.filmapp.presentation;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,16 +8,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.RecyclerViewInterface;
-import com.example.filmapp.Application.repository.GenreRepository;
-import com.example.filmapp.Application.viewmodel.GenreViewModel;
-import com.example.filmapp.Data.Database;
-import com.example.filmapp.model.Genre;
+import com.example.filmapp.application.RecyclerViewInterface;
+import com.example.filmapp.application.viewmodel.GenreViewModel;
+import com.example.filmapp.R;
 import com.example.filmapp.model.Movie;
 import com.squareup.picasso.Picasso;
 

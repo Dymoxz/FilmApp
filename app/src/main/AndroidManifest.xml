@@ -14,7 +14,7 @@
         android:theme="@style/Theme.FilmApp"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,18 +22,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.ListsActivity">
+        <activity android:name=".activities.ListsActivity">
 
         </activity>
-        <activity android:name=".Activities.ListDetailActivity" android:parentActivityName=".Activities.ListsActivity">
+        <activity android:name=".activities.ListDetailActivity" android:parentActivityName=".activities.ListsActivity">
 
         </activity>
-        <activity android:name=".Activities.MovieDetailActivity" android:parentActivityName=".Activities.MainActivity">
+        <activity android:name=".activities.MovieDetailActivity" android:parentActivityName=".activities.MainActivity">
 
         </activity>
-        <activity android:name=".Activities.ReviewOverviewActivity" android:parentActivityName=".Activities.MovieDetailActivity"/>
+        <activity android:name=".activities.ReviewOverviewActivity" android:parentActivityName=".activities.MovieDetailActivity"/>
 
-        <activity android:name=".Activities.WriteReviewActivity" android:parentActivityName=".Activities.ReviewOverviewActivity"/>
+        <activity android:name=".activities.WriteReviewActivity" android:parentActivityName=".activities.ReviewOverviewActivity"/>
 
     </application>
 

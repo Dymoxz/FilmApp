@@ -1,4 +1,4 @@
-package com.example.filmapp.Activities;
+package com.example.filmapp.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,17 +19,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.Application.ListRecyclerViewInterface;
-import com.example.filmapp.Application.repository.MovieListRepository;
-import com.example.filmapp.Application.viewmodel.MovieListViewModel;
-import com.example.filmapp.Data.Database;
-import com.example.filmapp.ListAdapter;
+import com.example.filmapp.application.ListRecyclerViewInterface;
+import com.example.filmapp.application.repository.MovieListRepository;
+import com.example.filmapp.application.viewmodel.MovieListViewModel;
+import com.example.filmapp.data.Database;
+import com.example.filmapp.presentation.ListAdapter;
 import com.example.filmapp.R;
-import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieList;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
 
 public class ListsActivity extends AppCompatActivity implements ListRecyclerViewInterface {

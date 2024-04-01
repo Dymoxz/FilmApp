@@ -1,9 +1,9 @@
-package com.example.filmapp.Application.viewmodel;
+package com.example.filmapp.application.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.filmapp.Application.repository.MovieListRepository;
+import com.example.filmapp.application.repository.MovieListRepository;
 import com.example.filmapp.model.MovieList;
 
 import java.util.List;

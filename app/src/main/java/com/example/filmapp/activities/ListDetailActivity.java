@@ -1,4 +1,4 @@
-package com.example.filmapp.Activities;
+package com.example.filmapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,16 +6,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.filmapp.Application.repository.MovieListRepository;
-import com.example.filmapp.Application.viewmodel.MovieListViewModel;
-import com.example.filmapp.Data.Database;
+import com.example.filmapp.application.repository.MovieListRepository;
+import com.example.filmapp.application.viewmodel.MovieListViewModel;
+import com.example.filmapp.data.Database;
 import com.example.filmapp.R;
 
 public class ListDetailActivity extends AppCompatActivity {
