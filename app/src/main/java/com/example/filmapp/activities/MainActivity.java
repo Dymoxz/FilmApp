@@ -171,10 +171,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
         if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No movies found", Toast.LENGTH_SHORT).show();
+            recyclerView.setAdapter(null);
         } else {
             Log.d("aaa", "no yet set");
-            ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
+            if ((MyAdapter) recyclerView.getAdapter() != null) {
+                ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
+            } else {
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), filteredList, MainActivity.this, genreViewModel, MainActivity.this);
+                recyclerView.setAdapter(adapter);
+            }
+
         }
     }
 
