@@ -69,7 +69,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
             if (movieIdList != null) {
                 List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
                 if (movieIdListInt == null) {
-                    movieIdListInt = new ArrayList<>(); // Initialize the list if null
+                    movieIdListInt = new ArrayList<>();
                 }
                 amountLiveData.setValue(String.valueOf(movieIdListInt.size()));
             }
@@ -84,17 +84,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
 
 
         if (movieList.getName().equals("Favorites")) {
-            holder.imageView.setImageResource(R.drawable.baseline_format_list_bulleted_24);
+            holder.imageView.setImageResource(R.drawable.baseline_favorite_24);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (recyclerViewInterface !=null) {
-                    recyclerViewInterface.onItemClick(movieList);
-                }
-                else {
-                    Log.v("aaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaa");
-                }
+        else if (movieList.getName().equals("Watch later")) {
+            holder.imageView.setImageResource(R.drawable.baseline_watch_later_24);
+        }
+        holder.itemView.setOnClickListener(v -> {
+            if (recyclerViewInterface !=null) {
+                recyclerViewInterface.onItemClick(movieList);
+            }
+            else {
+                Log.v("aaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaa");
             }
         });
     }
