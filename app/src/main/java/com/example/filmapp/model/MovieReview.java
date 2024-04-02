@@ -27,6 +27,16 @@ public class MovieReview {
     @SerializedName("content")
     private String reviewContent;
 
+    @SerializedName("movieId")
+    private int movieId;
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+
     public String getId() {
         return id;
     }

@@ -117,6 +117,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                         reviewList.clear();
                         reviewList.addAll(movieReviewResponse.getReviews());
                         for (MovieReview review : reviewList){
+                            review.setMovieId(movieId);
                             movieReviewViewModel.insertMovieReview(review);
                         }
                         reviewCountView.setText(String.valueOf(reviewList.size()));
