@@ -53,7 +53,10 @@ public interface ApiInterface {
     );
 
     @POST("movie/{movie_id}/rating")
-    Call<Void> postMovieRating(@Path("movie_id") int movieId, @Body RatingRequestBody requestBody);
+    Call<Void> postMovieRating(
+            @Path("movie_id") int movieId,
+            @Body RatingRequestBody ratingRequestBody
+    );
 
 
 

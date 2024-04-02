@@ -288,8 +288,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         return false;
     }
 
-    //method for posting Rating to Api
-    // Make the API call to post the rating
+
     private void postRatingToApi(int movieId, float ratingValue) {
         RatingRequestBody requestBody = new RatingRequestBody(ratingValue);
         Log.d("MovieDetailActivity", "RatingRequestBody: " + requestBody + "Rating: " + ratingValue + "movieId: " + movieId);
@@ -301,20 +300,19 @@ public class MovieDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // Rating posted successfully
                     Log.d("MovieDetailActivity", "Rating posted succesfully");
-                    Toast.makeText(getApplicationContext(), "Rating posted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieDetailActivity.this, "Rating posted successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     // Rating posting failed
                     Log.d("MovieDetailActivity", "Rating post failed");
-                    Toast.makeText(getApplicationContext(), "Failed to post rating", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 // Handle failure
-                Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage());
-                t.printStackTrace(); // Print stack trace for detailed error information
-                Toast.makeText(getApplicationContext(), "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
+                Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
