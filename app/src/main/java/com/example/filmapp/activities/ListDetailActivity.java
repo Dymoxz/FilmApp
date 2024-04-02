@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -53,12 +54,15 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
     private MovieViewModel movieViewModel;
     private List<Movie> movieList = new ArrayList<>();
     private RecyclerView recyclerView;
+    private SearchView searchView;
     private GenreViewModel genreViewModel;
     private LinearLayout linearLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_activity);
+        searchView = findViewById(R.id.listSearchBar);
+        searchView.clearFocus();
 
         amountView = findViewById(R.id.amount);
         listTextView = findViewById(R.id.listTitle);
@@ -76,6 +80,19 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         } catch (Exception e) {
             Log.v("ERROR", "no list found" + e);
         }
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,6 +149,32 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         });
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);
+    }
+
+    private void filterList(String text) {
+        List<Movie> filteredList = new ArrayList<>();
+        if (movieList != null) {
+            for (Movie movie : movieList) {
+                if (movie.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(movie);
+                }
+            }
+        }
+
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No movies found", Toast.LENGTH_SHORT).show();
+            recyclerView.setAdapter(null);
+        } else {
+            Log.d("aaa", "no yet set");
+            if ((MyAdapter) recyclerView.getAdapter() != null) {
+                ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
+            } else {
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), filteredList, ListDetailActivity.this, genreViewModel, ListDetailActivity.this, getClass().getSimpleName());
+                recyclerView.setAdapter(adapter);
+            }
+
+        }
     }
 
     @Override
