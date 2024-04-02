@@ -1,6 +1,7 @@
 package com.example.filmapp.activities;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -305,18 +307,41 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             if (direction == ItemTouchHelper.LEFT){
                 //logic for swiping right, add to favorites
                 addMovieIdToList("Favorites", movie.getId());
+                recyclerView.getAdapter().notifyItemChanged(position);
                 Log.v("MainActivity", "Added " + movie.getId() + " to favorites");
                 Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to favorites", Snackbar.LENGTH_LONG);
                 snackbar.show();
-
             }
             else if (direction == ItemTouchHelper.RIGHT){
                 //logic for swiping right, add to watchlater
                 addMovieIdToList("Watch later", movie.getId());
+                recyclerView.getAdapter().notifyItemChanged(position);
                 Log.v("MainActivity", "Added " + movie.getId() + " to watch later");
                 Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to watch later", Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftLabel("Add to favorites")
+                    .setSwipeLeftLabelColor(getResources().getColor(R.color.white))
+                    .addSwipeLeftActionIcon(R.drawable.baseline_favorite_24)
+                    .setActionIconTint(getResources().getColor(R.color.white))
+                    .addSwipeLeftBackgroundColor(getResources().getColor(R.color.green))
+
+                    .addSwipeRightLabel("Add to watch later")
+                    .setSwipeRightLabelColor(getResources().getColor(R.color.white))
+                    .addSwipeRightActionIcon(R.drawable.baseline_watch_later_24)
+                    .setActionIconTint(getResources().getColor(R.color.white))
+                    .addSwipeRightBackgroundColor(getResources().getColor(R.color.blue))
+
+                    .create()
+                    .decorate();
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
 

@@ -31,6 +31,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.retrofit)
@@ -38,6 +39,7 @@ dependencies {
     implementation(libs.retrofitGsonConverter)
 
     implementation(libs.picasso)
+    implementation("com.github.xabaras:RecyclerViewSwipeDecorator:1.3")
 
     implementation(libs.room.runtime)
     implementation(libs.room.common)
