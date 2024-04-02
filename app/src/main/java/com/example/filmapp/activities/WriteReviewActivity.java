@@ -44,7 +44,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
 
         }
         MovieReviewRepository movieReviewRepository = new MovieReviewRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieReviewDao());

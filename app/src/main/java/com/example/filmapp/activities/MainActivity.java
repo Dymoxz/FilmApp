@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
 
         }
 

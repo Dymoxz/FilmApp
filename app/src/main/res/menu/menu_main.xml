@@ -4,19 +4,4 @@
     xmlns:tools="http://schemas.android.com/tools"
      >
 
-
-        <item android:title="Filter"
-           android:id="@+id/filterOption"
-            android:icon="@drawable/bars_filter"
-            app:showAsAction="ifRoom"
-            >
-        <menu>
-            <item android:id="@+id/filter1"
-                android:title="@string/filter_1"
-                app:showAsAction="always"/>
-            <item android:id="@+id/filter2"
-                android:title="@string/filter_2"
-                app:showAsAction="always"/>
-        </menu>
-    </item>
 </menu>

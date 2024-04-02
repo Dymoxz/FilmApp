@@ -72,7 +72,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
         }
 
         ImageButton leftArrowImageButton = findViewById(R.id.leftArrowImageButton);
