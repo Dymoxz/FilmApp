@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -147,9 +148,16 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             startActivity(Intent.createChooser(shareIntent, "Share App Locker"));
             return true;
         } else if (item.getItemId() == R.id.delete) {
-            movieListViewModel.deleteMovieList(listName);
-            Log.v("ListDetailActivity", "deleted list with name " + listName);
-            changeActivityToListDetail();
+            if (listName.equals("Favorites") || listName.equals("Watch later")){
+                Toast.makeText(this, "Cannot delete " + listName, Toast.LENGTH_SHORT).show();
+            }
+            else {
+                movieListViewModel.deleteMovieList(listName);
+                Log.v("ListDetailActivity", "deleted list with name " + listName);
+                changeActivityToListDetail();
+            }
+
+
         }
         return super.onOptionsItemSelected(item);
     }
