@@ -31,9 +31,9 @@ import com.example.filmapp.application.viewmodel.GenreViewModel;
 import com.example.filmapp.application.viewmodel.MovieViewModel;
 import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
-import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.RatingRequestBody;
 import com.example.filmapp.model.Video;
 import com.example.filmapp.presentation.CarouselAdapter;
 import com.squareup.picasso.Picasso;
@@ -58,6 +58,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private SeekBar seekbar;
     private TextView ratingView;
     private int rating;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +71,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
+        // Initialize rating with a default value
+        rating = 0;
+
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
         }
 
         ImageButton leftArrowImageButton = findViewById(R.id.leftArrowImageButton);
@@ -166,7 +171,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 rating = progress;
                 ratingView.setText(String.valueOf(progress));
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -177,6 +181,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void onSubmitButton(View view) {
+        Log.d("MovieDetailActivity", "onSubmitButton movieId" + movie.getId() + "rating: " + rating);
+        int movieId = movie.getId();
+        postRatingToApi(movieId, rating);
     }
 
     private void getMovieTrailer(int movieId, String imagePath) {
@@ -228,8 +238,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (webViewUrl != null) {
             mediaItems.add(new MediaItem(null, webViewUrl));
         }
-        // Add other media items (images) as needed
-        // ...
         CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
         carouselRecyclerView.setAdapter(carouselAdapter);
     }
@@ -271,11 +279,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void onSubmitButton(View view){
-        Toast.makeText(getApplicationContext(), "You gave this movie a " + rating + "!", Toast.LENGTH_SHORT).show();
-
-    }
-
     // Method to check if RecyclerView is scrolled to the leftmost position
     private boolean isAtLeftMostPosition(RecyclerView recyclerView) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -285,4 +288,32 @@ public class MovieDetailActivity extends AppCompatActivity {
         return false;
     }
 
+
+    private void postRatingToApi(int movieId, float ratingValue) {
+        RatingRequestBody requestBody = new RatingRequestBody(ratingValue);
+        Log.d("MovieDetailActivity", "RatingRequestBody: " + requestBody + "Rating: " + ratingValue + "movieId: " + movieId);
+
+        Call<Void> call = apiInterface.postMovieRating(movieId, requestBody);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Rating posted successfully
+                    Log.d("MovieDetailActivity", "Rating posted succesfully");
+                    Toast.makeText(MovieDetailActivity.this, "Rating posted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Rating posting failed
+                    Log.d("MovieDetailActivity", "Rating post failed");
+                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Handle failure
+                Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
+                Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
