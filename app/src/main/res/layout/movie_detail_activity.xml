@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:background="#773302BC" />
 
+    <!-- RecyclerView for carousel -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/carouselRecyclerView"
         android:layout_width="match_parent"
@@ -25,6 +26,34 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         android:orientation="horizontal"/>
+
+    <!-- Left arrow -->
+    <ImageButton
+        android:id="@+id/leftArrowImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="start|center_vertical"
+        android:layout_alignTop="@id/carouselRecyclerView"
+        android:layout_alignBottom="@id/carouselRecyclerView"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/transparent"/>
+
+    <!-- Right arrow -->
+    <ImageButton
+        android:id="@+id/rightArrowImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_alignTop="@id/carouselRecyclerView"
+        android:layout_alignBottom="@id/carouselRecyclerView"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"/>
 
     <TextView
         android:layout_marginStart="10dp"
