@@ -1,15 +1,15 @@
 package com.example.filmapp.api.response;
 
-import com.example.filmapp.model.Cast;
+import com.example.filmapp.model.CastMember;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class CastResponse {
     @SerializedName("cast")
-    private List<Cast> cast;
+    private List<CastMember> cast;
 
-    public List<Cast> getCast() {
+    public List<CastMember> getCast() {
         return cast;
     }
 }

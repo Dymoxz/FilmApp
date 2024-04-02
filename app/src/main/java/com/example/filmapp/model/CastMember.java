@@ -3,16 +3,11 @@ package com.example.filmapp.model;
 import java.io.Serializable;
 
 
-public class Cast implements Serializable {
+public class CastMember implements Serializable {
     private String profilePath;
     private String name;
     private String character;
 
-    public Cast (String profilePath, String name, String character) {
-        this.profilePath = profilePath;
-        this.name = name;
-        this.character = character;
-    }
 
     public String getProfilePath() {
         return profilePath;
