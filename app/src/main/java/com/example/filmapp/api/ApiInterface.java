@@ -6,6 +6,7 @@ import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieReview;
+import com.example.filmapp.model.RatingRequestBody;
 
 import java.util.List;
 
