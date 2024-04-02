@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/main"
     android:layout_marginStart="2dp">
@@ -12,9 +13,17 @@
     android:layout_height="wrap_content"
         android:background="#773302BC" />
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/listSearchBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@id/buttonLayout"
+        android:background="@drawable/white_radius_bg"
+        app:iconifiedByDefault="false"
+        app:queryBackground="@android:color/transparent"
+        app:queryHint="Search" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

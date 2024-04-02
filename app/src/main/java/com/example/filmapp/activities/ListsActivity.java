@@ -56,6 +56,8 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
 
         }
 
+
+
         movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
             if (movieListsLiveData != null) {
                 movieLists = movieListsLiveData;
@@ -65,7 +67,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                 recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this, movieListViewModel, this));
             }
         });
-
 
     }
 
@@ -140,6 +141,7 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
 
         return nameExistsLiveData;
     }
+
 
 
 
