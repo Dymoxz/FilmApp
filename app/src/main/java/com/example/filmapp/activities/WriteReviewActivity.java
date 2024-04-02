@@ -28,11 +28,16 @@ public class WriteReviewActivity extends AppCompatActivity {
     private EditText lastNameEditText;
     private EditText reviewEditText;
     private MovieReviewViewModel movieReviewViewModel;
+    private int movieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_write_review_activity);
+
+        Intent intent = getIntent();
+        // Retrieving movieId from intent
+        movieId = intent.getIntExtra("MOVIE_ID", -1);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,6 +86,8 @@ public class WriteReviewActivity extends AppCompatActivity {
             movieReview.setDateCreated(LocalDate.now().toString());
             movieReview.setAuthor(firstName + " " + lastName);
             movieReview.setId(reviewId);
+            movieReview.setMovieId(movieId);
+
             movieReviewViewModel.insertMovieReview(movieReview);
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

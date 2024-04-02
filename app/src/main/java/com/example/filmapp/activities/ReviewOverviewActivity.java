@@ -75,7 +75,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
 
         // Start WriteReviewActivity through floating action button
         findViewById(R.id.fab).setOnClickListener(view ->
-                startActivity(new Intent(this, WriteReviewActivity.class))
+                startActivity(new Intent(this, WriteReviewActivity.class).putExtra("MOVIE_ID", movieId))
         );
 
         // Retrieve movie ID from intent MovieDetailActivity
