@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.filmapp.R;
 
 public class WriteReviewActivity extends AppCompatActivity {
+
+    private EditText firstNameEditText;
+    private EditText lastNameEditText;
+    private EditText reviewEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,9 @@ public class WriteReviewActivity extends AppCompatActivity {
 
         }
 
-
+        firstNameEditText = findViewById(R.id.writeReviewFirstName);
+        lastNameEditText = findViewById(R.id.writeReviewLastName);
+        reviewEditText = findViewById(R.id.writeReviewEditText);
 
     }
 
@@ -44,9 +53,18 @@ public class WriteReviewActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onSubmit(View view){
-        Intent intent = new Intent(this, ReviewOverviewActivity.class);
-        startActivity(intent);
-    }
+    public void onSubmitButton(View view) {
+        String firstName = firstNameEditText.getText().toString().trim();
+        String lastName = lastNameEditText.getText().toString().trim();
+        String review = reviewEditText.getText().toString().trim();
 
+        // Checks if a field is empty
+        if (firstName.isEmpty() || lastName.isEmpty() || review.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields before submitting", Toast.LENGTH_SHORT).show();
+        } else {
+           // Logic for adding a review to review section/database ??
+            Intent intent = new Intent(this, ReviewOverviewActivity.class);
+            startActivity(intent);
+        }
+    }
 }
