@@ -3,6 +3,7 @@ package com.example.filmapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,11 @@ public class WriteReviewActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onSubmit(View view){
+        Intent intent = new Intent(this, ReviewOverviewActivity.class);
+        startActivity(intent);
     }
 
 }
