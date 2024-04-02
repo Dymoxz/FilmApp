@@ -1,5 +1,6 @@
 package com.example.filmapp.api;
 
+import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.api.response.MoviesResponse;
@@ -46,7 +47,11 @@ public interface ApiInterface {
     Call<MovieReviewResponse> getReviews(
             @Path("movieId") int movieId,
             @Query("api_key") String apiKey
-
     );
 
+    @GET("movie/{movie_id}/credits")
+    Call<CastResponse> getCredits(
+            @Path("movie_id") int movieId,
+            @Query("api_key") String apiKey
+    );
 }
