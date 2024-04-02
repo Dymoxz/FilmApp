@@ -60,7 +60,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
-    private Call<CastResponse> allCastCall;
+
     private List<CastMember> castList;
     private SeekBar seekbar;
     private TextView ratingView;
@@ -74,7 +74,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         initViewModels();
 
-        getAllCastMembers();
+
 
 
 
@@ -128,10 +128,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         carouselRecyclerView.setLayoutManager(layoutManager);
 
 
-        RecyclerView movieDetailCastRecyclerView = findViewById(R.id.movieDetailCastRecyclerView);
-        movieDetailCastRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CastMemberAdapter castMemberAdapter = new CastMemberAdapter(castList);
-        movieDetailCastRecyclerView.setAdapter(castMemberAdapter);
+
+
 
         // Initialize views
         TextView titleTextView = findViewById(R.id.movieDetailTitle);
@@ -150,6 +148,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = (Movie) bundle.getSerializable("value");
             Log.d("DetailActivity", "got movie " + movie.getTitle());
         }
+
+        //GET ALL CAST MEMBERS AND DISPLAY IT
+        getAllCastMembers();
+
+
+
         if (movie != null) {
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
@@ -165,13 +169,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             genreTextView.setText(genreNames);
         });
 
-        movieViewModel.getImagePath(movie.getId()).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String imagePath) {
-                Log.d("MovieDetailActivity", "Image path: " + imagePath);
-                // Retrieve the imagePath and pass it to the getMovieTrailer method
-                getMovieTrailer(movie.getId(), imagePath);
-            }
+
+
+        movieViewModel.getImagePath(movie.getId()).observe(this, imagePath -> {
+            Log.d("MovieDetailActivity", "Image path: " + imagePath);
+            // Retrieve the imagePath and pass it to the getMovieTrailer method
+            getMovieTrailer(movie.getId(), imagePath);
         });
         findViewById(R.id.reviewContainer).setOnClickListener(v -> {
             int movieId = (movie.getId());
@@ -205,6 +208,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         int movieId = movie.getId();
         postRatingToApi(movieId, rating);
     }
+
 
     private void getMovieTrailer(int movieId, String imagePath) {
         Call<VideoResponse> call = apiInterface.getVideos(movieId, API_KEY, "en-US");
@@ -247,10 +251,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     public void getAllCastMembers() {
-        allCastCall = apiInterface.getCredits(movie.getId(), API_KEY);
-
+        Log.v("MovieDetail", "ruihgbdfyuigvbrtyigvbrtyiugvbrtv");
+        Call<CastResponse> call = apiInterface.getCredits(movie.getId(), API_KEY);
+        Log.v("MovieDetail", "---------------------");
         // Make the API call
-        allCastCall.enqueue(new Callback<CastResponse>() {
+        call.enqueue(new Callback<CastResponse>() {
             @Override
             public void onResponse(Call<CastResponse> call, Response<CastResponse> response) {
 
@@ -262,8 +267,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                         castList = castResponse.getCast();
                         for (CastMember castMember : castList) {
                             // Process each cast member here
-                            Log.d("CastMember", "Name: " + castMember.getName() + "\nCharacter: " + castMember.getCharacter());
+                            Log.d("MovieDetail", "Name: " + castMember.getName() + "\nCharacter: " + castMember.getCharacter());
                         }
+
+                        // Set up RecyclerView only when castList is available
+                        setupRecyclerView();
                     } else {
                         Log.e("API Error", "Cast response or cast list is null.");
                     }
@@ -273,7 +281,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             }
 
-
             @Override
             public void onFailure(Call<CastResponse> call, Throwable t) {
                 // Handle failure
@@ -281,6 +288,21 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setupRecyclerView() {
+        RecyclerView movieDetailCastRecyclerView = findViewById(R.id.movieDetailCastRecyclerView);
+        movieDetailCastRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if (castList != null && !castList.isEmpty()) {
+            Log.v("MovieDetail", "CAST MEMBERS FOUND");
+            CastMemberAdapter castMemberAdapter = new CastMemberAdapter(castList);
+            movieDetailCastRecyclerView.setAdapter(castMemberAdapter);
+        } else {
+            Log.v("MovieDetail", "NO CAST MEMBERS FOUND");
+            movieDetailCastRecyclerView.setVisibility(View.GONE); // Change to GONE
+        }
+    }
+
 
 
     private void addMediaToCarousel(WebView webView, String imagePath) {
