@@ -10,7 +10,9 @@ import com.example.filmapp.model.MovieReview;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -48,5 +50,9 @@ public interface ApiInterface {
             @Query("api_key") String apiKey
 
     );
+
+    @POST("movie/{movieId}/rating")
+    Call<Void> postRating(@Path("movieId") int movieId, @Body RatingRequestBody requestBody);
+
 
 }
