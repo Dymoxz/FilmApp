@@ -1,10 +1,12 @@
 package com.example.filmapp.activities;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ListDetailActivity extends AppCompatActivity implements RecyclerViewInterface {
     String listName;
@@ -197,11 +201,41 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             Log.v("AddToListActivity", "Trying to remove a movie from the list");
             int position = viewHolder.getAdapterPosition();
             Movie movie = movieList.get(position);
-            int movieName = movie.getId(); // Assuming getTitle() retrieves the movie name
-            Log.v("AddToListActivity", "Trying to remove movie " + movieName + " from the list");
-            removeMovieIdFromList(listName, movieName);
+            int movieId = movie.getId(); // Assuming getId() retrieves the movie id
+
+            Log.v("AddToListActivity", "Trying to remove movie " + movieId + " from the list");
+            removeMovieIdFromList(listName, movieId);
+
+            // Remove the item from the list
+            movieList.remove(position);
+            recyclerView.getAdapter().notifyItemRemoved(position);
+
+            if (movieList.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+            }
+
             Snackbar snackbar = Snackbar.make(linearLayout, "Item removed from the list!", Snackbar.LENGTH_LONG);
             snackbar.show();
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftLabel("Delete from list")
+                    .setSwipeLeftLabelColor(getResources().getColor(R.color.white))
+                    .addSwipeLeftActionIcon(R.drawable.baseline_delete_outline_24)
+                    .setActionIconTint(getResources().getColor(R.color.white))
+                    .addSwipeLeftBackgroundColor(getResources().getColor(com.google.android.material.R.color.design_default_color_error))
+                    .create()
+                    .decorate();
+
+            if (movieList.isEmpty()) {
+                // Dismiss the swipe decorator if the list is empty
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
 
