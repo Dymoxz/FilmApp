@@ -5,25 +5,34 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.filmapp.activities.ListsActivity;
 import com.example.filmapp.activities.MovieDetailActivity;
 import com.example.filmapp.application.repository.GenreRepository;
+import com.example.filmapp.application.repository.MovieListRepository;
 import com.example.filmapp.application.viewmodel.GenreViewModel;
+import com.example.filmapp.application.viewmodel.MovieListViewModel;
 import com.example.filmapp.application.viewmodel.MovieViewModel;
 import com.example.filmapp.application.RecyclerViewInterface;
 import com.example.filmapp.application.repository.Repository;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.IntegerListConverter;
+import com.example.filmapp.model.MovieList;
+import com.example.filmapp.presentation.ListAdapter;
 import com.example.filmapp.presentation.MyAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
@@ -32,6 +41,7 @@ import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private RecyclerView recyclerView;
     private SearchView searchView;
     private GenreViewModel genreViewModel;
+    private MovieListViewModel movieListViewModel;
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +77,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         searchView = findViewById(R.id.searchbar);
         searchView.clearFocus();
 
-        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
-        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
-        movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
-        // Initialize the GenreViewModel
-        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
-        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
-        genreViewModel.init(genreRepository);
-
+        initViewModels();
+        createStandardLists();
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-
+        relativeLayout = findViewById(R.id.main);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -156,7 +162,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
-
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
     }
 
     private void filterList(String text) {
@@ -211,12 +218,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         for (Movie movie : moviesResponse.getMovies()) {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
-
                             movieViewModel.insertMovie(movie);
-
                         }
-
-
                         MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
                         recyclerView.setAdapter(adapter);
 
@@ -288,5 +291,91 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Log.d("MainActivity", "clicked on movie: " + movie.getTitle());
         startActivity(intent);
     }
+
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            Movie movie = movies.get(position);
+            if (direction == ItemTouchHelper.LEFT){
+                //logic for swiping right, add to favorites
+                addMovieIdToList("Favorites", movie.getId());
+                Log.v("MainActivity", "Added " + movie.getId() + " to favorites");
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to favorites", Snackbar.LENGTH_LONG);
+                snackbar.show();
+
+            }
+            else if (direction == ItemTouchHelper.RIGHT){
+                //logic for swiping right, add to watchlater
+                addMovieIdToList("Watch later", movie.getId());
+                Log.v("MainActivity", "Added " + movie.getId() + " to watch later");
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to watch later", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        }
+    };
+
+    public void initViewModels(){
+        Repository repository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
+        movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
+        movieViewModel.init(repository); // Assuming you have an init() method in your MovieViewModel to initialize repository
+        // Initialize the GenreViewModel
+        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
+        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
+        // Initialize the MovieListViewModel
+        MovieListRepository movieListRepository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
+        movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
+        movieListViewModel.init(movieListRepository);
+
+    }
+
+    public void addMovieIdToList(String listName, int movieId) {
+        LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onChanged(String movieIdList) {
+                if (movieIdList != null) {
+                    List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
+                    if (movieIdListInt == null) {
+                        movieIdListInt = new ArrayList<>();
+                    }
+                    if (!movieIdListInt.contains(movieId)) {
+                        movieIdListInt.add(movieId);
+                    } else {
+                        Log.v("MainActivity", "Already in list: " + movieId);
+                    }
+                    String updatedMovieIdList = IntegerListConverter.fromList(movieIdListInt);
+                    movieListViewModel.updateMovieIdList(updatedMovieIdList, listName);
+                }
+                // Remove the observer after it's done
+                movieIdListLiveData.removeObserver(this);
+            }
+        };
+        movieIdListLiveData.observe(this, observer);
+    }
+
+    public void createStandardLists(){
+        movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
+            if (movieListsLiveData != null && movieListsLiveData.isEmpty()) {
+                // Add default lists if the database is empty
+                MovieList favorites = new MovieList("Favorites");
+                MovieList watchLater = new MovieList("Watch later");
+                movieListsLiveData.add(favorites);
+                movieListsLiveData.add(watchLater);
+                movieListViewModel.insertMovieList(favorites);
+                movieListViewModel.insertMovieList(watchLater);
+                Log.v("ListActivity", "Added Favorites and Watch later lists");
+            }
+        });
+
+    }
+
+
 }
 
