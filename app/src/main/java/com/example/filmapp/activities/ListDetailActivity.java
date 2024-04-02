@@ -121,7 +121,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
                 mediatorLiveData.observe(this, movies -> {
                     movieList.clear();
                     movieList.addAll(movies);
-                    MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this);
+                    MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this, getClass().getSimpleName());
                     recyclerView.setAdapter(adapter);
                 });
             }

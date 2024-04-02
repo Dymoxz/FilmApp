@@ -32,15 +32,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     String genreName;
     GenreViewModel genreViewModel;
     private LifecycleOwner lifecycleOwner;
+    private String parentActivityType;
 
     private final RecyclerViewInterface recyclerViewInterface;
 
-    public MyAdapter(Context context, List<Movie> movies, RecyclerViewInterface recyclerViewInterface, GenreViewModel genreViewModel, LifecycleOwner lifecycleOwner) {
+    public MyAdapter(Context context, List<Movie> movies, RecyclerViewInterface recyclerViewInterface, GenreViewModel genreViewModel, LifecycleOwner lifecycleOwner, String parentActivityType) {
         this.context = context;
         this.movies = movies;
         this.recyclerViewInterface = recyclerViewInterface;
         this.genreViewModel = genreViewModel;
         this.lifecycleOwner = lifecycleOwner;
+        this.parentActivityType = parentActivityType; // Initialize parent activity type
     }
 
     public void setFilteredList(List<Movie> filteredList) {
@@ -96,13 +98,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.imageButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, holder.imageButton);
 
-            popupMenu.getMenuInflater().inflate(R.menu.menu_movie_item, popupMenu.getMenu());
+            // Inflate different menu resources based on the parent activity type
+            if ("ListDetailActivity".equals(parentActivityType)) {
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu_list_movie, popupMenu.getMenu());
+            } else {
+                popupMenu.getMenuInflater().inflate(R.menu.menu_movie_item, popupMenu.getMenu());
+            }
+
             popupMenu.setOnMenuItemClickListener(menuItem -> {
-                Intent intent = new Intent(context, AddToListActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("MOVIE", movie);
-                context.startActivity(intent);
-//                Toast.makeText(context, "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                if (menuItem.getItemId() == R.id.addToList) {
+                    Intent intent = new Intent(context, AddToListActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("MOVIE", movie);
+                    context.startActivity(intent);
+                }
+                else if (menuItem.getItemId() == R.id.share) {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    String shareBody = "createShareText(MovieList)";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                    context.startActivity(Intent.createChooser(shareIntent, "Share App Locker")); // Start activity using the context
+                }
+                if (menuItem.getItemId() == R.id.removeFromList) {
+                    // remove movie id from list
+                }
                 return true;
             });
 
