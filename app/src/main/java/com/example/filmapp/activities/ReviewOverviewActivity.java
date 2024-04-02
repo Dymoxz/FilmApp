@@ -9,9 +9,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.filmapp.application.repository.MovieReviewRepository;
+import com.example.filmapp.application.repository.VideoRepository;
+import com.example.filmapp.application.viewmodel.MovieReviewViewModel;
+import com.example.filmapp.application.viewmodel.VideoViewModel;
+import com.example.filmapp.data.Database;
 import com.example.filmapp.presentation.MovieReviewAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
@@ -35,6 +41,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     private MovieReviewAdapter adapter;
     private List<MovieReview> reviewList = new ArrayList<>();
     private ApiInterface apiInterface;
+    private MovieReviewViewModel movieReviewViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,10 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MovieReviewAdapter(reviewList);
         recyclerView.setAdapter(adapter);
+
+        MovieReviewRepository movieReviewRepository = new MovieReviewRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieReviewDao());
+        movieReviewViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieReviewViewModel.class);
+        movieReviewViewModel.init(movieReviewRepository);
 
         // Initialize Retrofit API interface
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
@@ -105,6 +116,9 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                         // Clear the list before adding reviews
                         reviewList.clear();
                         reviewList.addAll(movieReviewResponse.getReviews());
+                        for (MovieReview review : reviewList){
+                            movieReviewViewModel.insertMovieReview(review);
+                        }
                         reviewCountView.setText(String.valueOf(reviewList.size()));
                         adapter.notifyDataSetChanged();
                     } else {
