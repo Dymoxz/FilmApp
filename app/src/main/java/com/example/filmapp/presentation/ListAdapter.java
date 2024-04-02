@@ -76,7 +76,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         });
         amountLiveData.observe(lifecycleOwner, amount -> {
             if (amount != null) {
-                holder.listSizeView.setText(amount);
+                holder.listSizeView.setText("Movies: " + amount);
             } else {
                 holder.listSizeView.setText("0");
             }
