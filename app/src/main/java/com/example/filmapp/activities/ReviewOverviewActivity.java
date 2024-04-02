@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +42,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     private TextView reviewCountView;
     private MovieReviewAdapter adapter;
     private List<MovieReview> reviewList = new ArrayList<>();
+    private List<MovieReview> reviewListFromDatabase = new ArrayList<>();
     private ApiInterface apiInterface;
     private MovieReviewViewModel movieReviewViewModel;
 
@@ -47,20 +50,39 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_overview_activity);
+
+        reviewCountView = findViewById(R.id.reviewOverviewCount);
+        recyclerView = findViewById(R.id.reviewOverviewRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Intent intent = getIntent();
         // Retrieving movieId from intent
         int movieId = intent.getIntExtra("MOVIE_ID", -1);
         Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
 
-        reviewCountView = findViewById(R.id.reviewOverviewCount);
-        recyclerView = findViewById(R.id.reviewOverviewRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MovieReviewAdapter(reviewList);
-        recyclerView.setAdapter(adapter);
-
         MovieReviewRepository movieReviewRepository = new MovieReviewRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieReviewDao());
         movieReviewViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieReviewViewModel.class);
         movieReviewViewModel.init(movieReviewRepository);
+
+        if (movieId != 0) {
+            movieReviewViewModel.getReviewsForMovie(movieId).observe(this, movieReviews -> {
+                // Update your reviewListFromDatabase variable here
+                // Make sure to handle null or empty list cases appropriately
+                if (movieReviews != null && !movieReviews.isEmpty()) {
+                    reviewListFromDatabase = movieReviews;
+                    adapter = new MovieReviewAdapter(reviewListFromDatabase);
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    Log.v("ReviewOverviewActivity", "review list is empty");
+//                adapter = new MovieReviewAdapter(reviewList);
+//                recyclerView.setAdapter(adapter);
+                    recyclerView.setVisibility(View.GONE); // Hide the RecyclerView
+                }
+            });
+        }
+
+
+
 
         // Initialize Retrofit API interface
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
@@ -121,7 +143,13 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                             movieReviewViewModel.insertMovieReview(review);
                         }
                         reviewCountView.setText(String.valueOf(reviewList.size()));
-                        adapter.notifyDataSetChanged();
+                        if (adapter == null) {
+                            adapter = new MovieReviewAdapter(reviewList);
+                            recyclerView.setAdapter(adapter);
+                        } else {
+                            // Adapter already exists, just notify it
+                            adapter.notifyDataSetChanged();
+                        }
                     } else {
                         Log.e("API error", "Failed to fetch the movie reviews because response is null: " + response.message());
                     }

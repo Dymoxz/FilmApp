@@ -18,4 +18,7 @@ public interface MovieReviewDao {
 
     @Query("SELECT * FROM MovieReview")
     LiveData<List<MovieReview>> getAllMovieReviews();
+
+    @Query("SELECT * FROM MovieReview WHERE movieId == :movie  ")
+    LiveData<List<MovieReview>> getAllReviewsForMovie(int movie);
 }

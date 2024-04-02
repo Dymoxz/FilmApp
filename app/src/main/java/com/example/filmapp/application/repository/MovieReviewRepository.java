@@ -26,6 +26,9 @@ public class MovieReviewRepository {
 
     public LiveData<List<MovieReview>> getAllMovieReviews() { return listMovieReviews; }
 
+    public LiveData<List<MovieReview>> getReviewsForMovie(int movieId) {
+        return movieReviewDao.getAllReviewsForMovie(movieId);
+    }
 
     public void insertMovieReview(MovieReview movieReview) {
         database.databaseWriteExecutor.execute(() -> movieReviewDao.insertMovieReview(movieReview));

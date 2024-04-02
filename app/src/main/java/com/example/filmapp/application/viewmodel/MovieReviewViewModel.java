@@ -33,5 +33,10 @@ public class MovieReviewViewModel extends ViewModel {
         repository.insertMovieReview(movieReview);
     }
 
+    public LiveData<List<MovieReview>> getReviewsForMovie(int movieId) {
+        return repository.getReviewsForMovie(movieId);
+    }
+
+
 
 }
