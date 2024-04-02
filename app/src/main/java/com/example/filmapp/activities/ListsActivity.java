@@ -46,13 +46,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
 
-        //if (movieListsLiveData.isEmpty()){
-        //                    MovieList favorites = new MovieList("Favorites");
-        //                    MovieList watchLater = new MovieList("Watch later");
-        //                    movieLists.add(favorites);
-        //                    movieLists.add(watchLater);
-        //                    Log.v("ListActivity", "Added favoires");
-        //                }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,20 +59,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
             if (movieListsLiveData != null) {
                 movieLists = movieListsLiveData;
-
-                // Check if the movie lists are empty
-//                if (movieLists.isEmpty()) {
-//                    // Add default lists if the database is empty
-//                    MovieList favorites = new MovieList("Favorites");
-//                    MovieList watchLater = new MovieList("Watch later");
-//                    movieLists.add(favorites);
-//                    movieLists.add(watchLater);
-//                    movieListViewModel.insertMovieList(favorites);
-//                    movieListViewModel.insertMovieList(watchLater);
-//
-//                    Log.v("ListActivity", "Added Favorites and Watch later lists");
-//                }
-
                 // Set up the RecyclerView with the movie lists
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
