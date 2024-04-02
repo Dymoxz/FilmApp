@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     @Override
                     public void onChanged(List<Movie> movieList) {
                         movies = movieList;
-                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
 
                         recyclerView.setAdapter(adapter);
 
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             if ((MyAdapter) recyclerView.getAdapter() != null) {
                 ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
             } else {
-                MyAdapter adapter = new MyAdapter(getApplicationContext(), filteredList, MainActivity.this, genreViewModel, MainActivity.this);
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), filteredList, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
                 recyclerView.setAdapter(adapter);
             }
 
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
                             movieViewModel.insertMovie(movie);
                         }
-                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this);
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
                         recyclerView.setAdapter(adapter);
 
 //                        ImageView imageView = findViewById(R.id.imageView);
