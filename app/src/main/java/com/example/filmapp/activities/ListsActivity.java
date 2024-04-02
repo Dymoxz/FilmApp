@@ -46,6 +46,7 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
 
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -57,7 +58,8 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
 
         movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
             if (movieListsLiveData != null) {
-                movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
+                movieLists = movieListsLiveData;
+                // Set up the RecyclerView with the movie lists
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this, movieListViewModel, this));
