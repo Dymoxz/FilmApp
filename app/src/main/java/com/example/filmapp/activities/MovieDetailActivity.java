@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
+import com.example.filmapp.api.response.CastResponse;
+import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.Repository;
@@ -31,11 +33,14 @@ import com.example.filmapp.application.viewmodel.GenreViewModel;
 import com.example.filmapp.application.viewmodel.MovieViewModel;
 import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.CastMember;
+import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.RatingRequestBody;
 import com.example.filmapp.model.Video;
 import com.example.filmapp.presentation.CarouselAdapter;
+import com.example.filmapp.presentation.CastMemberAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -55,6 +60,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
+    private Call<CastResponse> allCastCall;
+    private List<CastMember> castList;
     private SeekBar seekbar;
     private TextView ratingView;
     private int rating;
@@ -66,6 +73,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
 
         initViewModels();
+
+        getAllCastMembers();
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,6 +126,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         carouselRecyclerView.setLayoutManager(layoutManager);
+
+
+        RecyclerView movieDetailCastRecyclerView = findViewById(R.id.movieDetailCastRecyclerView);
+        movieDetailCastRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CastMemberAdapter castMemberAdapter = new CastMemberAdapter(castList);
+        movieDetailCastRecyclerView.setAdapter(castMemberAdapter);
 
         // Initialize views
         TextView titleTextView = findViewById(R.id.movieDetailTitle);
@@ -225,7 +242,46 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
+
+
     }
+
+    public void getAllCastMembers() {
+        allCastCall = apiInterface.getCredits(movie.getId(), API_KEY);
+
+        // Make the API call
+        allCastCall.enqueue(new Callback<CastResponse>() {
+            @Override
+            public void onResponse(Call<CastResponse> call, Response<CastResponse> response) {
+
+                if (response.isSuccessful()) {
+                    // Handle successful response here
+                    CastResponse castResponse = response.body();
+
+                    if (castResponse != null && castResponse.getCast() != null) {
+                        castList = castResponse.getCast();
+                        for (CastMember castMember : castList) {
+                            // Process each cast member here
+                            Log.d("CastMember", "Name: " + castMember.getName() + "\nCharacter: " + castMember.getCharacter());
+                        }
+                    } else {
+                        Log.e("API Error", "Cast response or cast list is null.");
+                    }
+                } else {
+                    // Handle error response
+                    Log.e("API Error", "Failed to fetch cast members: " + response.message());
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<CastResponse> call, Throwable t) {
+                // Handle failure
+                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
+            }
+        });
+    }
+
 
     private void addMediaToCarousel(WebView webView, String imagePath) {
         List<MediaItem> mediaItems = new ArrayList<>();

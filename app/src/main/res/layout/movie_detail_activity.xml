@@ -7,9 +7,9 @@
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
 
-    >
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -192,6 +192,19 @@
         android:text="@string/cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <!-- RecyclerView for cast members -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/movieDetailCastRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movieDetailCastText"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp" />
+
+
 <ListView
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
