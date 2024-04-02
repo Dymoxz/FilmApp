@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -73,6 +74,38 @@ public class MovieDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.home_icon_silhouette);
         }
+
+        ImageButton leftArrowImageButton = findViewById(R.id.leftArrowImageButton);
+        ImageButton rightArrowImageButton = findViewById(R.id.rightArrowImageButton);
+
+        leftArrowImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check if the RecyclerView is already scrolled to the leftmost position
+                if (isAtLeftMostPosition(carouselRecyclerView)) {
+                    // Scroll RecyclerView fully to the right
+                    carouselRecyclerView.scrollToPosition(carouselRecyclerView.getAdapter().getItemCount() - 1);
+                } else {
+                    // Scroll RecyclerView fully to the left
+                    carouselRecyclerView.scrollToPosition(0);
+                }
+            }
+        });
+
+        rightArrowImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //check position
+                if (isAtLeftMostPosition(carouselRecyclerView)) {
+                    // Scroll RecyclerView fully to the right
+                    carouselRecyclerView.scrollToPosition(carouselRecyclerView.getAdapter().getItemCount() - 1);
+                } else {
+                    // Scroll RecyclerView fully to the left
+                    carouselRecyclerView.scrollToPosition(0);
+                }
+
+            }
+        });
 
         carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -241,6 +274,15 @@ public class MovieDetailActivity extends AppCompatActivity {
     public void onSubmitButton(View view){
         Toast.makeText(getApplicationContext(), "You gave this movie a " + rating + "!", Toast.LENGTH_SHORT).show();
 
+    }
+
+    // Method to check if RecyclerView is scrolled to the leftmost position
+    private boolean isAtLeftMostPosition(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (layoutManager != null) {
+            return layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
+        }
+        return false;
     }
 
 }
