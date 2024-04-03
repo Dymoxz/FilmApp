@@ -69,11 +69,10 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         recyclerView = findViewById(R.id.recyclerView);
         linearLayout = findViewById(R.id.main);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
-        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
-        genreViewModel.init(genreRepository);
+
 
         Intent intent = getIntent();
+        initViewModel();
         try {
             listName = intent.getStringExtra("listName");
             Log.v("ListDetailActivity", "List Name: " + listName);
@@ -108,47 +107,16 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             listTextView.setText(listName);
         }
 
-        getAmountOfMovies().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String amount) {
-                if (amount != null) {
-                    amountView.setText("Movies: " + amount);
-                } else {
-                    amountView.setText("0");
-                }
+        getAmountOfMovies().observe(this, amount -> {
+            if (amount != null) {
+                amountView.setText("Movies: " + amount);
+            } else {
+                amountView.setText("0");
             }
         });
 
-        initViewModel();
-        LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
-        movieIdListLiveData.observe(this, movieIdList -> {
-            if (movieIdList != null) {
-                // Convert the retrieved string into a list of integers
-                List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
-                if (movieIdListInt == null) {
-                    movieIdListInt = new ArrayList<>(); // Initialize the list if null
-                }
-                MediatorLiveData<List<Movie>> mediatorLiveData = new MediatorLiveData<>();
-                for (int id : movieIdListInt) {
-                    LiveData<Movie> movieLiveData = movieViewModel.getMovie(id);
-                    mediatorLiveData.addSource(movieLiveData, movie -> {
-                        List<Movie> newList = mediatorLiveData.getValue();
-                        if (newList == null) {
-                            newList = new ArrayList<>();
-                        }
-                        newList.add(movie);
-                        mediatorLiveData.setValue(newList);
-                    });
-                }
 
-                mediatorLiveData.observe(this, movies -> {
-                    movieList.clear();
-                    movieList.addAll(movies);
-                    MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this, getClass().getSimpleName());
-                    recyclerView.setAdapter(adapter);
-                });
-            }
-        });
+        setMovieList();
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);
     }
@@ -189,32 +157,9 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share) {
-            // Handle share action
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-
-            StringBuilder shareBuilder = new StringBuilder();
-
-            shareBuilder.append("*" + listName + "*\n");
-            for (Movie movie : movieList) {
-                shareBuilder.append(movie.getTitle() + "\n");
-            }
-
-            String shareBody = String.valueOf(shareBuilder);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(shareIntent, "Share App Locker"));
-            return true;
+            shareList();
         } else if (item.getItemId() == R.id.delete) {
-            if (listName.equals("Favorites") || listName.equals("Watch later")){
-                Toast.makeText(this, "Cannot delete " + listName, Toast.LENGTH_SHORT).show();
-            }
-            else {
-                movieListViewModel.deleteMovieList(listName);
-                Log.v("ListDetailActivity", "deleted list with name " + listName);
-                changeActivityToListDetail();
-            }
-
-
+            deleteList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -241,6 +186,9 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         Repository movieRepository = new Repository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieDao());
         movieViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieViewModel.class);
         movieViewModel.init(movieRepository);
+        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
+        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
     }
 
     ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -328,7 +276,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             }
         });
     }
-    public LiveData<String> getAmountOfMovies(){
+    public LiveData<String> getAmountOfMovies() {
         if (movieListViewModel == null) {
             // Initialize movieListViewModel if not initialized
             MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
@@ -352,10 +300,68 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         });
 
         return amountLiveData;
-    }
 
+    }
+        public void deleteList(){
+            if (listName.equals("Favorites") || listName.equals("Watch later")){
+                Toast.makeText(this, "Cannot delete " + listName, Toast.LENGTH_SHORT).show();
+            }
+            else {
+                movieListViewModel.deleteMovieList(listName);
+                Log.v("ListDetailActivity", "deleted list with name " + listName);
+                changeActivityToListDetail();
+            }
+        }
+
+        public void shareList() {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            StringBuilder shareBuilder = new StringBuilder();
+            shareBuilder.append("*").append(listName).append("*\n");
+            for (Movie movie : movieList) {
+                shareBuilder.append(movie.getTitle()).append("\n");
+            }
+            String shareBody = String.valueOf(shareBuilder);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(shareIntent, "Share App Locker"));
+        }
+
+        public void setMovieList(){
+            LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
+            movieIdListLiveData.observe(this, movieIdList -> {
+                if (movieIdList != null) {
+                    // Convert the retrieved string into a list of integers
+                    List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
+                    if (movieIdListInt == null) {
+                        movieIdListInt = new ArrayList<>(); // Initialize the list if null
+                    }
+                    MediatorLiveData<List<Movie>> mediatorLiveData = new MediatorLiveData<>();
+                    for (int id : movieIdListInt) {
+                        LiveData<Movie> movieLiveData = movieViewModel.getMovie(id);
+                        mediatorLiveData.addSource(movieLiveData, movie -> {
+                            List<Movie> newList = mediatorLiveData.getValue();
+                            if (newList == null) {
+                                newList = new ArrayList<>();
+                            }
+                            newList.add(movie);
+                            mediatorLiveData.setValue(newList);
+                        });
+                    }
+
+                    mediatorLiveData.observe(this, movies -> {
+                        movieList.clear();
+                        movieList.addAll(movies);
+                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movieList, this, genreViewModel, this, getClass().getSimpleName());
+                        recyclerView.setAdapter(adapter);
+                    });
+                }
+            });
+        }
 
 }
+
+
+
 
 
 
