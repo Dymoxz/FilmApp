@@ -1,5 +1,6 @@
 package com.example.filmapp.presentation;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,15 +49,22 @@ public class CarouselAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MediaItem item = mediaItems.get(position);
+
         if (holder.getItemViewType() == VIEW_TYPE_VIDEO) {
             VideoViewHolder videoHolder = (VideoViewHolder) holder;
-            videoHolder.webView.loadData(item.getVideoUrl(), "text/html", "utf-8");
+
+            // Set WebView background color to transparent
+            videoHolder.webView.setBackgroundColor(Color.TRANSPARENT);
+
+            // Load the video URL using loadUrl method
+            videoHolder.webView.loadUrl(item.getVideoUrl());
         } else {
             ImageViewHolder imageHolder = (ImageViewHolder) holder;
             Log.d("CarouselAdapter", "ImagePath:" + item.getImagePath());
             Picasso.get().load("https://image.tmdb.org/t/p/w500" + item.getImagePath()).into(imageHolder.imageView);
         }
     }
+
 
     @Override
     public int getItemCount() {
