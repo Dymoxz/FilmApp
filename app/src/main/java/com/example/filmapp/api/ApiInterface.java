@@ -3,6 +3,7 @@ package com.example.filmapp.api;
 import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.GuestSessionResponse;
+import com.example.filmapp.api.response.MovieDetailResponse;
 import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.api.response.VideoResponse;
@@ -43,7 +44,7 @@ public interface ApiInterface {
     );
 
     @GET("movie/{movieId}")
-    Call<Movie> getMovieDetails(
+    Call<MovieDetailResponse> getMovieDetails(
             @Path("movieId") int movieId,
             @Query("api_key") String apiKey,
             @Query("language") String language

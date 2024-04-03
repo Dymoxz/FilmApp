@@ -29,6 +29,7 @@ import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
 import com.example.filmapp.api.response.GuestSessionResponse;
+import com.example.filmapp.api.response.MovieDetailResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.Repository;
@@ -42,6 +43,7 @@ import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.GuestSession;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieDetail;
 import com.example.filmapp.model.RatingRequestBody;
 import com.example.filmapp.model.Video;
 import com.example.filmapp.presentation.CarouselAdapter;
@@ -65,17 +67,19 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
-private String guestSessionId;
+    private String guestSessionId;
     private List<CastMember> castList;
     private SeekBar seekbar;
     private TextView ratingView;
     private int rating;
+    private MovieDetail movieDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
+
         initViewModels();
 
         createGuestSession();
@@ -178,6 +182,8 @@ private String guestSessionId;
             Log.v("MovieDetail", "genres are: " + genreNames);
             genreTextView.setText(genreNames);
         });
+
+        getMovieDetails();
 
 
 
@@ -458,6 +464,32 @@ private void createGuestSession(){
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getMovieDetails() {
+        Call<MovieDetailResponse> call = apiInterface.getMovieDetails(movie.getId(), API_KEY, "en-US");
+        call.enqueue(new Callback<MovieDetailResponse>() {
+            @Override
+            public void onResponse(Call<MovieDetailResponse> call, Response<MovieDetailResponse> response) {
+                if (response.isSuccessful()){
+                    MovieDetailResponse movieDetailResponse = response.body();
+                    movieDetail = movieDetailResponse.getMovieDetail();
+
+                    Log.d("MovieDetailActivity", "Tagline: " + movieDetail.getTagline() + ", Duration: " + movieDetail.getDuration());
+                }
+                else {
+                    Log.d("MovieDetailActivity", "" + response.message());
+
+                    // Rating posting failed
+                    Log.d("MovieDetailActivity", "Guest session failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     public class CustomGridLayoutManager extends LinearLayoutManager {
