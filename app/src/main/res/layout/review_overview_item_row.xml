@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="7dp"
-    android:layout_marginTop="3dp"
-    android:layout_marginBottom="3dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical"
     android:background="@drawable/rating_layout_background">
 
@@ -39,7 +39,7 @@
         app:trimExpandedText="@string/read_less"
         app:trimCollapsedText="@string/read_more"
         app:trimMode="trimModeLength"
-        app:trimLength="150"
+        app:trimLength="250"
         app:colorClickableText="#039BE5"
         />
 
