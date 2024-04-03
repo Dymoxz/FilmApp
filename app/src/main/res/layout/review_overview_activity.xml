@@ -40,6 +40,7 @@
 <!--Floating action button to write new review-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
+        android:onClick="switchActivityToWriteReview"
         android:src="@drawable/baseline_add_24"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

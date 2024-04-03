@@ -2,6 +2,7 @@ package com.example.filmapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.example.filmapp.R;
 import com.example.filmapp.application.repository.MovieReviewRepository;
 import com.example.filmapp.application.viewmodel.MovieReviewViewModel;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.MovieReview;
 
 import java.time.LocalDate;
@@ -29,23 +31,27 @@ public class WriteReviewActivity extends AppCompatActivity {
     private EditText reviewEditText;
     private MovieReviewViewModel movieReviewViewModel;
     private int movieId;
-
+    private Movie movie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_write_review_activity);
 
         Intent intent = getIntent();
-        // Retrieving movieId from intent
-        movieId = intent.getIntExtra("MOVIE_ID", -1);
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            movie = (Movie) bundle.getSerializable("value");
+            if (movie!=null){
+                movieId = movie.getId();
+                Log.d("WriteReviewActivity", "recieverd movie id with id : " + movieId);
+            }
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
-
         }
         MovieReviewRepository movieReviewRepository = new MovieReviewRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieReviewDao());
         movieReviewViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieReviewViewModel.class);
@@ -63,9 +69,11 @@ public class WriteReviewActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ReviewOverviewActivity.class);
+            Bundle bundleReview = new Bundle();
+            bundleReview.putSerializable("value", movie);
+            intent.putExtras(bundleReview);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -89,7 +97,10 @@ public class WriteReviewActivity extends AppCompatActivity {
             movieReview.setMovieId(movieId);
 
             movieReviewViewModel.insertMovieReview(movieReview);
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ReviewOverviewActivity.class);
+            Bundle bundleReview = new Bundle();
+            bundleReview.putSerializable("value", movie);
+            intent.putExtras(bundleReview);
             startActivity(intent);
         }
     }

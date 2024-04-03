@@ -10,23 +10,21 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.filmapp.application.repository.MovieReviewRepository;
-import com.example.filmapp.application.repository.VideoRepository;
 import com.example.filmapp.application.viewmodel.MovieReviewViewModel;
-import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
+import com.example.filmapp.model.Movie;
 import com.example.filmapp.presentation.MovieReviewAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.model.MovieReview;
-import com.example.filmapp.activities.MainActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +42,8 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     private List<MovieReview> reviewList = new ArrayList<>();
     private List<MovieReview> reviewListFromDatabase = new ArrayList<>();
     private ApiInterface apiInterface;
+    private Movie movie;
+    private int movieId;
     private MovieReviewViewModel movieReviewViewModel;
 
     @Override
@@ -56,8 +56,13 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
-        // Retrieving movieId from intent
-        int movieId = intent.getIntExtra("MOVIE_ID", -1);
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            movie = (Movie) bundle.getSerializable("value");
+            if (movie!=null){
+                movieId = movie.getId();
+            }
+        }
         Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
 
         MovieReviewRepository movieReviewRepository = new MovieReviewRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieReviewDao());
@@ -92,13 +97,9 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
         }
 
-        // Start WriteReviewActivity through floating action button
-        findViewById(R.id.fab).setOnClickListener(view ->
-                startActivity(new Intent(this, WriteReviewActivity.class).putExtra("MOVIE_ID", movieId))
-        );
+
 
         // Retrieve movie ID from intent MovieDetailActivity
 
@@ -118,9 +119,13 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(ReviewOverviewActivity.this, MovieDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("value", movie);
+            intent.putExtras(bundle);
+            Log.d("MainActivity", "clicked on movie: " + movie.getTitle());
             startActivity(intent);
-            return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -163,5 +168,12 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                 t.printStackTrace(); // Print the stack trace
             }
         });
+    }
+    public void switchActivityToWriteReview(View view){
+        Intent intent = new Intent(this, WriteReviewActivity.class);
+        Bundle bundleReview = new Bundle();
+        bundleReview.putSerializable("value", movie);
+        intent.putExtras(bundleReview);
+        startActivity(intent);
     }
 }

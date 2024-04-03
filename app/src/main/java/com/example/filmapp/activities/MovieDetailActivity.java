@@ -84,7 +84,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         createGuestSession();
 
-
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            movie = (Movie) bundle.getSerializable("value");
+        }
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -117,19 +121,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
-        rightArrowImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //check position
-                if (isAtLeftMostPosition(carouselRecyclerView)) {
-                    // Scroll RecyclerView fully to the right
-                    carouselRecyclerView.scrollToPosition(carouselRecyclerView.getAdapter().getItemCount() - 1);
-                } else {
-                    // Scroll RecyclerView fully to the left
-                    carouselRecyclerView.scrollToPosition(0);
-                }
-
+        rightArrowImageButton.setOnClickListener(v -> {
+            //check position
+            if (isAtLeftMostPosition(carouselRecyclerView)) {
+                // Scroll RecyclerView fully to the right
+                carouselRecyclerView.scrollToPosition(carouselRecyclerView.getAdapter().getItemCount() - 1);
+            } else {
+                // Scroll RecyclerView fully to the left
+                carouselRecyclerView.scrollToPosition(0);
             }
+
         });
 
         carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
@@ -157,49 +158,50 @@ public class MovieDetailActivity extends AppCompatActivity {
         ratingView = findViewById(R.id.curRating);
         seekbar = findViewById(R.id.seekBar);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            movie = (Movie) bundle.getSerializable("value");
-        }
+
 
         //GET ALL CAST MEMBERS AND DISPLAY IT
-        getAllCastMembers();
+
 
 
 
         if (movie != null) {
+            getAllCastMembers();
             getMovieDetails(durationTextView, taglineTextView);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
             ratingTextView.setText(String.valueOf(movie.getRating()));
 
             descriptionTextView.setText(movie.getDescription());
+            getGenreNames(genreNames -> {
+                Log.v("MovieDetail", "genres are: " + genreNames);
+                genreTextView.setText(genreNames);
+            });
         } else {
             Log.e("DetailActivity", "Movie object is null");
         }
-        getGenreNames(genreNames -> {
-            Log.v("MovieDetail", "genres are: " + genreNames);
-            genreTextView.setText(genreNames);
-        });
 
 
 
 
 
-        movieViewModel.getImagePath(movie.getId()).observe(this, imagePath -> {
-            Log.d("MovieDetailActivity", "Image path: " + imagePath);
-            // Retrieve the imagePath and pass it to the getMovieTrailer method
-            getMovieTrailer(movie.getId(), imagePath);
-        });
-        findViewById(R.id.reviewContainer).setOnClickListener(v -> {
-            int movieId = (movie.getId());
-            // Putting movieId in intent in order to fetch the right reviews
-            Log.d("MovieDetailActivity", "Movie ID: " + movieId);
-            Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
-            intentReview.putExtra("MOVIE_ID", movieId);
-            startActivity(intentReview);
-        });
+
+            movieViewModel.getImagePath(movie.getId()).observe(this, imagePath -> {
+                Log.d("MovieDetailActivity", "Image path: " + imagePath);
+                // Retrieve the imagePath and pass it to the getMovieTrailer method
+                getMovieTrailer(movie.getId(), imagePath);
+            });
+            findViewById(R.id.reviewContainer).setOnClickListener(v -> {
+                int movieId = (movie.getId());
+                // Putting movieId in intent in order to fetch the right reviews
+                Log.d("MovieDetailActivity", "Movie ID: " + movieId);
+
+                Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
+                Bundle bundleReview = new Bundle();
+                bundleReview.putSerializable("value", movie);
+                intentReview.putExtras(bundleReview);
+                startActivity(intentReview);
+            });
 
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
