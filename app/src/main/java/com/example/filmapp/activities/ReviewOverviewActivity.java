@@ -59,7 +59,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             movie = (Movie) bundle.getSerializable("value");
-            if (movie!=null){
+            if (movie != null) {
                 movieId = movie.getId();
             }
         }
@@ -69,25 +69,24 @@ public class ReviewOverviewActivity extends AppCompatActivity {
         movieReviewViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieReviewViewModel.class);
         movieReviewViewModel.init(movieReviewRepository);
 
-        if (movieId != 0) {
-            movieReviewViewModel.getReviewsForMovie(movieId).observe(this, movieReviews -> {
-                // Update your reviewListFromDatabase variable here
-                // Make sure to handle null or empty list cases appropriately
-                if (movieReviews != null && !movieReviews.isEmpty()) {
-                    reviewListFromDatabase = movieReviews;
-                    adapter = new MovieReviewAdapter(reviewListFromDatabase);
-                    recyclerView.setAdapter(adapter);
-                } else {
-                    Log.v("ReviewOverviewActivity", "review list is empty");
-//                adapter = new MovieReviewAdapter(reviewList);
-//                recyclerView.setAdapter(adapter);
-                    recyclerView.setVisibility(View.GONE); // Hide the RecyclerView
-                }
-            });
-        }
+        adapter = new MovieReviewAdapter(reviewListFromDatabase); // Initialize adapter
 
+        // Set the adapter to recyclerView
+        recyclerView.setAdapter(adapter);
 
-
+        // Observe changes in review list from the database
+        movieReviewViewModel.getReviewsForMovie(movieId).observe(this, movieReviews -> {
+            // Update reviewListFromDatabase
+            reviewListFromDatabase.clear();
+            if (movieReviews != null && !movieReviews.isEmpty()) {
+                reviewListFromDatabase.addAll(movieReviews);
+                recyclerView.setVisibility(View.VISIBLE); // Ensure RecyclerView is visible
+            } else {
+                Log.v("ReviewOverviewActivity", "review list is empty");
+                recyclerView.setVisibility(View.GONE); // Hide the RecyclerView
+            }
+            adapter.notifyDataSetChanged(); // Notify adapter about changes
+        });
 
         // Initialize Retrofit API interface
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
@@ -99,13 +98,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
-
-        // Retrieve movie ID from intent MovieDetailActivity
-
-        Log.d("ReviewOverviewActivity", "Received movie ID: " + movieId);
         if (movieId != -1) {
-            Log.d("ReviewOverviewActivity", "Call api with received movie ID: " + movieId);
             // Fetch reviews for this movie ID and display them
             fetchMovieReviews(movieId);
         } else {
