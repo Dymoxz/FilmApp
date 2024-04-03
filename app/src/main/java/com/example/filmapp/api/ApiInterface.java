@@ -2,6 +2,7 @@ package com.example.filmapp.api;
 
 import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
+import com.example.filmapp.api.response.GuestSessionResponse;
 import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.api.response.VideoResponse;
@@ -14,6 +15,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -61,9 +64,15 @@ public interface ApiInterface {
     @POST("movie/{movie_id}/rating")
     Call<Void> postMovieRating(
             @Path("movie_id") int movieId,
-            @Body RatingRequestBody ratingRequestBody
+            @Query("api_key") String apiKey,
+            @Query("guest_session_id") String guestSessionId,
+            @Body RatingRequestBody ratingRequestBody,
+            @Header("Content-Type") String contentType
+
+            );
+
+    @GET("authentication/guest_session/new")
+    Call<GuestSessionResponse> getGuestSession(
+    @Query("api_key") String apiKey
     );
-
-
-
 }
