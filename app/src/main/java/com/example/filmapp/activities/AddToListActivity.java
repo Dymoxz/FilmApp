@@ -41,12 +41,12 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_to_list);
 
-
         View inflatedView = getLayoutInflater().inflate(R.layout.add_to_list_item_row, null);
         radioButton = inflatedView.findViewById(R.id.button);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -57,6 +57,7 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
         MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
+
         movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
             if (movieListsLiveData != null) {
                 movieLists = movieListsLiveData; // Assuming movieLists is a List<MovieList> variable
@@ -64,11 +65,7 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 recyclerView.setAdapter(new AddToListAdapter(getApplicationContext(), movieLists, AddToListActivity.this));
             }
-        // movieIdList = ["11,34", "21,21"]
-        // movie
-
         });
-
     }
 
     @Override
@@ -78,14 +75,13 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
 
     public void addMovieToListsButton(View view){
         AddToListAdapter adapter = new AddToListAdapter(this, movieLists, AddToListActivity.this);
-
-
         List<String> selectedListNames = adapter.getSelectedListNames();
 
         for (String listName : selectedListNames) {
             Log.d("Selected List Name", listName);
             addMovieIdToList(listName, movie.getId());
         }
+
         Intent gottenIntent = getIntent();
         String previousPage = gottenIntent.getStringExtra("COMING_FROM");
 
@@ -100,48 +96,27 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
                 break;
         }
         intent.putExtra("value", movie);
-
-
         startActivity(intent);
     }
 
     public void addMovieIdToList(String listName, int movieId) {
-        // Retrieve the current movieIdList string from the database
         LiveData<String> movieIdListLiveData = movieListViewModel.getMovieIdList(listName);
         movieIdListLiveData.observe(this, movieIdList -> {
             if (movieIdList != null) {
-                // Convert the retrieved string into a list of integers
                 List<Integer> movieIdListInt = IntegerListConverter.fromString(movieIdList);
 
                 if (movieIdListInt == null) {
-                    movieIdListInt = new ArrayList<>(); // Initialize the list if null
+                    movieIdListInt = new ArrayList<>();
                 }
-
-                // Append the current movie ID to the list of integers
-
-                    if(!movieIdListInt.contains(movieId)) {
-                        movieIdListInt.add(movieId);
-                    }
-                    else{
-                        Log.v("AddToListActivity", "Already in list" + String.valueOf(movieId));
-                    }
-
-
-                // Convert the updated list of integers back to a string
+                if(!movieIdListInt.contains(movieId)) {
+                    movieIdListInt.add(movieId);
+                }
+                else{
+                    Log.v("AddToListActivity", "Already in list" + movieId);
+                }
                 String updatedMovieIdList = IntegerListConverter.fromList(movieIdListInt);
-
-                // Update the movieIdList in the database with the updated string
                 movieListViewModel.updateMovieIdList(updatedMovieIdList, listName);
             }
         });
     }
-
 }
-
-// Doel = MovieList tabel de movieId appenden
-// 1. Van tabel MovieList een lijst met de String van alle movieId's
-// 2. Convert die String naar lijst met integers
-// 3. Append aan 1 of meer lijsten de huidige movieID
-
-// movieIdList = ["[11,34]", "[21,21]"]
-//
