@@ -4,17 +4,15 @@ import java.io.Serializable;
 
 
 public class CastMember implements Serializable {
-    private String profile_path;
-    private String name;
-    private String character;
 
+    private String profile_path;
+
+    private String name;
+
+    private String character;
 
     public String getProfile_path() {
         return profile_path;
-    }
-
-    public void setProfile_path(String profile_path) {
-        this.profile_path = profile_path;
     }
 
     public String getName() {
@@ -29,7 +27,4 @@ public class CastMember implements Serializable {
         return character;
     }
 
-    public void setCharacter(String character) {
-        this.character = character;
-    }
 }

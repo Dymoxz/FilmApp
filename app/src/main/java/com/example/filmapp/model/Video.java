@@ -31,12 +31,12 @@ public class Video implements Serializable {
         return "https://www.youtube.com/embed/" + videoKey;
     }
 
-
     public String getType() {
         return type;
     }
 
     public void setMovieId(int movieId) { this.movieId = movieId; }
+
     public int getMovieId() { return movieId; }
 
     public String getTitle() {
@@ -51,19 +51,8 @@ public class Video implements Serializable {
         return videoKey;
     }
 
-    public void setVideoKey(String videoKey) {
-        this.videoKey = videoKey;
-    }
-
     public boolean isOfficial() {
         return isOfficial;
     }
 
-    public void setOfficial(boolean official) {
-        isOfficial = official;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

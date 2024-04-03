@@ -13,11 +13,11 @@ import java.util.List;
 @TypeConverters({IntegerListConverter.class})
 @Entity(tableName = "MovieList")
 public class MovieList implements Serializable {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String name;
-
 
     @Ignore
     private boolean selected;
@@ -51,6 +51,7 @@ public class MovieList implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
     public boolean isSelected() {
         return selected;
     }

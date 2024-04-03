@@ -1,11 +1,13 @@
 package com.example.filmapp.model;
 
 public class MediaItem {
-    private String imagePath; // Added field to store image path
+
+    private String imagePath;
+
     private String videoUrl;
 
     public MediaItem(String imagePath, String videoUrl) {
-        this.imagePath = imagePath; // Updated constructor to initialize imagePath
+        this.imagePath = imagePath;
         this.videoUrl = videoUrl;
     }
 
@@ -13,15 +15,8 @@ public class MediaItem {
         return imagePath;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
     public String getVideoUrl() {
         return videoUrl;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
 }
