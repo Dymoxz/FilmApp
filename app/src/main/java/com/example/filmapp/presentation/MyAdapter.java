@@ -110,6 +110,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     Intent intent = new Intent(context, AddToListActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("MOVIE", movie);
+                    intent.putExtra("COMING_FROM", "MainActivity");
                     context.startActivity(intent);
                 }
                 //TODO: edit this so it works
