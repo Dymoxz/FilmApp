@@ -190,7 +190,15 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             // Handle share action
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            String shareBody = "createShareText(MovieList)";
+
+            StringBuilder shareBuilder = new StringBuilder();
+
+            shareBuilder.append("*" + listName + "*\n");
+            for (Movie movie : movieList) {
+                shareBuilder.append(movie.getTitle() + "\n");
+            }
+
+            String shareBody = String.valueOf(shareBuilder);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
             startActivity(Intent.createChooser(shareIntent, "Share App Locker"));
             return true;

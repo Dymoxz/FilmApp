@@ -112,11 +112,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     intent.putExtra("MOVIE", movie);
                     context.startActivity(intent);
                 }
+                //TODO: edit this so it works
                 else if (menuItem.getItemId() == R.id.share) {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     String shareBody = "createShareText(MovieList)";
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                    Log.d("SHAARE", shareBody);
                     context.startActivity(Intent.createChooser(shareIntent, "Share App Locker")); // Start activity using the context
                 }
                 if (menuItem.getItemId() == R.id.removeFromList) {
