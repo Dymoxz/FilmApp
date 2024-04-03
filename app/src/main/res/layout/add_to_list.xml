@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#773302BC" />
+        android:background="@color/blue"
+        android:textColor="@color/white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -16,10 +18,12 @@
         android:layout_height="wrap_content"/>
 
     <Button
+        android:background="@drawable/rating_layout_background"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:id="@+id/button"
         android:text="@string/done"
+        android:textColor="@color/white"
         android:onClick="addMovieToListsButton"
         android:layout_below="@id/recyclerView"
         android:layout_width="wrap_content"

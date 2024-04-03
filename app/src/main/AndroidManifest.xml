@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ListsActivity">
+        <activity android:name=".activities.ListsActivity" android:parentActivityName=".activities.MainActivity">
 
         </activity>
         <activity android:name=".activities.ListDetailActivity" android:parentActivityName=".activities.ListsActivity">

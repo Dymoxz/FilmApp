@@ -43,7 +43,6 @@ public class AddToListAdapter extends RecyclerView.Adapter<AddToListViewHolder> 
     public void onBindViewHolder(@NonNull AddToListViewHolder holder, int position) {
         MovieList movieList = movieListList.get(position);
         holder.nameView.setText(movieList.getName());
-        holder.listSizeView.setText(null);
 
         // Set the state of RadioButton based on selection
         holder.radioButton.setChecked(movieList.isSelected());
