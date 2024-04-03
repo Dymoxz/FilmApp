@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -89,18 +90,27 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
 
         builder.setPositiveButton("Submit", (dialog, which) -> {
             createListName = input.getText().toString();
-            doesNameExist(createListName).observe(ListsActivity.this, nameExists -> {
-                if (nameExists != null) {
-                    if (!nameExists) {
-                        MovieList movieList = new MovieList(createListName);
-                        Log.v("ListActivity", "Created list with name '" + createListName + "'");
-                        movieListViewModel.insertMovieList(movieList);
-                    } else {
-                        Log.v("ListActivity", createListName + " already exists");
-                        // Show a message to the user indicating that the name already exists
+            boolean showErrorMessage = false;
+            if ((createListName.isEmpty())) {
+                dialog.cancel();
+                Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
+
+            }
+            else {
+                doesNameExist(createListName).observe(ListsActivity.this, nameExists -> {
+                    if (nameExists != null) {
+                        if (!nameExists) {
+                            MovieList movieList = new MovieList(createListName);
+                            Log.v("ListActivity", "Created list with name '" + createListName + "'");
+                            movieListViewModel.insertMovieList(movieList);
+                        } else {
+                            Log.v("ListActivity", createListName + " already exists");
+                            // Show a message to the user indicating that the name already exists
+                        }
                     }
-                }
-            });
+
+                });
+            }
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> {
