@@ -70,10 +70,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private GenreViewModel genreViewModel;
     private String guestSessionId;
     private List<CastMember> castList;
-    private SeekBar seekbar;
     private TextView ratingView;
     private int rating;
-    private MovieDetail movieDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +89,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = (Movie) bundle.getSerializable("value");
         }
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
-        // Initialize rating with a default value
         rating = 0;
 
 
@@ -144,11 +140,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         };
         carouselRecyclerView.setLayoutManager(layoutManager);
 
-
-
-
-
-        // Initialize views
         TextView titleTextView = findViewById(R.id.movieDetailTitle);
         TextView genreTextView = findViewById(R.id.movieDetailGenre);
         TextView releaseYearTextView = findViewById(R.id.movieDetailReleaseYear);
@@ -157,14 +148,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView taglineTextView = findViewById(R.id.movieDetailtagline);
         TextView descriptionTextView = findViewById(R.id.movieDetailDescription);
         ratingView = findViewById(R.id.curRating);
-        seekbar = findViewById(R.id.seekBar);
-
-
-
-        //GET ALL CAST MEMBERS AND DISPLAY IT
-
-
-
+        SeekBar seekbar = findViewById(R.id.seekBar);
 
         if (movie != null) {
             getAllCastMembers();
@@ -187,19 +171,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             Log.e("DetailActivity", "Movie object is null");
         }
 
-
-
-
-
-
             movieViewModel.getImagePath(movie.getId()).observe(this, imagePath -> {
                 Log.d("MovieDetailActivity", "Image path: " + imagePath);
-                // Retrieve the imagePath and pass it to the getMovieTrailer method
                 getMovieTrailer(movie.getId(), imagePath);
             });
             findViewById(R.id.reviewContainer).setOnClickListener(v -> {
                 int movieId = (movie.getId());
-                // Putting movieId in intent in order to fetch the right reviews
                 Log.d("MovieDetailActivity", "Movie ID: " + movieId);
 
                 Intent intentReview = new Intent(this, ReviewOverviewActivity.class);
@@ -217,12 +194,9 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
     }
@@ -232,7 +206,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         int movieId = movie.getId();
         postRatingToApi(movieId, rating);
     }
-
 
     private void getMovieTrailer(int movieId, String imagePath) {
         Call<VideoResponse> call = apiInterface.getVideos(movieId, API_KEY, "en-US");
@@ -253,10 +226,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                             webView.loadData(embedLink, "text/html", "utf-8");
                             webView.getSettings().setJavaScriptEnabled(true);
                             webView.setWebChromeClient(new WebChromeClient());
-                            // Add video WebView to carousel
 
                             addMediaToCarousel(webView, imagePath);
-
                         } else {
                             Log.e("Trailer link", "Trailer URL is null");
                         }
@@ -274,8 +245,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
             }
         });
-
-
     }
 
     public void getAllCastMembers() {
@@ -299,8 +268,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                             // Process each cast member here
                             Log.d("MovieDetail", "Name: " + castMember.getName() + "\nCharacter: " + castMember.getCharacter());
                         }
-
-                        // Set up RecyclerView only when castList is available
                         setupRecyclerView();
                     } else {
                         Log.e("API Error", "Cast response or cast list is null.");
@@ -338,12 +305,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void addMediaToCarousel(WebView webView, String imagePath) {
         List<MediaItem> mediaItems = new ArrayList<>();
-        // Add movie poster to the carousel
         ImageView posterImageView = new ImageView(this);
         Log.d("addMediaToCarousel", "ImagePath = " + imagePath);
         Picasso.get().load("https://image.tmdb.org/t/p/w500" + imagePath).into(posterImageView);
         mediaItems.add(new MediaItem(imagePath, null)); // Pass imagePath here
-        // Extract URL from WebView and add it to MediaItem
+
         try {
             String webViewUrl = webView.getUrl();
             Log.d("addMediaToCarousel", "trailerUrl = " + webViewUrl);
@@ -351,6 +317,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("addMediaToCarousel", "trailerUrl is null");
         }
+
         CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
         carouselRecyclerView.setAdapter(carouselAdapter);
     }

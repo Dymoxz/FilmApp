@@ -41,8 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/reviewOverviewTitle"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp" />
+        android:layout_margin="10dp" />
 
 <!--Floating action button to write new review-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
