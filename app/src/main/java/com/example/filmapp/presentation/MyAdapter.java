@@ -1,5 +1,6 @@
 package com.example.filmapp.presentation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -27,11 +28,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+
     Context context;
+
     List<Movie> movies;
-    String genreName;
+
     GenreViewModel genreViewModel;
+
     private LifecycleOwner lifecycleOwner;
+
     private String parentActivityType;
 
     private final RecyclerViewInterface recyclerViewInterface;
@@ -42,17 +47,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         this.recyclerViewInterface = recyclerViewInterface;
         this.genreViewModel = genreViewModel;
         this.lifecycleOwner = lifecycleOwner;
-        this.parentActivityType = parentActivityType; // Initialize parent activity type
+        this.parentActivityType = parentActivityType;
     }
 
     public void setFilteredList(List<Movie> filteredList) {
         this.movies = filteredList;
         notifyDataSetChanged();
-        Log.d("bbbb", "it set");
-
-
     }
-
 
     @NonNull
     @Override
@@ -75,19 +76,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         for (int genreId : genreIdList) {
             genreViewModel.getGenreName(genreId).observe(lifecycleOwner, genreName -> {
-//                Log.v("Adapter", " " + genreId);
                 stringBuilder.append(genreName).append(", ");
 
                 int callbacksCompletedSoFar = callbacksCompleted.incrementAndGet();
                 if (callbacksCompletedSoFar == totalCallbacksExpected) {
-                    // All callbacks completed, update UI with concatenated genre names
+
                     String genreNamesString = stringBuilder.toString();
-                    // Remove trailing comma
+
                     if (genreNamesString.endsWith(", ")) {
                         genreNamesString = genreNamesString.substring(0, genreNamesString.length() - 2);
                     }
+
                     holder.genreView.setText(genreNamesString);
-                    // Update your UI here if needed
                 }
             });
         }
@@ -98,7 +98,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.imageButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, holder.imageButton);
 
-            // Inflate different menu resources based on the parent activity type
             if ("ListDetailActivity".equals(parentActivityType)) {
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu_list_movie, popupMenu.getMenu());
             } else {
@@ -112,18 +111,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     intent.putExtra("MOVIE", movie);
                     intent.putExtra("COMING_FROM", "MainActivity");
                     context.startActivity(intent);
+                    return true;
                 }
-                //TODO: edit this so it works
-                else if (menuItem.getItemId() == R.id.share) {
+                else if (menuItem.getItemId() == R.id.shareMovie) {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     String shareBody = "createShareText(MovieList)";
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                    Log.d("SHAARE", shareBody);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share App Locker")); // Start activity using the context
+                    context.startActivity(Intent.createChooser(shareIntent, "Share App Locker")
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    return true;
+
                 }
+
+
                 if (menuItem.getItemId() == R.id.removeFromList) {
-                    // remove movie id from list
                 }
                 return true;
             });

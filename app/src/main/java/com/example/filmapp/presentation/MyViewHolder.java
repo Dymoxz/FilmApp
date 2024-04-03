@@ -18,7 +18,9 @@ import java.util.List;
 public class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView imageView;
+
     TextView titleView,releaseYearView, genreView;
+
     ImageButton imageButton;
 
     public MyViewHolder(@NonNull View itemView) {
