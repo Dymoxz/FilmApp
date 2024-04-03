@@ -11,7 +11,4 @@ public class GuestSession {
         return guestSessionId;
     }
 
-    public void setGuestSessionId(String guestSessionId) {
-        this.guestSessionId = guestSessionId;
-    }
 }

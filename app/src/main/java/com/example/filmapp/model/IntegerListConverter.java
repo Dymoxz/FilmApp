@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class IntegerListConverter {
+
     @TypeConverter
     public static List<Integer> fromString(String value) {
         Type listType = new TypeToken<List<Integer>>() {}.getType();

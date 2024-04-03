@@ -7,8 +7,10 @@ import java.io.Serializable;
 
 @Entity(tableName = "Genre")
 public class Genre implements Serializable {
+
     @PrimaryKey()
     private int id;
+
     private String name;
 
     public Genre(int id, String name) {
