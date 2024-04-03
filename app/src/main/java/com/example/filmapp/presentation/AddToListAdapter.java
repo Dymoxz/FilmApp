@@ -43,13 +43,16 @@ public class AddToListAdapter extends RecyclerView.Adapter<AddToListViewHolder> 
     public void onBindViewHolder(@NonNull AddToListViewHolder holder, int position) {
         MovieList movieList = movieListList.get(position);
         holder.nameView.setText(movieList.getName());
-        holder.listSizeView.setText("0");
+        holder.listSizeView.setText(null);
 
         // Set the state of RadioButton based on selection
         holder.radioButton.setChecked(movieList.isSelected());
 
         if (movieList.getName().equals("Favorites")) {
-            holder.imageView.setImageResource(R.drawable.baseline_format_list_bulleted_24);
+            holder.imageView.setImageResource(R.drawable.baseline_favorite_24);
+        }
+        else if (movieList.getName().equals("Watch later")) {
+            holder.imageView.setImageResource(R.drawable.baseline_watch_later_24);
         }
 
         // Handle RadioButton click to toggle selection
