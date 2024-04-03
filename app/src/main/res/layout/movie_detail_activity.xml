@@ -144,7 +144,7 @@
                 android:scaleY="1"
                 android:max="10"
 
-                android:progress="1"
+                android:progress="0"
                 app:layout_constraintStart_toEndOf="@+id/movieDetailRating"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
             <TextView

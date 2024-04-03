@@ -317,16 +317,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 //logic for swiping right, add to favorites
                 addMovieIdToList("Favorites", movie.getId());
                 recyclerView.getAdapter().notifyItemChanged(position);
-                Log.v("MainActivity", "Added " + movie.getId() + " to favorites");
-                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to favorites", Snackbar.LENGTH_LONG);
+                Log.v("MainActivity", "Added " + movie.getTitle() + " to favorites");
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getTitle() + " to favorites", Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
             else if (direction == ItemTouchHelper.RIGHT){
                 //logic for swiping right, add to watchlater
                 addMovieIdToList("Watch later", movie.getId());
                 recyclerView.getAdapter().notifyItemChanged(position);
-                Log.v("MainActivity", "Added " + movie.getId() + " to watch later");
-                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getId() + " to watch later", Snackbar.LENGTH_LONG);
+                Log.v("MainActivity", "Added " + movie.getTitle() + " to watch later");
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Added " + movie.getTitle() + " to watch later", Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
         }
