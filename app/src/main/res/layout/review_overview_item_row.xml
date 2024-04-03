@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="23sp"
+        android:textColor="@color/white"
         android:text="Author"/>
 
     <TextView
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="13sp"
+        android:textColor="@color/grey"
         android:text="Date" />
 
 
@@ -27,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
+        android:textColor="@color/white"
         android:text="Write review here" />
 
 </LinearLayout>
