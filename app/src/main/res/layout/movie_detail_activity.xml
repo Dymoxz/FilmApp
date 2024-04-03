@@ -138,7 +138,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
             <SeekBar
                 android:id="@+id/seekBar"
-                android:layout_width="200dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:scaleX="1"
                 android:scaleY="1"
