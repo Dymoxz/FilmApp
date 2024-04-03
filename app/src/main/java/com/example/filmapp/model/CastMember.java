@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 
 public class CastMember implements Serializable {
-    private String profilePath;
+    private String profile_path;
     private String name;
     private String character;
 
 
-    public String getProfilePath() {
-        return profilePath;
+    public String getProfile_path() {
+        return profile_path;
     }
 
-    public void setProfilePath(String profilePath) {
-        this.profilePath = profilePath;
+    public void setProfile_path(String profile_path) {
+        this.profile_path = profile_path;
     }
 
     public String getName() {

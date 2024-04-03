@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="7dp"
+    android:padding="6dp"
     android:layout_margin="3dp"
 
     android:background="@drawable/rating_layout_background">
 
     <ImageView
         android:id="@+id/castMemberImage"
-        android:layout_width="100dp"
+        android:layout_width="60dp"
         android:layout_marginStart="5dp"
-        android:layout_height="110dp"
+        android:layout_height="80dp"
         android:layout_gravity="center"/>
 
     <LinearLayout
@@ -24,7 +24,7 @@
 
         <TextView
             android:textColor="@color/white"
-            android:textSize="23sp"
+            android:textSize="18sp"
             android:text="Cast Member name"
             android:textStyle="bold"
             android:id="@+id/castMemberName"
@@ -33,7 +33,7 @@
 
         <TextView
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:text="Playing as:"
             android:id="@+id/castMemberPlayingAs"
             android:layout_width="wrap_content"

@@ -33,6 +33,7 @@ public class CastMemberAdapter extends RecyclerView.Adapter<CastMemberViewHolder
         // Bind data to views in holder
         holder.castMemberName.setText(castMember.getName());
         holder.castMemberPlayingAs.setText("Playing as: " + castMember.getCharacter());
+        Picasso.get().load("https://image.tmdb.org/t/p/w500" + castMember.getProfile_path()).into(holder.castMemberImage);
 
     }
 

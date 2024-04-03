@@ -264,7 +264,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                     CastResponse castResponse = response.body();
 
                     if (castResponse != null && castResponse.getCast() != null) {
-                        castList = castResponse.getCast();
+                        List<CastMember> fullCastList = castResponse.getCast();
+                        int castLimit = Math.min(fullCastList.size(), 10); // Limit to the first 10 cast members
+                        castList = fullCastList.subList(0, castLimit);
                         for (CastMember castMember : castList) {
                             // Process each cast member here
                             Log.d("MovieDetail", "Name: " + castMember.getName() + "\nCharacter: " + castMember.getCharacter());
@@ -289,6 +291,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
+
     private void setupRecyclerView() {
         RecyclerView movieDetailCastRecyclerView = findViewById(R.id.movieDetailCastRecyclerView);
         movieDetailCastRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -299,7 +302,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             movieDetailCastRecyclerView.setAdapter(castMemberAdapter);
         } else {
             Log.v("MovieDetail", "NO CAST MEMBERS FOUND");
-            movieDetailCastRecyclerView.setVisibility(View.GONE); // Change to GONE
+            movieDetailCastRecyclerView.setVisibility(View.GONE);
         }
     }
 

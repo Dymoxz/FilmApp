@@ -188,7 +188,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
         android:id="@+id/movieDetailCastText"
-        android:layout_below="@id/movieDetailDescription"
+        android:layout_below="@id/reviewContainer"
         android:text="@string/cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -200,18 +200,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/movieDetailCastText"
         android:layout_marginTop="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:paddingBottom="10dp" />
 
 
-<ListView
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_below="@id/movieDetailCastText"
-    android:id="@+id/movieDetailCastList"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:id="@+id/reviewContainer"
         android:layout_marginStart="10dp"
@@ -222,7 +216,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/rating_layout_background"
-        android:layout_below="@id/movieDetailCastList">
+        android:layout_below="@id/movieDetailDescription">
         <TextView
             android:id="@+id/movieDetailReviewText"
             android:text="@string/reviews"
