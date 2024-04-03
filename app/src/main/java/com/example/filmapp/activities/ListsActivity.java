@@ -53,7 +53,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
-
         }
 
 
