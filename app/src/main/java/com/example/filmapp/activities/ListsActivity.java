@@ -32,13 +32,12 @@ import com.example.filmapp.model.MovieList;
 import java.util.List;
 
 public class ListsActivity extends AppCompatActivity implements ListRecyclerViewInterface {
-
     private MovieListViewModel movieListViewModel;
     private List<MovieList> movieLists;
     private String createListName = "";
     private List<String> movieNames;
-    ListRecyclerViewInterface listRecyclerViewInterface;
 
+    ListRecyclerViewInterface listRecyclerViewInterface;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +47,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -57,17 +55,13 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
         }
 
-
-
         movieListViewModel.getMovieLists().observe(this, movieListsLiveData -> {
             if (movieListsLiveData != null) {
                 movieLists = movieListsLiveData;
-                // Set up the RecyclerView with the movie lists
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 recyclerView.setAdapter(new ListAdapter(this, movieLists, ListsActivity.this, movieListViewModel, this));            }
         });
-
     }
 
     public void changeActivityToMovies(View view) {
@@ -83,7 +77,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
 
         input.setTextColor(getResources().getColor(R.color.white));
         input.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
-
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
@@ -93,7 +86,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
             if ((createListName.isEmpty())) {
                 dialog.cancel();
                 Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
-
             }
             else {
                 doesNameExist(createListName).observe(ListsActivity.this, nameExists -> {
@@ -104,10 +96,8 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                             movieListViewModel.insertMovieList(movieList);
                         } else {
                             Log.v("ListActivity", createListName + " already exists");
-                            // Show a message to the user indicating that the name already exists
                         }
                     }
-
                 });
             }
         });
@@ -146,16 +136,10 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                         break;
                     }
                 }
-
                 nameExistsLiveData.setValue(nameExists);
             }
         });
 
         return nameExistsLiveData;
     }
-
-
-
-
-
 }

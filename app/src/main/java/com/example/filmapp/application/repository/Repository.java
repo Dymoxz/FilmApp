@@ -40,8 +40,4 @@ public class Repository {
 
     public LiveData<String> getImagePath(int movieId) { return movieDao.getImagePath(movieId);}
 
-
-
-
 }
-
