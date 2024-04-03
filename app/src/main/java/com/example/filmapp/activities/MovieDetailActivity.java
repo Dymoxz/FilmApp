@@ -161,7 +161,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             movie = (Movie) bundle.getSerializable("value");
-            Log.d("DetailActivity", "got movie " + movie.getTitle());
         }
 
         //GET ALL CAST MEMBERS AND DISPLAY IT
@@ -457,6 +456,7 @@ private void createGuestSession(){
             Intent intent = new Intent(this, AddToListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("MOVIE", movie);
+            intent.putExtra("COMING_FROM", "MovieDetail");
             startActivity(intent);
             return true;
         }
