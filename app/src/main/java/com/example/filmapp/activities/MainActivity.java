@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.filmapp.activities.ListsActivity;
-import com.example.filmapp.activities.MovieDetailActivity;
 import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.MovieListRepository;
 import com.example.filmapp.application.viewmodel.GenreViewModel;
@@ -35,7 +33,6 @@ import com.example.filmapp.application.repository.Repository;
 import com.example.filmapp.data.Database;
 import com.example.filmapp.model.IntegerListConverter;
 import com.example.filmapp.model.MovieList;
-import com.example.filmapp.presentation.ListAdapter;
 import com.example.filmapp.presentation.MyAdapter;
 import com.example.filmapp.R;
 import com.example.filmapp.api.ApiInterface;
@@ -46,7 +43,6 @@ import com.example.filmapp.model.Genre;
 import com.example.filmapp.model.Movie;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,15 +57,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     private static final String API_KEY = "02ddd233c99c814bad1a7d4af98e681b";
     private List<Movie> movies;
-    private List<Genre> genres;
-    private Call<MoviesResponse> allMoviesCall;
-    private Call<GenreResponse> allGenresCall;
     private MovieViewModel movieViewModel;
-    // Create API interface instance
-    private Retrofit retrofit = RetrofitClient.getClient();
-    private ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+    private final Retrofit retrofit = RetrofitClient.getClient();
+    private final ApiInterface apiInterface = retrofit.create(ApiInterface.class);
     private RecyclerView recyclerView;
-    private SearchView searchView;
     private GenreViewModel genreViewModel;
     private MovieListViewModel movieListViewModel;
     private RelativeLayout relativeLayout;
@@ -79,23 +70,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerView = findViewById(R.id.recyclerView);
-        searchView = findViewById(R.id.searchbar);
+        SearchView searchView = findViewById(R.id.searchbar);
+        relativeLayout = findViewById(R.id.main);
+        toolbar = findViewById(R.id.toolbar);
+
         searchView.clearFocus();
+
         GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
         genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
         genreViewModel.init(genreRepository);
 
-        initViewModels();
-        createStandardLists();
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        relativeLayout = findViewById(R.id.main);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 filterList(newText);
@@ -103,14 +96,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
 
-        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
-
         }
+
+        initViewModels();
+        createStandardLists();
+
 
         movieViewModel.moviesIsEmpty().observe(this, isEmpty -> {
             if (isEmpty) {
@@ -220,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     public void allMoviesApiCall(int page) {
-        allMoviesCall = apiInterface.getTopRatedMovies(API_KEY, "en-US", page);
+        Call<MoviesResponse> allMoviesCall = apiInterface.getTopRatedMovies(API_KEY, "en-US", page);
         // Make the API call
         allMoviesCall.enqueue(new Callback<MoviesResponse>() {
             @Override
@@ -229,13 +224,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     // Handle successful response here
                     MoviesResponse moviesResponse = response.body();
                     movies.addAll(moviesResponse.getMovies());
-                    if (moviesResponse != null && moviesResponse.getMovies() != null) {
+                    if (moviesResponse.getMovies() != null) {
                         for (Movie movie : moviesResponse.getMovies()) {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
                             movieViewModel.insertMovie(movie);
                         }
-
                     }
 
                 } else {
@@ -253,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     public void allGenresApiCall() {
-        allGenresCall = apiInterface.getGenres(API_KEY, "en-US");
+        Call<GenreResponse> allGenresCall = apiInterface.getGenres(API_KEY, "en-US");
 
         // Make the API call
         allGenresCall.enqueue(new Callback<GenreResponse>() {
@@ -264,22 +258,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     // Handle successful response here
                     GenreResponse genreResponse = response.body();
 
-                    genres = genreResponse.getGenres();
                     if (genreResponse != null && genreResponse.getGenres() != null) {
                         for (Genre genre : genreResponse.getGenres()) {
                             // Process each movie here
                             Log.d("Genre", "Id: " + genre.getId() + "\nName: " +  genre.getName());
-
                             genreViewModel.insertGenre(genre);
-
                         }
-
-//                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), movies, MainActivity.this));
-
-//                        ImageView imageView = findViewById(R.id.imageView);
-//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
-
                 } else {
                     // Handle error response
                     Log.e("API Error", "Failed to fetch movies: " + response.message());
@@ -411,22 +396,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
 
-    private String currentFilter = null; // Variable to keep track of the current filter
+    private String currentFilter = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.dramaFilter || id == R.id.crimeFilter || id == R.id.animationFilter || id == R.id.fantasyFilter) {
-            // Toggle the selected filter
             toggleFilter(item.getTitle().toString());
-            // Update the visual appearance of filter buttons
             updateFilterButtonVisual(item);
-            // If any filter item is selected, deselect all other items in the group
             if (item.isChecked()) {
                 Menu menu = toolbar.getMenu();
                 for (int i = 0; i < menu.size(); i++) {
                     MenuItem menuItem = menu.getItem(i);
-                    if (menuItem.getItemId() != id) { // Avoid deselecting the selected item
+                    if (menuItem.getItemId() != id) {
                         menuItem.setChecked(false);
                     }
                 }
@@ -437,25 +419,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }
     }
 
-
-
-
-
-
     private void toggleFilter(String filter) {
         if (filter.equals(currentFilter)) {
-            // If the current filter is already applied, remove it
             currentFilter = null;
-            loadAllMovies(); // Show all movies
-            updateFilterButtonVisual(null); // Clear visual appearance
+            loadAllMovies();
+            updateFilterButtonVisual(null);
         } else {
             currentFilter = filter;
-            // Apply the selected filter
             filterList2(filter);
         }
     }
+
     private void loadAllMovies() {
-        // Set the dataset of the adapter to the original list of movies
         if (movies != null) {
             MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
             recyclerView.setAdapter(adapter);
@@ -463,16 +438,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     private void updateFilterButtonVisual(@Nullable MenuItem selectedItem) {
-        // Reset the visual appearance of all filter buttons
         Menu menu = toolbar.getMenu();
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             item.setChecked(false);
-
         }
 
         if (selectedItem != null) {
-            // Set the visual appearance of the selected filter button
             selectedItem.setChecked(true);
         }
     }
