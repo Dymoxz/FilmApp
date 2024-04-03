@@ -1,5 +1,6 @@
 package com.example.filmapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,8 @@ import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
+import com.example.filmapp.api.response.GuestSessionResponse;
+import com.example.filmapp.api.response.MovieDetailResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.Repository;
@@ -37,8 +40,10 @@ import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
 import com.example.filmapp.model.CastMember;
 import com.example.filmapp.model.Genre;
+import com.example.filmapp.model.GuestSession;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieDetail;
 import com.example.filmapp.model.RatingRequestBody;
 import com.example.filmapp.model.Video;
 import com.example.filmapp.presentation.CarouselAdapter;
@@ -62,11 +67,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
-
+    private String guestSessionId;
     private List<CastMember> castList;
     private SeekBar seekbar;
     private TextView ratingView;
     private int rating;
+    private MovieDetail movieDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         initViewModels();
 
+        createGuestSession();
 
 
 
@@ -126,7 +133,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
 
         carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager;
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        };
         carouselRecyclerView.setLayoutManager(layoutManager);
 
 
@@ -148,7 +161,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             movie = (Movie) bundle.getSerializable("value");
-            Log.d("DetailActivity", "got movie " + movie.getTitle());
         }
 
         //GET ALL CAST MEMBERS AND DISPLAY IT
@@ -157,11 +169,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
         if (movie != null) {
+            getMovieDetails(durationTextView, taglineTextView);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
-            durationTextView.setText(String.valueOf(movie.getDuration()));
             ratingTextView.setText(String.valueOf(movie.getRating()));
-            taglineTextView.setText(movie.getTagline());
+
             descriptionTextView.setText(movie.getDescription());
         } else {
             Log.e("DetailActivity", "Movie object is null");
@@ -170,6 +182,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             Log.v("MovieDetail", "genres are: " + genreNames);
             genreTextView.setText(genreNames);
         });
+
+
 
 
 
@@ -375,32 +389,61 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void postRatingToApi(int movieId, float ratingValue) {
         RatingRequestBody requestBody = new RatingRequestBody(ratingValue);
         Log.d("MovieDetailActivity", "RatingRequestBody: " + requestBody + "Rating: " + ratingValue + "movieId: " + movieId);
+        String contentType = "application/json;charset=utf-8";
+        if(guestSessionId != null) {
+            Log.d("MovieDetail", guestSessionId);
 
-        Call<Void> call = apiInterface.postMovieRating(movieId, requestBody);
-        call.enqueue(new Callback<Void>() {
+            Call<Void> call = apiInterface.postMovieRating(movieId, API_KEY, guestSessionId, requestBody, contentType);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        // Rating posted successfully
+                        Log.d("MovieDetailActivity", "Rating posted succesfully");
+                        Toast.makeText(MovieDetailActivity.this, "Successfully posted your rating: " + ratingValue + "!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("----------------------------------", "msg: " + response.message() + " code: " + response.code());
+
+                        // Rating posting failed
+                        Log.d("MovieDetailActivity", "Rating post failed");
+                        Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    // Handle failure
+                    Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
+                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+private void createGuestSession(){
+        Call<GuestSessionResponse> call = apiInterface.getGuestSession(API_KEY);
+        call.enqueue(new Callback<GuestSessionResponse>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    // Rating posted successfully
-                    Log.d("MovieDetailActivity", "Rating posted succesfully");
-                    Toast.makeText(MovieDetailActivity.this, "Rating posted successfully", Toast.LENGTH_SHORT).show();
-                } else {
+            public void onResponse(Call<GuestSessionResponse> call, Response<GuestSessionResponse> response) {
+                if (response.isSuccessful()){
+                    Log.d("MovieDetailAcitvity", "Created guest session");
+                    GuestSessionResponse guestSessionResponse = response.body();
+                    guestSessionId = guestSessionResponse.getGuestsessionId();
+                }
+                else {
+                    Log.d("MovieDetailActivity", "" + response.message());
+
                     // Rating posting failed
-                    Log.d("MovieDetailActivity", "Rating post failed");
-                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
+                    Log.d("MovieDetailActivity", "Guest session failed");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
-                Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
-                Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<GuestSessionResponse> call, Throwable t) {
+
             }
         });
-    }
-
-
+}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_detail_menu, menu);
@@ -413,6 +456,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddToListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("MOVIE", movie);
+            intent.putExtra("COMING_FROM", "MovieDetail");
             startActivity(intent);
             return true;
         }
@@ -421,4 +465,52 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void getMovieDetails(TextView durationTextView, TextView taglineTextView) {
+        Call<MovieDetail> call = apiInterface.getMovieDetails(movie.getId(), API_KEY, "en-US");
+        call.enqueue(new Callback<MovieDetail>() {
+            @Override
+            public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
+                if (response.isSuccessful()) {
+                    MovieDetail movieDetails = response.body();
+                    if (movieDetails != null) {
+                        movie.setTagline(movieDetails.getTagline());
+                        movie.setDuration(movieDetails.getDuration());
+                        durationTextView.setText((movie.getDuration()) + " minutes");
+                        taglineTextView.setText(movie.getTagline());
+                        Log.d("MovieDetailActivity", "Tagline: " + movie.getTagline() + ", Duration: " + movie.getDuration());
+                    } else {
+                        Log.d("MovieDetailActivity", "Movie details not found");
+                    }
+                } else {
+                    Log.d("MovieDetailActivity", "Failed to fetch movie details: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetail> call, Throwable t) {
+                Log.e("MovieDetailActivity", "Failed to fetch movie details: " + t.getMessage(), t);
+            }
+        });
+    }
+
+
+    public class CustomGridLayoutManager extends LinearLayoutManager {
+        private boolean isScrollEnabled = true;
+
+        public CustomGridLayoutManager(Context context) {
+            super(context);
+        }
+
+        public void setScrollEnabled(boolean flag) {
+            this.isScrollEnabled = flag;
+        }
+
+        @Override
+        public boolean canScrollHorizontally() {
+            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
+            return isScrollEnabled && super.canScrollHorizontally();
+        }
+    }
+
 }

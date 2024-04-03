@@ -86,7 +86,22 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
             Log.d("Selected List Name", listName);
             addMovieIdToList(listName, movie.getId());
         }
+        Intent gottenIntent = getIntent();
+        String previousPage = gottenIntent.getStringExtra("COMING_FROM");
+
         Intent intent = new Intent(this, MainActivity.class);
+
+        switch(previousPage) {
+            case "MainActivity":
+                intent = new Intent(this, MainActivity.class);
+                break;
+            case "MovieDetail":
+                intent = new Intent(this, MovieDetailActivity.class);
+                break;
+        }
+        intent.putExtra("value", movie);
+
+
         startActivity(intent);
     }
 
