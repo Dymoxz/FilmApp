@@ -1,5 +1,6 @@
 package com.example.filmapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -132,7 +133,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
 
         carouselRecyclerView = findViewById(R.id.carouselRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager;
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        };
         carouselRecyclerView.setLayoutManager(layoutManager);
 
 
@@ -484,4 +491,23 @@ private void createGuestSession(){
             }
         });
     }
+
+    public class CustomGridLayoutManager extends LinearLayoutManager {
+        private boolean isScrollEnabled = true;
+
+        public CustomGridLayoutManager(Context context) {
+            super(context);
+        }
+
+        public void setScrollEnabled(boolean flag) {
+            this.isScrollEnabled = flag;
+        }
+
+        @Override
+        public boolean canScrollHorizontally() {
+            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
+            return isScrollEnabled && super.canScrollHorizontally();
+        }
+    }
+
 }
