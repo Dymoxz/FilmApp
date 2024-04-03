@@ -240,6 +240,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     VideoResponse videoResponse = response.body();
                     Video trailer = videoResponse.getTrailer();
+                    Log.d(" ASd", String.valueOf(trailer));
                     if (trailer != null) {
                         String trailerUrl = trailer.getUrl();
                         if (trailerUrl != null) {
@@ -251,11 +252,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                             webView.getSettings().setJavaScriptEnabled(true);
                             webView.setWebChromeClient(new WebChromeClient());
                             // Add video WebView to carousel
+
                             addMediaToCarousel(webView, imagePath);
+
                         } else {
                             Log.e("Trailer link", "Trailer URL is null");
                         }
                     } else {
+                        addMediaToCarousel(null, imagePath);
                         Log.e("Trailer link", "Trailer object is null");
                     }
                 } else {
@@ -334,12 +338,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         List<MediaItem> mediaItems = new ArrayList<>();
         // Add movie poster to the carousel
         ImageView posterImageView = new ImageView(this);
+        Log.d("addMediaToCarousel", "ImagePath = " + imagePath);
         Picasso.get().load("https://image.tmdb.org/t/p/w500" + imagePath).into(posterImageView);
         mediaItems.add(new MediaItem(imagePath, null)); // Pass imagePath here
         // Extract URL from WebView and add it to MediaItem
-        String webViewUrl = webView.getUrl();
-        if (webViewUrl != null) {
+        try {
+            String webViewUrl = webView.getUrl();
+            Log.d("addMediaToCarousel", "trailerUrl = " + webViewUrl);
             mediaItems.add(new MediaItem(null, webViewUrl));
+        } catch (Exception e) {
+            Log.d("addMediaToCarousel", "trailerUrl is null");
         }
         CarouselAdapter carouselAdapter = new CarouselAdapter(mediaItems);
         carouselRecyclerView.setAdapter(carouselAdapter);

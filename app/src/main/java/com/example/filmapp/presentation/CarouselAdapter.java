@@ -50,7 +50,7 @@ public class CarouselAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MediaItem item = mediaItems.get(position);
 
-        if (holder.getItemViewType() == VIEW_TYPE_VIDEO) {
+        if (holder.getItemViewType() == VIEW_TYPE_VIDEO && item.getVideoUrl() != null) {
             VideoViewHolder videoHolder = (VideoViewHolder) holder;
 
             // Set WebView background color to transparent
@@ -60,10 +60,13 @@ public class CarouselAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             videoHolder.webView.loadUrl(item.getVideoUrl());
         } else {
             ImageViewHolder imageHolder = (ImageViewHolder) holder;
-            Log.d("CarouselAdapter", "ImagePath:" + item.getImagePath());
-            Picasso.get().load("https://image.tmdb.org/t/p/w500" + item.getImagePath()).into(imageHolder.imageView);
+            if (item.getImagePath() != null) {
+                Log.d("CarouselAdapter", "ImagePath:" + item.getImagePath());
+                Picasso.get().load("https://image.tmdb.org/t/p/w500" + item.getImagePath()).into(imageHolder.imageView);
+            }
         }
     }
+
 
 
     @Override

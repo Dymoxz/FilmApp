@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                                     filteredList.add(movie);
                                 }
                                 if (filteredList.isEmpty()) {
-                                    Toast.makeText(this, "No movies found", Toast.LENGTH_SHORT).show();
                                     recyclerView.setAdapter(null);
                                 } else {
                                     if ((MyAdapter) recyclerView.getAdapter() != null) {
@@ -207,9 +206,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }
     }
-
-
-
 
     public void changeActivityToLists(View view){
         Intent intent = new Intent(this, ListsActivity.class);
