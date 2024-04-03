@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
+    android:background="@color/background"
+
+
     tools:context=".activities.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue"
-        app:titleTextColor="#FFFFFF" />
+        app:titleTextColor="@color/white" />
 
     <LinearLayout
         android:id="@+id/buttonLayout"
@@ -30,8 +34,9 @@
             android:background="@drawable/movie_lists_bg"
 
             android:text="@string/movies"
-            android:textColor="#FFFF"
-            android:textStyle="bold" />
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/listsButton"
@@ -40,9 +45,13 @@
             android:layout_marginStart="1dp"
             android:layout_weight="1"
             android:background="@drawable/movie_lists_bg"
+
             android:onClick="changeActivityToLists"
+
             android:text="@string/lists"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 
     <androidx.appcompat.widget.SearchView
@@ -52,6 +61,7 @@
         android:layout_margin="10dp"
         android:layout_below="@id/buttonLayout"
         android:background="@drawable/white_radius_bg"
+
         app:iconifiedByDefault="false"
         app:queryBackground="@android:color/transparent"
         app:queryHint="Search" />
