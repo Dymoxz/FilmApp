@@ -53,6 +53,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:backgroundTint="@color/blue"
+        android:onClick="switchActivityToWriteReview" />
 
 </RelativeLayout>

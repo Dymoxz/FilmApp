@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/blue"
+        app:titleTextColor="@color/white"
         android:title="Review: Movie name" />
 
     <EditText
@@ -16,11 +18,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_margin="20dp"
-        android:ems="8"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:ems="9"
         android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:hint="First Name"
-        android:autofillHints="name"/>
+        android:autofillHints="name"
+        android:background="@drawable/rating_layout_background"/>
 
     <EditText
         android:id="@+id/writeReviewLastName"
@@ -28,24 +34,30 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:layout_toEndOf="@id/writeReviewFirstName"
-        android:layout_margin="20dp"
-        android:ems="8"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:ems="9"
         android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:hint="Last Name"
-        android:autofillHints="name"/>
+        android:autofillHints="name"
+        android:background="@drawable/rating_layout_background"/>
 
     <EditText
         android:id="@+id/writeReviewEditText"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="400dp"
         android:gravity="start|top"
         android:layout_below="@id/writeReviewFirstName"
         android:hint="Write review here..."
+        android:textColorHint="@color/white"
         android:inputType="textMultiLine"
+        android:textColor="@color/white"
         android:padding="8dp"
         android:textSize="16sp"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_boarder" />
+        android:background="@drawable/rating_layout_background" />
 
     <Button
         android:onClick="onSubmitButton"
@@ -55,6 +67,8 @@
         android:layout_below="@+id/writeReviewEditText"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
+        android:textColor="@color/white"
+        android:background="@drawable/rating_layout_background_blue"
         android:text="Submit" />
 
 

@@ -67,16 +67,25 @@ public class WriteReviewActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Log.d("onOptionsItemSelected AAAAAAAAA", String.valueOf(id));
 
         if (id == android.R.id.home) {
+            Log.d("onOptionsItemSelected", String.valueOf(id));
+            // Create a new intent
             Intent intent = new Intent(this, ReviewOverviewActivity.class);
+
+            // Update the movie object in the intent with the updated movie
             Bundle bundleReview = new Bundle();
             bundleReview.putSerializable("value", movie);
             intent.putExtras(bundleReview);
+
+            // Start the ReviewOverviewActivity with the updated intent
             startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     public void onSubmitButton(View view) {
 
