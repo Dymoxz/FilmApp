@@ -27,6 +27,7 @@ import com.example.filmapp.api.ApiInterface;
 import com.example.filmapp.api.RetrofitClient;
 import com.example.filmapp.api.response.CastResponse;
 import com.example.filmapp.api.response.GenreResponse;
+import com.example.filmapp.api.response.GuestSessionResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.application.repository.GenreRepository;
 import com.example.filmapp.application.repository.Repository;
@@ -37,6 +38,7 @@ import com.example.filmapp.application.viewmodel.VideoViewModel;
 import com.example.filmapp.data.Database;
 import com.example.filmapp.model.CastMember;
 import com.example.filmapp.model.Genre;
+import com.example.filmapp.model.GuestSession;
 import com.example.filmapp.model.MediaItem;
 import com.example.filmapp.model.Movie;
 import com.example.filmapp.model.RatingRequestBody;
@@ -62,7 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView carouselRecyclerView;
     private MovieViewModel movieViewModel;
     private GenreViewModel genreViewModel;
-
+private String guestSessionId;
     private List<CastMember> castList;
     private SeekBar seekbar;
     private TextView ratingView;
@@ -76,6 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         initViewModels();
 
+        createGuestSession();
 
 
 
@@ -375,32 +378,61 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void postRatingToApi(int movieId, float ratingValue) {
         RatingRequestBody requestBody = new RatingRequestBody(ratingValue);
         Log.d("MovieDetailActivity", "RatingRequestBody: " + requestBody + "Rating: " + ratingValue + "movieId: " + movieId);
+        String contentType = "application/json;charset=utf-8";
+        if(guestSessionId != null) {
+            Log.d("MovieDetail", guestSessionId);
 
-        Call<Void> call = apiInterface.postMovieRating(movieId, requestBody);
-        call.enqueue(new Callback<Void>() {
+            Call<Void> call = apiInterface.postMovieRating(movieId, API_KEY, guestSessionId, requestBody, contentType);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        // Rating posted successfully
+                        Log.d("MovieDetailActivity", "Rating posted succesfully");
+                        Toast.makeText(MovieDetailActivity.this, "Successfully posted your rating: " + ratingValue + "!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("----------------------------------", "msg: " + response.message() + " code: " + response.code());
+
+                        // Rating posting failed
+                        Log.d("MovieDetailActivity", "Rating post failed");
+                        Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    // Handle failure
+                    Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
+                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+private void createGuestSession(){
+        Call<GuestSessionResponse> call = apiInterface.getGuestSession(API_KEY);
+        call.enqueue(new Callback<GuestSessionResponse>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    // Rating posted successfully
-                    Log.d("MovieDetailActivity", "Rating posted succesfully");
-                    Toast.makeText(MovieDetailActivity.this, "Rating posted successfully", Toast.LENGTH_SHORT).show();
-                } else {
+            public void onResponse(Call<GuestSessionResponse> call, Response<GuestSessionResponse> response) {
+                if (response.isSuccessful()){
+                    Log.d("MovieDetailAcitvity", "Created guest session");
+                    GuestSessionResponse guestSessionResponse = response.body();
+                    guestSessionId = guestSessionResponse.getGuestsessionId();
+                }
+                else {
+                    Log.d("MovieDetailActivity", "" + response.message());
+
                     // Rating posting failed
-                    Log.d("MovieDetailActivity", "Rating post failed");
-                    Toast.makeText(MovieDetailActivity.this, "Failed to post rating", Toast.LENGTH_SHORT).show();
+                    Log.d("MovieDetailActivity", "Guest session failed");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
-                Log.e("MovieDetailActivity", "Failed to post rating: " + t.getMessage(), t);
-                Toast.makeText(MovieDetailActivity.this, "Failed to post rating: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<GuestSessionResponse> call, Throwable t) {
+
             }
         });
-    }
-
-
+}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_detail_menu, menu);
