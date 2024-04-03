@@ -110,7 +110,7 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
             @Override
             public void onChanged(String amount) {
                 if (amount != null) {
-                    amountView.setText(amount);
+                    amountView.setText("Movies: " + amount);
                 } else {
                     amountView.setText("0");
                 }
