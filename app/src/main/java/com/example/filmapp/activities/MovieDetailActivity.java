@@ -471,11 +471,15 @@ private void createGuestSession(){
         call.enqueue(new Callback<MovieDetailResponse>() {
             @Override
             public void onResponse(Call<MovieDetailResponse> call, Response<MovieDetailResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     MovieDetailResponse movieDetailResponse = response.body();
                     movieDetail = movieDetailResponse.getMovieDetail();
-
-                    Log.d("MovieDetailActivity", "Tagline: " + movieDetail.getTagline() + ", Duration: " + movieDetail.getDuration());
+                    if (movieDetail != null) {
+                        Log.d("MovieDetailActivity", "Tagline: " + movieDetail.getTagline() + ", Duration: " + movieDetail.getDuration());
+                    }
+                    else{
+                        Log.d("MovieDetailActivity", "no movie detials found");
+                    }
                 }
                 else {
                     Log.d("MovieDetailActivity", "" + response.message());
