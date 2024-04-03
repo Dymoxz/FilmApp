@@ -50,6 +50,7 @@ import com.example.filmapp.presentation.CarouselAdapter;
 import com.example.filmapp.presentation.CastMemberAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -172,7 +173,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             getMovieDetails(durationTextView, taglineTextView);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
-            ratingTextView.setText(String.valueOf(movie.getRating()));
+
+            double rating = movie.getRating();
+            DecimalFormat df = new DecimalFormat("#.#");
+            String formattedRating = df.format(rating);
+
+            ratingTextView.setText(formattedRating);
 
             descriptionTextView.setText(movie.getDescription());
         } else {
