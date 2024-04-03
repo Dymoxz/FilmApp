@@ -50,8 +50,8 @@ public class ReviewOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_overview_activity);
-
         reviewCountView = findViewById(R.id.reviewOverviewCount);
+
         recyclerView = findViewById(R.id.reviewOverviewRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -80,6 +80,10 @@ public class ReviewOverviewActivity extends AppCompatActivity {
             reviewListFromDatabase.clear();
             if (movieReviews != null && !movieReviews.isEmpty()) {
                 reviewListFromDatabase.addAll(movieReviews);
+                Log.d("AAA", "Database review count: " + reviewListFromDatabase.size());
+                // Update reviewCountView with the total count, including the newly added review
+                reviewCountView.setText(String.valueOf(reviewListFromDatabase.size()));
+
                 recyclerView.setVisibility(View.VISIBLE); // Ensure RecyclerView is visible
             } else {
                 Log.v("ReviewOverviewActivity", "review list is empty");
@@ -87,6 +91,7 @@ public class ReviewOverviewActivity extends AppCompatActivity {
             }
             adapter.notifyDataSetChanged(); // Notify adapter about changes
         });
+
 
         // Initialize Retrofit API interface
         apiInterface = RetrofitClient.getClient().create(ApiInterface.class);
@@ -140,7 +145,6 @@ public class ReviewOverviewActivity extends AppCompatActivity {
                             review.setMovieId(movieId);
                             movieReviewViewModel.insertMovieReview(review);
                         }
-                        reviewCountView.setText(String.valueOf(reviewList.size()));
                         if (adapter == null) {
                             adapter = new MovieReviewAdapter(reviewList);
                             recyclerView.setAdapter(adapter);
