@@ -1,10 +1,12 @@
 package com.example.filmapp.presentation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -89,6 +91,29 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         else if (movieList.getName().equals("Watch later")) {
             holder.imageView.setImageResource(R.drawable.baseline_watch_later_24);
         }
+
+        // click listener for ellipse
+        holder.movieItemButton.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(context, holder.movieItemButton);
+            popupMenu.inflate(R.menu.list_menu_item);
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.shareList) {
+
+
+                    handleShareOption(movieList);
+                    return true;
+                } else if (itemId == R.id.deleteList) {
+                    Log.v("ListAdapter", "List has successfully been deleted");
+                    handleDeleteOption(movieList);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            popupMenu.show();
+        });
+
         holder.itemView.setOnClickListener(v -> {
             if (recyclerViewInterface !=null) {
                 recyclerViewInterface.onItemClick(movieList);
@@ -97,6 +122,23 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
                 Log.v("aaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaa");
             }
         });
+    }
+
+    // ellipse functions
+    private void handleDeleteOption(MovieList movieList) {
+        movieListViewModel.deleteMovieList(movieList.getName());
+
+    }
+
+    private void handleShareOption(MovieList movieList) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sharing List");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this list: " + movieList.getName());
+
+        // Start the activity with the share Intent
+        context.startActivity(Intent.createChooser(shareIntent, "Share List"));
     }
 
     @Override
