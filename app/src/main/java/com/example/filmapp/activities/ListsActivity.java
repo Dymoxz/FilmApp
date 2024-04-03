@@ -2,6 +2,7 @@ package com.example.filmapp.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -75,10 +76,14 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
     }
 
     public void createList(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.alertDialog);
         builder.setTitle("Please submit a list name: ");
 
         final EditText input = new EditText(this);
+
+        input.setTextColor(getResources().getColor(R.color.white));
+        input.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
+
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
@@ -90,7 +95,6 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                         MovieList movieList = new MovieList(createListName);
                         Log.v("ListActivity", "Created list with name '" + createListName + "'");
                         movieListViewModel.insertMovieList(movieList);
-                        changeActivityToListDetail();
                     } else {
                         Log.v("ListActivity", createListName + " already exists");
                         // Show a message to the user indicating that the name already exists

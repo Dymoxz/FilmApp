@@ -7,5 +7,17 @@
 
     <style name="Theme.FilmApp" parent="Base.Theme.FilmApp" />
 
+    <style name="alertDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:titleTextColor" tools:targetApi="m">@color/white</item>
+        <item name="android:editTextStyle">@style/AlertDialogEditTextStyle</item>
+    </style>
+
+    <style name="AlertDialogEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/white</item>
+    </style>
 
 </resources>
