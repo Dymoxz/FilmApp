@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="7dp"
-    android:layout_margin="3dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
     android:orientation="vertical"
     android:background="@drawable/rating_layout_background">
 
@@ -11,7 +12,8 @@
         android:id="@+id/reviewListAuthor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="23sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:textColor="@color/white"
         android:text="Author"/>
 
@@ -19,7 +21,7 @@
         android:id="@+id/reviewListDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:textColor="@color/grey"
         android:text="Date" />
 
@@ -28,7 +30,9 @@
         android:id="@+id/reviewListReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="16sp"
         android:textColor="@color/white"
         android:text="Write review here" />
 
