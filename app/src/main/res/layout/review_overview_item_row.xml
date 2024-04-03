@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="7dp"
@@ -26,7 +27,7 @@
         android:text="Date" />
 
 
-    <TextView
+    <com.borjabravo.readmoretextview.ReadMoreTextView
         android:id="@+id/reviewListReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,6 +35,12 @@
         android:layout_marginBottom="10dp"
         android:textSize="16sp"
         android:textColor="@color/white"
-        android:text="Write review here" />
+        android:text="Write review here"
+        app:trimExpandedText="@string/read_less"
+        app:trimCollapsedText="@string/read_more"
+        app:trimMode="trimModeLength"
+        app:trimLength="150"
+        app:colorClickableText="#039BE5"
+        />
 
 </LinearLayout>

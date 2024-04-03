@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.retrofitGsonConverter)
-
+    implementation ("com.borjabravo:readmoretextview:2.1.0")
     implementation(libs.picasso)
     implementation("com.github.xabaras:RecyclerViewSwipeDecorator:1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
