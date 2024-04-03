@@ -129,41 +129,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         allGenresApiCall();
 
 
-        // Make the API call
-        Call<Movie> call2 = apiInterface.getMovieDetails(240, API_KEY, "en-US");
-        call2.enqueue(new Callback<Movie>() {
-            @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if (response.isSuccessful()) {
-                    // Handle successful response here
-                    Movie movie = response.body();
-                    if (movie != null) {
-                        // Movie data is available
-                        Log.d("Movie", "Title: " + movie.getDuration());
-                        Log.d("Movie", "Tagline: " + movie.getTagline());
-                        Log.d("Movie", "Rating: " + movie.getRating());
 
-                    } else {
-                        // MovieDetailResponse is null
-                        Log.e("API Error", "Movie object is null");
-                    }
-                } else {
-                    // Handle error response
-                    Log.e("API Error", "Failed to fetch movies. Error code: " + response.code());
-                    try {
-                        Log.e("API Error", "Error body: " + response.errorBody().string());
-                    } catch (IOException e) {
-                        Log.e("API Error", "Failed to read error body: " + e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
-                // Handle failure
-                Log.e("API Error", "Failed to fetch movies: " + t.getMessage());
-            }
-        });
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);
     }
