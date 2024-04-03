@@ -65,8 +65,7 @@ public class ListsActivity extends AppCompatActivity implements ListRecyclerView
                 // Set up the RecyclerView with the movie lists
                 RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(new ListAdapter(getApplicationContext(), movieLists, ListsActivity.this, movieListViewModel, this));
-            }
+                recyclerView.setAdapter(new ListAdapter(this, movieLists, ListsActivity.this, movieListViewModel, this));            }
         });
 
     }

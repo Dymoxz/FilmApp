@@ -40,7 +40,9 @@ dependencies {
 
     implementation(libs.picasso)
     implementation("com.github.xabaras:RecyclerViewSwipeDecorator:1.3")
-
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test:runner:1.4.0")
+    androidTestImplementation("androidx.test:rules:1.4.0")
     implementation(libs.room.runtime)
     implementation(libs.room.common)
     annotationProcessor(libs.room.compiler)

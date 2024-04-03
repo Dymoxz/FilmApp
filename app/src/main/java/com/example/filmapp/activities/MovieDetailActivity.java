@@ -169,11 +169,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
         if (movie != null) {
+            getMovieDetails(durationTextView, taglineTextView);
             titleTextView.setText(movie.getTitle());
             releaseYearTextView.setText(movie.getReleaseDate());
-            durationTextView.setText(String.valueOf(movie.getDuration()));
             ratingTextView.setText(String.valueOf(movie.getRating()));
-            taglineTextView.setText(movie.getTagline());
+
             descriptionTextView.setText(movie.getDescription());
         } else {
             Log.e("DetailActivity", "Movie object is null");
@@ -183,7 +183,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             genreTextView.setText(genreNames);
         });
 
-        getMovieDetails();
+
 
 
 
@@ -466,35 +466,34 @@ private void createGuestSession(){
         return super.onOptionsItemSelected(item);
     }
 
-    public void getMovieDetails() {
-        Call<MovieDetailResponse> call = apiInterface.getMovieDetails(movie.getId(), API_KEY, "en-US");
-        call.enqueue(new Callback<MovieDetailResponse>() {
+    private void getMovieDetails(TextView durationTextView, TextView taglineTextView) {
+        Call<MovieDetail> call = apiInterface.getMovieDetails(movie.getId(), API_KEY, "en-US");
+        call.enqueue(new Callback<MovieDetail>() {
             @Override
-            public void onResponse(Call<MovieDetailResponse> call, Response<MovieDetailResponse> response) {
+            public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
                 if (response.isSuccessful()) {
-                    MovieDetailResponse movieDetailResponse = response.body();
-                    movieDetail = movieDetailResponse.getMovieDetail();
-                    if (movieDetail != null) {
-                        Log.d("MovieDetailActivity", "Tagline: " + movieDetail.getTagline() + ", Duration: " + movieDetail.getDuration());
+                    MovieDetail movieDetails = response.body();
+                    if (movieDetails != null) {
+                        movie.setTagline(movieDetails.getTagline());
+                        movie.setDuration(movieDetails.getDuration());
+                        durationTextView.setText((movie.getDuration()) + " minutes");
+                        taglineTextView.setText(movie.getTagline());
+                        Log.d("MovieDetailActivity", "Tagline: " + movie.getTagline() + ", Duration: " + movie.getDuration());
+                    } else {
+                        Log.d("MovieDetailActivity", "Movie details not found");
                     }
-                    else{
-                        Log.d("MovieDetailActivity", "no movie detials found");
-                    }
-                }
-                else {
-                    Log.d("MovieDetailActivity", "" + response.message());
-
-                    // Rating posting failed
-                    Log.d("MovieDetailActivity", "Guest session failed");
+                } else {
+                    Log.d("MovieDetailActivity", "Failed to fetch movie details: " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieDetailResponse> call, Throwable t) {
-
+            public void onFailure(Call<MovieDetail> call, Throwable t) {
+                Log.e("MovieDetailActivity", "Failed to fetch movie details: " + t.getMessage(), t);
             }
         });
     }
+
 
     public class CustomGridLayoutManager extends LinearLayoutManager {
         private boolean isScrollEnabled = true;

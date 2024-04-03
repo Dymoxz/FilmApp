@@ -114,7 +114,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         movieViewModel.moviesIsEmpty().observe(this, isEmpty -> {
             if (isEmpty) {
-                allMoviesApiCall();
+                int pageNums = 3;
+                for (int i = 0; i <= pageNums; i++){
+                    allMoviesApiCall(i);
+                }
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
+                recyclerView.setAdapter(adapter);
             } else {
                 Log.d("MainActivity", "Database not empty");
 
@@ -218,8 +223,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         return true;
     }
 
-    public void allMoviesApiCall() {
-        allMoviesCall = apiInterface.getTopRatedMovies(API_KEY, "en-US", 1);
+    public void allMoviesApiCall(int page) {
+        allMoviesCall = apiInterface.getTopRatedMovies(API_KEY, "en-US", page);
         // Make the API call
         allMoviesCall.enqueue(new Callback<MoviesResponse>() {
             @Override
@@ -227,18 +232,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 if (response.isSuccessful()) {
                     // Handle successful response here
                     MoviesResponse moviesResponse = response.body();
-                    movies = moviesResponse.getMovies();
+                    movies.addAll(moviesResponse.getMovies());
                     if (moviesResponse != null && moviesResponse.getMovies() != null) {
                         for (Movie movie : moviesResponse.getMovies()) {
                             // Process each movie here
                             Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
                             movieViewModel.insertMovie(movie);
                         }
-                        MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
-                        recyclerView.setAdapter(adapter);
 
-//                        ImageView imageView = findViewById(R.id.imageView);
-//                        Picasso.get().load("https://image.tmdb.org/t/p/w500" + movieResponse.getMovies().get(0).getImagePath()).into(imageView);
                     }
 
                 } else {

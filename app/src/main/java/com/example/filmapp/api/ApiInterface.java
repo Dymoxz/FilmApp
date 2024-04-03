@@ -8,6 +8,7 @@ import com.example.filmapp.api.response.MovieReviewResponse;
 import com.example.filmapp.api.response.MoviesResponse;
 import com.example.filmapp.api.response.VideoResponse;
 import com.example.filmapp.model.Movie;
+import com.example.filmapp.model.MovieDetail;
 import com.example.filmapp.model.MovieReview;
 import com.example.filmapp.model.RatingRequestBody;
 
@@ -44,7 +45,7 @@ public interface ApiInterface {
     );
 
     @GET("movie/{movieId}")
-    Call<MovieDetailResponse> getMovieDetails(
+    Call<MovieDetail> getMovieDetails(
             @Path("movieId") int movieId,
             @Query("api_key") String apiKey,
             @Query("language") String language
