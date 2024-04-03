@@ -5,11 +5,13 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
@@ -47,6 +49,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private GenreViewModel genreViewModel;
     private MovieListViewModel movieListViewModel;
     private RelativeLayout relativeLayout;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.searchbar);
         searchView.clearFocus();
+        GenreRepository genreRepository = new GenreRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).genreDao());
+        genreViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(GenreViewModel.class);
+        genreViewModel.init(genreRepository);
 
         initViewModels();
         createStandardLists();
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -159,6 +166,45 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         }
     }
+
+    private void filterList2(String text) {
+        List<Movie> filteredList = new ArrayList<>();
+        if (movies != null) {
+            for (Movie movie : movies) {
+                List<String> genreNameList = new ArrayList<>();
+                AtomicInteger genreNamesFetched = new AtomicInteger(0); // Counter to track fetched genre names
+                for (int id : movie.getGenreIdList()) {
+                    genreViewModel.getGenreName(id).observe(this, genreName -> {
+                        if (genreName != null) {
+                            genreNameList.add(genreName.toLowerCase());
+                            int fetchedCount = genreNamesFetched.incrementAndGet(); // Increment counter
+                            // Check if all genre names have been fetched
+                            if (fetchedCount == movie.getGenreIdList().size()) {
+                                // Now genreNameList is fully populated, you can proceed with further operations
+                                if (genreNameList.contains(text.toLowerCase())) {
+                                    filteredList.add(movie);
+                                }
+                                if (filteredList.isEmpty()) {
+                                    Toast.makeText(this, "No movies found", Toast.LENGTH_SHORT).show();
+                                    recyclerView.setAdapter(null);
+                                } else {
+                                    if ((MyAdapter) recyclerView.getAdapter() != null) {
+                                        ((MyAdapter) recyclerView.getAdapter()).setFilteredList(filteredList);
+                                    } else {
+                                        MyAdapter adapter = new MyAdapter(getApplicationContext(), filteredList, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
+                                        recyclerView.setAdapter(adapter);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+
+
 
     public void changeActivityToLists(View view){
         Intent intent = new Intent(this, ListsActivity.class);
@@ -366,6 +412,75 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         });
 
     }
+
+
+    private String currentFilter = null; // Variable to keep track of the current filter
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.dramaFilter || id == R.id.crimeFilter || id == R.id.animationFilter || id == R.id.fantasyFilter) {
+            // Toggle the selected filter
+            toggleFilter(item.getTitle().toString());
+            // Update the visual appearance of filter buttons
+            updateFilterButtonVisual(item);
+            // If any filter item is selected, deselect all other items in the group
+            if (item.isChecked()) {
+                Menu menu = toolbar.getMenu();
+                for (int i = 0; i < menu.size(); i++) {
+                    MenuItem menuItem = menu.getItem(i);
+                    if (menuItem.getItemId() != id) { // Avoid deselecting the selected item
+                        menuItem.setChecked(false);
+                    }
+                }
+            }
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+
+
+
+    private void toggleFilter(String filter) {
+        if (filter.equals(currentFilter)) {
+            // If the current filter is already applied, remove it
+            currentFilter = null;
+            loadAllMovies(); // Show all movies
+            updateFilterButtonVisual(null); // Clear visual appearance
+        } else {
+            currentFilter = filter;
+            // Apply the selected filter
+            filterList2(filter);
+        }
+    }
+    private void loadAllMovies() {
+        // Set the dataset of the adapter to the original list of movies
+        if (movies != null) {
+            MyAdapter adapter = new MyAdapter(getApplicationContext(), movies, MainActivity.this, genreViewModel, MainActivity.this, getClass().getSimpleName());
+            recyclerView.setAdapter(adapter);
+        }
+    }
+
+    private void updateFilterButtonVisual(@Nullable MenuItem selectedItem) {
+        // Reset the visual appearance of all filter buttons
+        Menu menu = toolbar.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            item.setChecked(false);
+
+        }
+
+        if (selectedItem != null) {
+            // Set the visual appearance of the selected filter button
+            selectedItem.setChecked(true);
+        }
+    }
+
+
 
 
 }
