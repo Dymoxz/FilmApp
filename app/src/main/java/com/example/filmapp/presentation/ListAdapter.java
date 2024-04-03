@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -104,8 +105,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
                     handleShareOption(movieList);
                     return true;
                 } else if (itemId == R.id.deleteList) {
-                    Log.v("ListAdapter", "List has successfully been deleted");
-                    handleDeleteOption(movieList);
+                    if (movieList.getName().equals("Favorites") || movieList.getName().equals("Watch later")){
+                        Toast.makeText(context, "Cannot delete " + movieList.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Log.v("ListAdapter", "List has successfully been deleted");
+                        handleDeleteOption(movieList);
+                        Toast.makeText(context, movieList.getName() + "has successfully been deleted", Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 } else {
                     return false;
