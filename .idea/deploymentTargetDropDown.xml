@@ -2,22 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddToListActivityTest">
+      <entry key="MovieDetailComponentsTest">
         <State />
       </entry>
-      <entry key="ListActivityTest">
-        <State />
-      </entry>
-      <entry key="MovieDetailActivityTest">
-        <State />
-      </entry>
-      <entry key="ReviewOverviewActivityTest">
-        <State />
-      </entry>
-      <entry key="WriteReviewActivityTest">
+      <entry key="WriteReviewTest">
         <State />
       </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="testSubmitButtonSubmitsRating()">
+        <State />
+      </entry>
+      <entry key="testToolbarTitle()">
+        <State />
+      </entry>
+      <entry key="testUIElementsDisplayed()">
         <State />
       </entry>
     </value>

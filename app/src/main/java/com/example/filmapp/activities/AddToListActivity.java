@@ -53,7 +53,11 @@ public class AddToListActivity extends AppCompatActivity implements ListRecycler
 
         Intent intent = getIntent();
         movie = (Movie) intent.getSerializableExtra("MOVIE");
-        Log.v("AddToListactivity", "movie id: " + movie.getId());
+        if (movie != null) {
+            Log.v("AddToListactivity", "movie id: " + movie.getId());
+        } else {
+            Log.e("AddToListactivity", "Movie object is null");
+        }
         MovieListRepository repository = new MovieListRepository(Database.getDatabaseInstance(this), Database.getDatabaseInstance(this).movieListDao());
         movieListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MovieListViewModel.class);
         movieListViewModel.init(repository);

@@ -207,9 +207,13 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     public void onSubmitButton(View view) {
-        Log.d("MovieDetailActivity", "onSubmitButton movieId" + movie.getId() + "rating: " + rating);
-        int movieId = movie.getId();
-        postRatingToApi(movieId, rating);
+        if (movie != null) { // check if movie is not null
+            Log.d("MovieDetailActivity", "onSubmitButton movieId" + movie.getId() + "rating: " + rating);
+            int movieId = movie.getId();
+            postRatingToApi(movieId, rating);
+        } else {
+            Log.e("MovieDetailActivity", "Movie object is null");
+        }
     }
 
     private void getMovieTrailer(int movieId, String imagePath) {
