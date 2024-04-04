@@ -89,6 +89,11 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = (Movie) bundle.getSerializable("value");
         }
 
+        if (movie == null) {
+            Log.e("DetailActivity", "Movie object is null");
+            return;
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

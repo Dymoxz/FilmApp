@@ -2,6 +2,18 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="ExampleInstrumentedTest">
+        <State />
+      </entry>
+      <entry key="MainActivityNavigationTest">
+        <State />
+      </entry>
+      <entry key="MainActivitySearchbarTest">
+        <State />
+      </entry>
+      <entry key="MovieDetailActivityTest">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>

@@ -223,15 +223,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 if (response.isSuccessful()) {
                     // Handle successful response here
                     MoviesResponse moviesResponse = response.body();
-                    movies.addAll(moviesResponse.getMovies());
-                    if (moviesResponse.getMovies() != null) {
-                        for (Movie movie : moviesResponse.getMovies()) {
-                            // Process each movie here
-                            Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " +  movie.getReleaseDate());
-                            movieViewModel.insertMovie(movie);
+                    if (moviesResponse != null && moviesResponse.getMovies() != null) {
+                        // Ensure that the list is not null before adding elements to it
+                        if (movies != null) {
+                            // Add movies to the existing list
+                            movies.addAll(moviesResponse.getMovies());
+                        } else {
+                            // If movies list is null, initialize it and then add movies
+                            movies = new ArrayList<>();
+                            movies.addAll(moviesResponse.getMovies());
+                        }
+                        if (moviesResponse.getMovies() != null) {
+                            for (Movie movie : moviesResponse.getMovies()) {
+                                // Process each movie here
+                                Log.d("Movie", "Title: " + movie.getTitle() + "\nDate: " + movie.getReleaseDate());
+                                movieViewModel.insertMovie(movie);
+                            }
                         }
                     }
-
                 } else {
                     // Handle error response
                     Log.e("API Error", "Failed to fetch movies: " + response.message());
