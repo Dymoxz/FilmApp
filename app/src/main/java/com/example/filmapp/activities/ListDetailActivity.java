@@ -303,7 +303,8 @@ public class ListDetailActivity extends AppCompatActivity implements RecyclerVie
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         StringBuilder shareBuilder = new StringBuilder();
-        shareBuilder.append("*").append(listName).append("*\n");
+        shareBuilder.append("Check out this list: \n")
+                    .append("*").append(listName).append("*\n");
 
         for (Movie movie : movieList) {
             shareBuilder.append(movie.getTitle()).append("\n");

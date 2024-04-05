@@ -113,20 +113,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     context.startActivity(intent);
                     return true;
                 }
-                else if (menuItem.getItemId() == R.id.shareMovie) {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    String shareBody = "createShareText(MovieList)";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share App Locker")
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    return true;
-
-                }
-
-
-                if (menuItem.getItemId() == R.id.removeFromList) {
-                }
                 return true;
             });
 

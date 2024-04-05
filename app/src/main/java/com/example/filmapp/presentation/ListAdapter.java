@@ -99,12 +99,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
             popupMenu.inflate(R.menu.list_menu_item);
             popupMenu.setOnMenuItemClickListener(item -> {
                 int itemId = item.getItemId();
-                if (itemId == R.id.shareList) {
-
-
-                    handleShareOption(movieList);
-                    return true;
-                } else if (itemId == R.id.deleteList) {
+                if (itemId == R.id.deleteList) {
                     if (movieList.getName().equals("Favorites") || movieList.getName().equals("Watch later")){
                         Toast.makeText(context, "Cannot delete " + movieList.getName(), Toast.LENGTH_SHORT).show();
                     }
@@ -135,17 +130,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private void handleDeleteOption(MovieList movieList) {
         movieListViewModel.deleteMovieList(movieList.getName());
 
-    }
-
-    private void handleShareOption(MovieList movieList) {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sharing List");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this list: " + movieList.getName());
-
-        // Start the activity with the share Intent
-        context.startActivity(Intent.createChooser(shareIntent, "Share List"));
     }
 
     @Override
