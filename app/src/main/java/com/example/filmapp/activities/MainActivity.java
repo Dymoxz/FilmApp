@@ -410,23 +410,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Menu menu = toolbar.getMenu();
         if (id == R.id.dramaFilter || id == R.id.crimeFilter || id == R.id.animationFilter || id == R.id.fantasyFilter) {
             toggleFilter(item.getTitle().toString());
-            updateFilterButtonVisual(item);
             if (item.isChecked()) {
-                Menu menu = toolbar.getMenu();
-                for (int i = 0; i < menu.size(); i++) {
-                    MenuItem menuItem = menu.getItem(i);
-                    if (menuItem.getItemId() != id) {
-                        menuItem.setChecked(false);
-                    }
-                }
+                item.setChecked(false);
+                // Check the invisible radio button
+                MenuItem noneFilter = menu.findItem(R.id.noneFilter);
+                noneFilter.setChecked(true);
+            } else {
+                updateFilterButtonVisual(item);
+                item.setChecked(true);
             }
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
+
 
     private void toggleFilter(String filter) {
         if (filter.equals(currentFilter)) {

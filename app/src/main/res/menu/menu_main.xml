@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-     >
-    <item android:id="@+id/addToList" android:title="Filter" android:icon="@drawable/baseline_filter_list_alt_24" app:showAsAction="always">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/addToList"
+        android:title="Filter"
+        android:icon="@drawable/baseline_filter_list_alt_24"
+        app:showAsAction="always">
         <menu>
             <group
                 android:checkableBehavior="single">
-                <item android:id="@+id/dramaFilter"
+                <item
+                    android:id="@+id/dramaFilter"
                     android:title="Drama"
-                    app:showAsAction="always"
-                    />
-                <item android:id="@+id/crimeFilter"
+                    app:showAsAction="always"/>
+                <item
+                    android:id="@+id/crimeFilter"
                     android:title="Crime"
-                    app:showAsAction="always"
-                    />
-                <item android:id="@+id/animationFilter"
+                    app:showAsAction="always"/>
+                <item
+                    android:id="@+id/animationFilter"
                     android:title="Animation"
-                    app:showAsAction="always"
-                    />
-                <item android:id="@+id/fantasyFilter"
+                    app:showAsAction="always"/>
+                <item
+                    android:id="@+id/fantasyFilter"
                     android:title="Fantasy"
-                    app:showAsAction="always" />
+                    app:showAsAction="always"/>
+                <!-- Invisible radio button for "None" option -->
+                <item
+                    android:id="@+id/noneFilter"
+                    android:title="None"
+                    android:visible="false"/>
             </group>
-
         </menu>
     </item>
 </menu>
